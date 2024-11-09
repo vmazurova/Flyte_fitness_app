@@ -5,10 +5,11 @@ import Features from "./sections/Features.jsx";
 import Pricing from "./sections/Pricing.jsx";
 import Faq from "./sections/Faq.jsx";
 import Testimonials from "./sections/Testimonials.jsx";
-import Download from "./sections/Download.jsx";
+import TrainingPlan from "./sections/TrainingPlan.jsx";
 import Footer from "./sections/Footer.jsx";
 import SignUp from "./auth/SignUp.jsx";
 import Login from "./auth/Login.jsx";
+import MealPlan from "./sections/MealPlan.jsx";
 
 const App = () => {
   return (
@@ -23,7 +24,8 @@ const App = () => {
           <Pricing />
           <Faq />
           <Testimonials />
-          <Download />
+          <MealPlan />
+          <TrainingPlan />
         </Route>
       </Switch>
       <Footer />

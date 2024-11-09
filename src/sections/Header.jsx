@@ -19,13 +19,14 @@ const Header = () => {
     };
   }, []);
 
-  const NavLink = ({ title }) => (
+  const NavLink = ({ title, to }) => (
     <LinkScroll
       onClick={() => setIsOpen(false)}
-      to={title}
+      to={to} // Nastavení "to" pro správné sekce
       offset={-100}
       spy
       smooth
+      duration={500}
       activeClass="nav-active"
       className="base-bold text-p4 uppercase transition-colors duration-500 cursor-pointer hover:text-p1 max-lg:my-4 max-lg:h5"
     >
@@ -42,8 +43,6 @@ const Header = () => {
     >
       <div className="container flex h-14 items-center max-lg:px-5">
         <Link to="/" className="lg:hidden flex-1 cursor-pointer z-2">
-          {" "}
-          {/* Nahrazeno Link */}
           <img
             src="/images/flyte_bile_pop.webp"
             width={115}
@@ -62,9 +61,9 @@ const Header = () => {
             <nav className="max-lg:relative max-lg:z-2 max-lg:my-auto">
               <ul className="flex max-lg:block max-lg:px-12">
                 <li className="nav-li">
-                  <NavLink title="Kurzy" />
+                  <NavLink title="Funkce" to="features" />
                   <div className="dot" />
-                  <NavLink title="Jídelníčky" />
+                  <NavLink title="Cena" to="pricing" />
                 </li>
 
                 <li className="nav-logo">
@@ -73,6 +72,7 @@ const Header = () => {
                     offset={-250}
                     spy
                     smooth
+                    duration={500}
                     className={clsx(
                       "max-lg:hidden transition-transform duration-500 cursor-pointer"
                     )}
@@ -87,9 +87,9 @@ const Header = () => {
                 </li>
 
                 <li className="nav-li">
-                  <NavLink title="Tréninkové plány" />
+                  <NavLink title="Časté  dotazy" to="faq" />
                   <div className="dot" />
-                  <NavLink title="Kontakt" />
+                  <NavLink title="Kontakt" to="Kontakt" />
                 </li>
               </ul>
             </nav>

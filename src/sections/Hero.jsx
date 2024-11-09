@@ -1,5 +1,6 @@
 import { Element, Link as LinkScroll } from "react-scroll";
 import Button from "../components/Button.jsx";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -17,9 +18,13 @@ const Hero = () => {
               Překroč své limity s aplikací, která tě provede na cestě od snu k
               realitě!
             </p>
-            <LinkScroll to="features" offset={-100} spy smooth>
+
+            <Link
+              to="/auth/Registrace"
+              className="text-purple-400 hover:text-purple-500 font-semibold"
+            >
               <Button icon="/images/zap.svg">Vyzkoušet</Button>
-            </LinkScroll>
+            </Link>
           </div>
 
           <div className="absolute -top-32 left-[calc(50%-340px)] w-[1230px] pointer-events-none hero-img_res">

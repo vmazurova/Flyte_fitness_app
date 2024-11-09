@@ -123,7 +123,7 @@ export const plans = [
       "Dohled trenérky, obměna kardio cviků",
       "Pravidelné měření a vážení",
     ],
-    icon: "/images/up-arrow.png",
+    icon: "/images/top.png",
     logo: "/images/FAQicon.png",
   },
   {
@@ -138,7 +138,7 @@ export const plans = [
       "Při prodloužení členství získáš až 1 měsíc ZDARMA.",
       "Individuální cvičební plán sestavený trenérkou",
     ],
-    icon: "/images/up-arrow.png",
+    icon: "/images/top.png",
     logo: "/images/FAQicon.png",
   },
   {
@@ -153,7 +153,7 @@ export const plans = [
       "Zdarma 5 lekcí",
       "Dárek k zakoupení členství",
     ],
-    icon: "/images/up-arrow.png",
+    icon: "/images/top.png",
     logo: "/images/FAQicon.png",
   },
 ];

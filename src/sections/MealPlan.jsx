@@ -2,7 +2,7 @@ import { Element } from "react-scroll";
 import { links, logos } from "../constants/index.jsx";
 import Button from "../components/Button.jsx";
 
-const Download = () => {
+const MealPlan = () => {
   return (
     <section>
       <Element
@@ -22,8 +22,7 @@ const Download = () => {
               </div>
 
               <p className="body-1 mb-10 max-w-md">
-                Cokoliv, co by měla mít dobrá fittness aplikace má Flyte -
-                cokoli, co potřebuješ má Flyte.
+                Cokoliv, co by měla mít dobrá fittness aplikace má Flyte.
               </p>
 
               <ul className="flex flex-wrap items-center gap-6">
@@ -45,18 +44,10 @@ const Download = () => {
               </div>
             </div>
           </div>
-
-          <ul className="mt-24 flex justify-center max-lg:hidden">
-            {logos.map(({ id, url, width, height, title }) => (
-              <li key={id} className="mx-10">
-                <img src={url} width={width} height={height} alt={title} />
-              </li>
-            ))}
-          </ul>
         </div>
       </Element>
     </section>
   );
 };
 
-export default Download;
+export default MealPlan;
