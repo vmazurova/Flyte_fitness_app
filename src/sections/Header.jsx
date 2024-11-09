@@ -1,6 +1,7 @@
 import { Link as LinkScroll } from "react-scroll";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import { Link } from "react-router-dom"; // Import Link pro interní odkazy
 
 const Header = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -40,14 +41,16 @@ const Header = () => {
       )}
     >
       <div className="container flex h-14 items-center max-lg:px-5">
-        <a className="lg:hidden flex-1 cursor-pointer z-2">
+        <Link to="/" className="lg:hidden flex-1 cursor-pointer z-2">
+          {" "}
+          {/* Nahrazeno Link */}
           <img
             src="/images/flyte_bile_pop.webp"
             width={115}
             height={55}
             alt="logo"
           />
-        </a>
+        </Link>
 
         <div
           className={clsx(

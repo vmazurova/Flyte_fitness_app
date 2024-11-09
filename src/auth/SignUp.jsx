@@ -1,111 +1,197 @@
-import React from "react";
+import React, { useState } from "react";
+import { Element } from "react-scroll";
+import Button from "../components/Button.jsx";
 import { Link } from "react-router-dom";
 
 const SignUp = () => {
+  const [formData, setFormData] = useState({
+    krestnijmeno: "",
+    prijmeni: "",
+    email: "",
+    telefon: "",
+    heslo: "",
+    potvrzeniHesla: "",
+    termsAccepted: false,
+  });
+
+  const [errors, setErrors] = useState({
+    heslo: "",
+    potvrzeniHesla: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+
+    if (name === "heslo" || name === "potvrzeniHesla") {
+      validatePassword(
+        formData.heslo,
+        name === "potvrzeniHesla" ? value : formData.potvrzeniHesla
+      );
+    }
+  };
+
+  const validatePassword = (heslo, potvrzeniHesla) => {
+    const hasNumber = /[0-9]/.test(heslo);
+    const hasUppercase = /[A-Z]/.test(heslo);
+    const passwordsMatch = heslo === potvrzeniHesla;
+
+    let hesloError = "";
+    let potvrzeniHeslaError = "";
+
+    if (!hasNumber || !hasUppercase) {
+      hesloError =
+        "Heslo musí obsahovat alespoň jedno číslo a jedno velké písmeno.";
+    }
+
+    if (!passwordsMatch) {
+      potvrzeniHeslaError = "Hesla se neshodují.";
+    }
+
+    setErrors({
+      heslo: hesloError,
+      potvrzeniHesla: potvrzeniHeslaError,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!errors.heslo && !errors.potvrzeniHesla && formData.termsAccepted) {
+      console.log("Formulář byl odeslán:", formData);
+    } else {
+      console.log("Formulář nemůže být odeslán kvůli chybám.");
+    }
+  };
+
   return (
-    <section>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="py-12 md:py-20">
-          {/* Section header */}
-          <div className="pb-12 text-center">
-            <br />
-            <br />
-            <h1 className="animate-[gradient_6s_linear_infinite] bg-[linear-gradient(to_right,theme(colors.gray.200),theme(colors.p2),theme(colors.gray.50),theme(colors.p3),theme(colors.gray.200))] bg-[length:200%_auto] bg-clip-text font-nacelle text-4xl font-semibold text-transparent md:text-5xl">
-              Create an account
-            </h1>
+    <Element
+      name="signup"
+      className="min-h-screen py-40 bg-black text-white flex items-center justify-center"
+    >
+      <div className="w-10/12 lg:w-6/12 bg-slate-800 rounded-xl shadow-lg overflow-hidden p-8">
+        <h2 className="text-4xl font-bold mb-6 text-center">Registrace</h2>
+
+        <p className="mb-6 text-center">
+          Vytvoř si účet a podívej se, co všechno Flyte umí.
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="grid grid-cols-2 gap-5">
+            <input
+              type="text"
+              name="krestnijmeno"
+              placeholder="Křestní jméno"
+              value={formData.krestnijmeno}
+              onChange={handleChange}
+              className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+            />
+            <input
+              type="text"
+              name="prijmeni"
+              placeholder="Příjmení"
+              value={formData.prijmeni}
+              onChange={handleChange}
+              className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+            />
           </div>
-          {/* Contact form */}
-          <form className="mx-auto max-w-[400px]">
-            <div className="space-y-6">
-              <div>
-                <label
-                  className="mb-2 block text-lg font-medium text-indigo-200/65"
-                  htmlFor="name"
-                >
-                  Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  className="form-input w-full rounded-20 text-lg py-3"
-                  placeholder="Your full name"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  className="mb-2 block text-lg font-medium text-indigo-200/65"
-                  htmlFor="company"
-                >
-                  Company Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="company"
-                  type="text"
-                  className="form-input w-full rounded-20 text-lg py-3"
-                  placeholder="Your company name"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  className="mb-2 block text-lg font-medium text-indigo-200/65"
-                  htmlFor="email"
-                >
-                  Work Email <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  className="form-input w-full rounded-20 text-lg py-3"
-                  placeholder="Your work email"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  className="mb-2 block text-lg font-medium text-indigo-200/65"
-                  htmlFor="password"
-                >
-                  Password <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  className="form-input w-full rounded-20 text-lg py-3"
-                  placeholder="Password (at least 10 characters)"
-                  required
-                />
-              </div>
-            </div>
-            <div className="mt-8 space-y-5">
-              <button
-                type="submit"
-                className="btn w-full bg-gradient-to-t from-p2 to-p1 bg-[length:100%_100%] bg-[bottom] text-white shadow-300 hover:bg-[length:100%_150%] rounded-20 text-lg py-3"
-              >
-                Register
-              </button>
-              <div className="flex items-center gap-3 text-center text-lg italic text-gray-600 before:h-px before:flex-1 before:bg-gradient-to-r before:from-transparent before:via-gray-400/25 after:h-px after:flex-1 after:bg-gradient-to-r after:from-transparent after:via-gray-400/25">
-                or
-              </div>
-              <button
-                type="button"
-                className="btn relative w-full bg-gradient-to-b from-gray-800 to-gray-800/60 bg-[length:100%_100%] bg-[bottom] text-gray-300 before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(to_right,theme(colors.gray.800),theme(colors.gray.700),theme(colors.gray.800))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)] hover:bg-[length:100%_150%] rounded-20 text-lg py-3"
-              >
-                Sign In with Google
-              </button>
-            </div>
-          </form>
-          {/* Bottom link */}
-          <div className="mt-8 text-center text-lg text-indigo-200/65">
-            Already have an account?{" "}
-            <Link className="font-medium text-indigo-500" to="/signin">
-              Sign in
-            </Link>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+          />
+          <input
+            type="tel"
+            name="telefon"
+            placeholder="Telefonní číslo"
+            value={formData.telefon}
+            onChange={handleChange}
+            className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+          />
+          <input
+            type="password"
+            name="heslo"
+            placeholder="Heslo"
+            value={formData.heslo}
+            onChange={handleChange}
+            className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+          />
+          {errors.heslo && (
+            <p className="text-red-500 text-sm">{errors.heslo}</p>
+          )}
+          <input
+            type="password"
+            name="potvrzeniHesla"
+            placeholder="Potvrzení hesla"
+            value={formData.potvrzeniHesla}
+            onChange={handleChange}
+            className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+          />
+          {errors.potvrzeniHesla && (
+            <p className="text-red-500 text-sm">{errors.potvrzeniHesla}</p>
+          )}
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              name="termsAccepted"
+              checked={formData.termsAccepted}
+              onChange={handleChange}
+              className="border border-gray-600"
+            />
+            <label className="text-gray-300">
+              Potvrzuji{" "}
+              <a href="#" className="text-purple-400 font-semibold">
+                Podmínky používání
+              </a>{" "}
+              &{" "}
+              <a href="#" className="text-purple-400 font-semibold">
+                GDPR
+              </a>
+            </label>
           </div>
-        </div>
+          <button
+            type="submit"
+            className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none"
+          >
+            Registrovat!
+          </button>
+          <div className="mt-8 text-center">
+            <p>Nebo se přihlaš pomocí:</p>
+            <div className="flex justify-center gap-4 mt-4">
+              <Button
+                icon="/images/logos/googleICON.png"
+                className="bg-red-500 hover:bg-red-600"
+              >
+                Google
+              </Button>
+              <Button
+                icon="/images/logos/githubICON.png"
+                className="bg-gray-700 hover:bg-gray-800"
+              >
+                Githubu
+              </Button>
+            </div>
+          </div>
+          <div className="mt-8 text-center">
+            <p>
+              Máš účet?{" "}
+              <Link
+                to="/auth/Prihlaseni"
+                className="text-purple-400 hover:text-purple-500 font-semibold"
+              >
+                Přihlaš se tady
+              </Link>
+            </p>
+          </div>
+        </form>
       </div>
-    </section>
+    </Element>
   );
 };
 

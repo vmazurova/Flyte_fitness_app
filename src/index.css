@@ -13,6 +13,12 @@
     @apply font-poppins text-[16px] tracking-[-0.03em] text-p5;
   }
 
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
   a {
     @apply no-underline;
   }

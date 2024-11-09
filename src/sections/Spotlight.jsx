@@ -1,3 +1,4 @@
+// Spotlight.jsx
 import React, { useRef, useState, useEffect } from "react";
 import useMousePosition from "../../utils/useMousePosition";
 

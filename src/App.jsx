@@ -8,13 +8,15 @@ import Testimonials from "./sections/Testimonials.jsx";
 import Download from "./sections/Download.jsx";
 import Footer from "./sections/Footer.jsx";
 import SignUp from "./auth/SignUp.jsx";
+import Login from "./auth/Login.jsx";
 
 const App = () => {
   return (
     <main className="overflow-hidden">
       <Header />
       <Switch>
-        <Route path="/auth/signup" component={SignUp} />
+        <Route path="/auth/registrace" component={SignUp} />
+        <Route path="/auth/prihlaseni" component={Login} />
         <Route path="/" exact>
           <Hero />
           <Features />
