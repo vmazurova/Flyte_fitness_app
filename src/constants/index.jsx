@@ -146,7 +146,7 @@ export const plans = [
     title: "6 měsíční členství",
     priceMonthly: 1132,
     priceFull: 6790,
-    caption: "Exclusively for teams",
+    caption: "Zlatá střední cesta",
     features: [
       "Stravovací doporučení",
       "Všechno z 3 měs. členství",

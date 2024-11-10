@@ -6,10 +6,10 @@ const Testimonials = () => {
 
   return (
     <section
-      className="relative z-2 py-24 md:py-28 lg:py-40"
+      className="relative z-2 py-24 md:py-28 lg:py-40 "
       name="testemonials"
     >
-      <div className="container block lg:flex">
+      <div className="container block lg:flex mb-20">
         <div className="testimonials_head-res relative z-2 mr-20 flex-300">
           <p className="caption mb-5 max-md:mb-2.5">Nevěříš nám?</p>
           <h3 className="h3 max-md:h5 text-p4">
@@ -37,8 +37,66 @@ const Testimonials = () => {
               />
             ))}
           </div>
+          <ul className="mt-24 flex justify-center max-lg:hidden space-x-8">
+            <li>
+              <img
+                src="/images/logos/ContoursLogo.png"
+                width={200}
+                height={200}
+                alt="Ikona 1"
+                className="hover:opacity-80 transition-opacity duration-200"
+              />
+            </li>
+            <li>
+              <img
+                src="/images/logos/logo1.png"
+                width={200}
+                height={200}
+                alt="Ikona 2"
+                className="hover:opacity-80 transition-opacity duration-200"
+              />
+            </li>
+            <li>
+              <img
+                src="/images/logos/gecp(1).png"
+                width={200}
+                height={200}
+                alt="Ikona 3"
+                className="hover:opacity-80 transition-opacity duration-200"
+              />
+            </li>
+          </ul>
         </div>
       </div>
+      <ul className="mt-40 flex justify-center max-lg:hidden space-x-8">
+        <li>
+          <img
+            src="/images/logos/ContoursLogo.png"
+            width={200}
+            height={200}
+            alt="Ikona 1"
+            className="hover:opacity-80 transition-opacity duration-200"
+          />
+        </li>
+        <li>
+          <img
+            src="/images/logos/logo1.png"
+            width={200}
+            height={200}
+            alt="Ikona 2"
+            className="hover:opacity-80 transition-opacity duration-200"
+          />
+        </li>
+        <li>
+          <img
+            src="/images/logos/gecp(1).png"
+            width={200}
+            height={200}
+            alt="Ikona 3"
+            className="hover:opacity-80 transition-opacity duration-200"
+          />
+        </li>
+      </ul>
     </section>
   );
 };

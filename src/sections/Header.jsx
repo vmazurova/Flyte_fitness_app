@@ -64,6 +64,8 @@ const Header = () => {
                   <NavLink title="Funkce" to="features" />
                   <div className="dot" />
                   <NavLink title="Cena" to="pricing" />
+                  <div className="dot" />
+                  <NavLink title="Kontakt" to="Kontakt" />
                 </li>
 
                 <li className="nav-logo">
@@ -87,9 +89,11 @@ const Header = () => {
                 </li>
 
                 <li className="nav-li">
-                  <NavLink title="Časté  dotazy" to="faq" />
+                  <NavLink title="Jídelníčky" to="mealPlan" />
                   <div className="dot" />
-                  <NavLink title="Kontakt" to="Kontakt" />
+                  <NavLink title="Tréninky" to="trainingPlan" />
+                  <div className="dot" />
+                  <NavLink title="Časté  dotazy" to="faq" />
                 </li>
               </ul>
             </nav>

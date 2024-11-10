@@ -22,10 +22,10 @@ const App = () => {
           <Hero />
           <Features />
           <Pricing />
-          <Faq />
-          <Testimonials />
           <MealPlan />
           <TrainingPlan />
+          <Faq />
+          <Testimonials />
         </Route>
       </Switch>
       <Footer />

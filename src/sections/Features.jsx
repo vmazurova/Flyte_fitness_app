@@ -7,7 +7,7 @@ import WorflowImg03 from "../images/workflow-03.png";
 export default function Features() {
   return (
     <section name="features">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 mt-20">
         <div className="pb-12 md:pb-20">
           <div className="mx-auto max-w-3xl pb-12 text-center md:pb-20">
             <div className="inline-flex items-center gap-3 pb-3 before:h-px before:w-8 before:bg-gradient-to-r from-transparent to-p1 after:h-px after:w-8 after:bg-gradient-to-l from-transparent to-p2/50">

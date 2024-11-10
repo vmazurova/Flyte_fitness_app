@@ -1,4 +1,4 @@
-// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -7,8 +7,8 @@ export default {
         p1: "#C496FF",  // světle fialová
         p2: "#8D36FF",  // středně fialová
         p3: "#A35CFF",  // tmavě fialová
-        p4: "#EAEDFF",  // světlejší odstín
-        p5: "#C4CBF5",  // odstín fialové
+        p4: "#EAEDFF", // světlejší odstín
+        p5: "#C4CBF5", // odstín fialové
         gray: {
           400: '#9CA3AF', 
         },
@@ -17,6 +17,7 @@ export default {
         s3: "#712BCD",
         s4: "#A35CFF",
         s5: "#53258E",
+
         black: {
           DEFAULT: "#000000",
           100: "#05091D",
@@ -28,21 +29,9 @@ export default {
           '50%': { backgroundPosition: '100% 50%' },
           '100%': { backgroundPosition: '0% 50%' },
         },
-        borderDraw: {
-          '0%': { borderWidth: '0' },
-          '100%': { borderWidth: '2px' },
-        },
-        shine: {
-          "0%": { top: "0", transform: "scaleY(5)", opacity: "0" },
-          "10%": { opacity: ".8" },
-          "20%": { top: "100%", transform: "scaleY(10)", opacity: "0" },
-          "100%": { top: "100%", transform: "scaleY(1)", opacity: "0" },
-        },
       },
       animation: {
         gradient: 'gradient 6s ease infinite',
-        'border-draw': 'borderDraw 1.5s ease forwards',
-        shine: "shine 5s ease-in-out 500ms infinite",
       },
       boxShadow: {
         100: "0px 4px 4px rgba(0, 0, 0, 0.25), 0px 16px 24px rgba(0, 0, 0, 0.25), inset 0px 3px 6px #712BCD",
@@ -54,9 +43,6 @@ export default {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
         poppins: ["Poppins", "sans-serif"],
-        nacelle: ["var(--font-nacelle)", "sans-serif"],
-        serifRegular: ["'DM Serif Text'", "serif"],
-        serifItalic: ["'DM Serif Text'", "serif"],
       },
       transitionProperty: {
         borderColor: "border-color",
