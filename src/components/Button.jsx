@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { motion } from "framer-motion";
 import { Marker } from "./Marker.jsx";
 
 const Button = ({
@@ -24,30 +25,29 @@ const Button = ({
           {children}
         </span>
       </span>
-
       <span className="glow-before glow-after" />
     </>
   );
-  return href ? (
-    <a
+
+  const MotionTag = href ? motion.a : motion.button; // Dynamicky vybereme tag
+
+  return (
+    <MotionTag
       className={clsx(
         "relative p-0.5 g5 rounded-2xl shadow-500 group",
         containerClassName
       )}
       href={href}
-    >
-      <Inner />
-    </a>
-  ) : (
-    <button
-      className={clsx(
-        "relative p-0.5 g5 rounded-2xl shadow-500 group",
-        containerClassName
-      )}
       onClick={onClick}
+      whileHover={{ scale: 1.2 }}
+      whileTap={{
+        scale: 0.8,
+        borderRadius: "100%",
+      }}
     >
       <Inner />
-    </button>
+    </MotionTag>
   );
 };
+
 export default Button;

@@ -4,15 +4,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        p1: "#C496FF",  // světle fialová
-        p2: "#8D36FF",  // středně fialová
-        p3: "#A35CFF",  // tmavě fialová
-        p4: "#EAEDFF", // světlejší odstín
-        p5: "#C4CBF5", // odstín fialové
+         p1: "#C496FF",
+        p2: "#8D36FF",
+        p3: "#A35CFF",
+        p4: "#EAEDFF",
+        p5: "#C4CBF5",
         gray: {
           400: '#9CA3AF', 
         },
-        s1: "#080D27",
+       s1: "#080D27",
         s2: "#0C1838",
         s3: "#712BCD",
         s4: "#A35CFF",
@@ -23,15 +23,25 @@ export default {
           100: "#05091D",
         },
       },
+      
       keyframes: {
         gradient: {
           '0%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
           '100%': { backgroundPosition: '0% 50%' },
         },
+        typewriter: {
+          from: { width: "0" },
+          to: { width: "100%" },
+        },
+        blinkCursor: {
+          "0%, 100%": { borderRightColor: "hsl(0, 0%, 80%)" },
+          "50%": { borderRightColor: "transparent" },
+        },
       },
       animation: {
         gradient: 'gradient 6s ease infinite',
+        typewriter: "typewriter 4s steps(44) 1s 1 normal both, blinkCursor 0.5s infinite",
       },
       boxShadow: {
         100: "0px 4px 4px rgba(0, 0, 0, 0.25), 0px 16px 24px rgba(0, 0, 0, 0.25), inset 0px 3px 6px #712BCD",

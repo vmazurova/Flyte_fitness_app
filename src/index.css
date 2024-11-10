@@ -4,6 +4,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blinkCursor {
+  from {
+    border-right-color: white;
+  }
+  to {
+    border-right-color: transparent;
+  }
+}
+
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid white;
+  animation: typewriter 4s steps(44) 1s 1 normal both, blinkCursor 0.5s infinite;
+}
+
+
 @layer base {
   html {
     @apply bg-s1;

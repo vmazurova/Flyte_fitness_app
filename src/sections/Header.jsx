@@ -1,19 +1,27 @@
 import { Link as LinkScroll } from "react-scroll";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
-import { Link } from "react-router-dom"; // Import Link pro interní odkazy
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Header = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
       setHasScrolled(window.scrollY > 32);
+
+      // Aktualizace `scrollProgress` na základě procenta posunu
+      const scrollY = window.scrollY;
+      const documentHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercentage = (scrollY / documentHeight) * 100;
+      setScrollProgress(scrollPercentage);
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -22,7 +30,7 @@ const Header = () => {
   const NavLink = ({ title, to }) => (
     <LinkScroll
       onClick={() => setIsOpen(false)}
-      to={to} // Nastavení "to" pro správné sekce
+      to={to}
       offset={-100}
       spy
       smooth
@@ -37,17 +45,25 @@ const Header = () => {
   return (
     <header
       className={clsx(
-        "fixed top-0 left-0 z-50 w-full py-10 transition-all duration-500 max-lg:py-4",
-        hasScrolled && "py-2 bg-black-100 backdrop-blur-[8px]"
+        "fixed top-0 left-0 z-50 w-full transition-all duration-500 max-lg:py-3",
+        hasScrolled ? "py-4 bg-black-100 backdrop-blur-[8px]" : "py-8"
       )}
     >
-      <div className="container flex h-14 items-center max-lg:px-5">
+      <div
+        className={clsx(
+          "container flex items-center max-lg:px-5",
+          hasScrolled ? "h-12" : "h-16"
+        )}
+      >
         <Link to="/" className="lg:hidden flex-1 cursor-pointer z-2">
-          <img
+          <motion.img
             src="/images/flyte_bile_pop.webp"
-            width={115}
-            height={55}
+            width={hasScrolled ? 85 : 115} // Dynamická změna velikosti loga
+            height={hasScrolled ? 45 : 55}
             alt="logo"
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
           />
         </Link>
 
@@ -65,7 +81,7 @@ const Header = () => {
                   <div className="dot" />
                   <NavLink title="Cena" to="pricing" />
                   <div className="dot" />
-                  <NavLink title="Kontakt" to="Kontakt" />
+                  <NavLink title="Kontakt" to="kontakt" />
                 </li>
 
                 <li className="nav-logo">
@@ -75,15 +91,16 @@ const Header = () => {
                     spy
                     smooth
                     duration={500}
-                    className={clsx(
-                      "max-lg:hidden transition-transform duration-500 cursor-pointer"
-                    )}
+                    className="max-lg:hidden transition-transform duration-500 cursor-pointer"
                   >
-                    <img
+                    <motion.img
                       src="/images/flyte_bile_pop.png"
-                      width={110}
-                      height={5}
+                      width={hasScrolled ? 85 : 110}
+                      height={hasScrolled ? 35 : 50}
                       alt="logo"
+                      initial={{ y: -50, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.3, duration: 1 }}
                     />
                   </LinkScroll>
                 </li>
@@ -93,27 +110,10 @@ const Header = () => {
                   <div className="dot" />
                   <NavLink title="Tréninky" to="trainingPlan" />
                   <div className="dot" />
-                  <NavLink title="Časté  dotazy" to="faq" />
+                  <NavLink title="Časté dotazy" to="faq" />
                 </li>
               </ul>
             </nav>
-
-            <div className="lg:hidden block absolute top-1/2 left-0 w-[960px] h-[380px] translate-x-[-290px] -translate-y-1/2 rotate-90">
-              <img
-                src="/images/bg-outlines.svg"
-                width={960}
-                height={380}
-                alt="outline"
-                className="relative z-2"
-              />
-              <img
-                src="/images/bg-outlines-fill.png"
-                width={960}
-                height={380}
-                alt="outline"
-                className="absolute inset-0 mix-blend-soft-light opacity-5"
-              />
-            </div>
           </div>
         </div>
 
@@ -128,6 +128,15 @@ const Header = () => {
           />
         </button>
       </div>
+
+      {/* Progresní čára */}
+      <motion.div
+        className="h-1 bg-white fixed top-[74px] left-0 z-40"
+        style={{ width: `${scrollProgress}%` }}
+        initial={{ width: 0 }}
+        animate={{ width: `${scrollProgress}%` }}
+        transition={{ ease: "linear" }}
+      />
     </header>
   );
 };

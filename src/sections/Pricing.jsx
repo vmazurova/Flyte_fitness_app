@@ -1,6 +1,8 @@
 import { Element } from "react-scroll";
 import { useState } from "react";
 import clsx from "clsx";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import CountUp from "react-countup";
 import { plans } from "../constants/index.jsx";
 import Button from "../components/Button.jsx";
@@ -8,14 +10,26 @@ import Button from "../components/Button.jsx";
 const Pricing = () => {
   const [monthly, setMonthly] = useState(false);
 
+  // Použití useInView pro sledování viditelnosti nadpisu
+  const { ref, inView } = useInView({
+    triggerOnce: true, // Spustí animaci pouze jednou
+    threshold: 0.1, // Spustí se, když je alespoň 10 % nadpisu v zobrazení
+  });
+
   return (
     <section>
       <Element name="pricing">
         <div className="container mb-20">
           <div className="max-w-960 pricing-head_before relative mx-auto border-l border-r border-s2 bg-s1/50 pb-40 pt-28 max-xl:max-w-4xl max-lg:border-none max-md:pb-32 max-md:pt-16">
-            <h3 className="h3 max-lg:h4 max-md:h5 z-3 relative mx-auto mb-14 max-w-lg text-center text-p4 max-md:mb-11 max-sm:max-w-sm">
+            <motion.h3
+              ref={ref} // Přidání ref pro sledování viditelnosti
+              className="h3 max-lg:h4 max-md:h5 z-3 relative mx-auto mb-14 max-w-lg text-center text-p4 max-md:mb-11 max-sm:max-w-sm"
+              initial={{ x: 100, opacity: 0 }} // Výchozí pozice (mimo obrazovku vpravo)
+              animate={inView ? { x: 0, opacity: 1 } : {}} // Spuštění animace pouze při zobrazení
+              transition={{ duration: 1.2, ease: "easeOut" }} // Nastavení délky animace
+            >
               Flexibilní ceny pro všechny
-            </h3>
+            </motion.h3>
 
             <div className="relative z-4 mx-auto flex w-[375px] rounded-3xl border-[3px] border-s4/25 bg-s1/50 p-2 backdrop-blur-[6px] max-md:w-[310px]">
               <button
