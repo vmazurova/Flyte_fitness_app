@@ -10,14 +10,27 @@ import Footer from "./sections/Footer.jsx";
 import SignUp from "./auth/SignUp.jsx";
 import Login from "./auth/Login.jsx";
 import MealPlan from "./sections/MealPlan.jsx";
+//import TrainingPlanLogin from "./pagesLogin/TrainingPlan.jsx";
+//import Settings from "./pagesLogin/Settings.jsx";
+//import Payments from "./pagesLogin/Payments.jsx";
+import MemberDetail from "./pagesLogin/MemberDetail.jsx";
+//import Courses from "./pagesLogin/Courses.jsx";
 
 const App = () => {
   return (
     <main className="overflow-hidden">
       <Header />
       <Switch>
+        {/* <Route path="/nastaveni" component={Settings} />
+        <Route path="/platby" component={Payments} />
+        <Route path="/jidelnicek" component={MealPlan} />
+        
+        <Route path="/kurzy" component={Courses} /> 
+         <Route path="/treninkovy-plan" component={TrainingPlanLogin} />*/}
         <Route path="/auth/registrace" component={SignUp} />
         <Route path="/auth/prihlaseni" component={Login} />
+        <Route path="/osobni-slozka" component={MemberDetail} />
+
         <Route path="/" exact>
           <Hero />
           <Features />
