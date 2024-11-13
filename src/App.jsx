@@ -15,7 +15,7 @@ import MealPlan from "./sections/MealPlan.jsx";
 //import Payments from "./pagesLogin/Payments.jsx";
 import MemberDetail from "./pagesLogin/MemberDetail.jsx";
 //import Courses from "./pagesLogin/Courses.jsx";
-
+import LogOut from "./pagesLogin/LogOut.jsx";
 const App = () => {
   return (
     <main className="overflow-hidden">
@@ -30,6 +30,7 @@ const App = () => {
         <Route path="/auth/registrace" component={SignUp} />
         <Route path="/auth/prihlaseni" component={Login} />
         <Route path="/osobni-slozka" component={MemberDetail} />
+        <Route path="/odhlaseni" component={LogOut} />
 
         <Route path="/" exact>
           <Hero />
@@ -40,6 +41,7 @@ const App = () => {
           <Faq />
           <Testimonials />
         </Route>
+        <toastContainer />
       </Switch>
       <Footer />
     </main>

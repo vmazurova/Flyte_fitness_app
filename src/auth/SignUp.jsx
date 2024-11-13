@@ -2,76 +2,99 @@ import React, { useState } from "react";
 import { Element } from "react-scroll";
 import Button from "../components/Button.jsx";
 import { Link } from "react-router-dom";
+import { FormGroup, Row } from "reactstrap";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({
-    krestnijmeno: "",
-    prijmeni: "",
+  const [user, setUser] = useState({
+    username: "", // Nastavení výchozí hodnoty jako prázdného řetězce
     email: "",
-    telefon: "",
-    heslo: "",
-    potvrzeniHesla: "",
-    termsAccepted: false,
+    phone: "", // Pole pro telefon
+    password: "",
   });
 
   const [errors, setErrors] = useState({
-    heslo: "",
-    potvrzeniHesla: "",
+    password: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+  const handleUserChange = ({ target }) => {
+    const { name, value, type, checked } = target;
+    setUser((currentUser) => ({
+      ...currentUser,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
 
-    if (name === "heslo" || name === "potvrzeniHesla") {
-      validatePassword(
-        formData.heslo,
-        name === "potvrzeniHesla" ? value : formData.potvrzeniHesla
-      );
+    if (name === "password") {
+      validatePassword(value);
     }
   };
 
-  const validatePassword = (heslo, potvrzeniHesla) => {
-    const hasNumber = /[0-9]/.test(heslo);
-    const hasUppercase = /[A-Z]/.test(heslo);
-    const passwordsMatch = heslo === potvrzeniHesla;
+  const validatePassword = (password) => {
+    const hasNumber = /[0-9]/.test(password);
+    const hasUppercase = /[A-Z]/.test(password);
 
-    let hesloError = "";
-    let potvrzeniHeslaError = "";
+    let passwordError = "";
 
     if (!hasNumber || !hasUppercase) {
-      hesloError =
+      passwordError =
         "Heslo musí obsahovat alespoň jedno číslo a jedno velké písmeno.";
     }
 
-    if (!passwordsMatch) {
-      potvrzeniHeslaError = "Hesla se neshodují.";
-    }
-
     setErrors({
-      heslo: hesloError,
-      potvrzeniHesla: potvrzeniHeslaError,
+      password: passwordError,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!errors.heslo && !errors.potvrzeniHesla && formData.termsAccepted) {
-      console.log("Formulář byl odeslán:", formData);
+    if (!errors.password) {
+      try {
+        const url = `http://localhost:1337/api/auth/local/register`;
+
+        // Objekt s daty pro registraci
+        const userData = {
+          username:
+            user.username || `${user.firstName} ${user.secondName}`.trim(),
+          email: user.email,
+          phone: user.phone, // Zahrnutí telefonu
+          password: user.password,
+        };
+
+        const res = await axios.post(url, userData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log("Formulář byl odeslán:", res.data);
+      } catch (error) {
+        console.error(
+          "Chyba serveru:",
+          error.response?.status,
+          error.response?.data || error.response?.statusText
+        );
+        toast.error(
+          `Chyba při odesílání formuláře: ${
+            error.response?.data?.error?.message || error.response?.statusText
+          }`,
+          {
+            hideProgressBar: true,
+          }
+        );
+      }
     } else {
-      console.log("Formulář nemůže být odeslán kvůli chybám.");
+      console.log("Formulář nebyl odeslán kvůli chybám.");
     }
   };
 
   return (
-    <Element
+    <Row
       name="signup"
       className="min-h-screen py-40 bg-black text-white flex items-center justify-center"
     >
+      <ToastContainer />
       <div className="w-10/12 lg:w-6/12 bg-slate-800 rounded-xl shadow-lg overflow-hidden p-8">
         <h2 className="text-4xl font-bold mb-6 text-center">Registrace</h2>
 
@@ -80,104 +103,78 @@ const SignUp = () => {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid grid-cols-2 gap-5">
+          <FormGroup>
             <input
               type="text"
-              name="krestnijmeno"
-              placeholder="Křestní jméno"
-              value={formData.krestnijmeno}
-              onChange={handleChange}
+              name="username"
+              placeholder="Uživatelské jméno"
+              value={user.username}
+              onChange={handleUserChange}
               className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
             />
+          </FormGroup>
+
+          <FormGroup>
             <input
-              type="text"
-              name="prijmeni"
-              placeholder="Příjmení"
-              value={formData.prijmeni}
-              onChange={handleChange}
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={user.email}
+              onChange={handleUserChange}
               className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
             />
-          </div>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
-          />
-          <input
-            type="tel"
-            name="telefon"
-            placeholder="Telefonní číslo"
-            value={formData.telefon}
-            onChange={handleChange}
-            className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
-          />
-          <input
-            type="password"
-            name="heslo"
-            placeholder="Heslo"
-            value={formData.heslo}
-            onChange={handleChange}
-            className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
-          />
-          {errors.heslo && (
-            <p className="text-red-500 text-sm">{errors.heslo}</p>
-          )}
-          <input
-            type="password"
-            name="potvrzeniHesla"
-            placeholder="Potvrzení hesla"
-            value={formData.potvrzeniHesla}
-            onChange={handleChange}
-            className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
-          />
-          {errors.potvrzeniHesla && (
-            <p className="text-red-500 text-sm">{errors.potvrzeniHesla}</p>
-          )}
-          <div className="flex items-center space-x-3">
+          </FormGroup>
+
+          <FormGroup>
             <input
-              type="checkbox"
-              name="termsAccepted"
-              checked={formData.termsAccepted}
-              onChange={handleChange}
-              className="border border-gray-600"
+              type="tel"
+              name="phone"
+              placeholder="Telefonní číslo"
+              value={user.phone}
+              onChange={handleUserChange}
+              className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
             />
-            <label className="text-gray-300">
-              Potvrzuji{" "}
-              <a href="#" className="text-purple-400 font-semibold">
-                Podmínky používání
-              </a>{" "}
-              &{" "}
-              <a href="#" className="text-purple-400 font-semibold">
-                GDPR
-              </a>
-            </label>
-          </div>
+          </FormGroup>
+
+          <FormGroup>
+            <input
+              type="password"
+              name="password"
+              placeholder="Heslo"
+              value={user.password}
+              onChange={handleUserChange}
+              className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+            />
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password}</p>
+            )}
+          </FormGroup>
+
           <button
             type="submit"
-            className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none"
+            className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none sm:px-6 sm:py-2 md:px-8 md:py-3"
           >
             Registrovat!
           </button>
+
           <div className="mt-8 text-center">
             <p>Nebo se přihlaš pomocí:</p>
-            <div className="flex justify-center gap-4 mt-4">
+            <div className="flex justify-center gap-4 mt-4 flex-wrap">
               <Button
                 icon="/images/logos/googleICON.png"
-                className="bg-red-500 hover:bg-red-600"
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 sm:px-6 sm:py-2 md:px-8 md:py-3 text-xs sm:text-sm md:text-base"
               >
                 Google
               </Button>
               <Button
                 icon="/images/logos/githubICON.png"
-                className="bg-gray-700 hover:bg-gray-800"
+                className="bg-gray-700 hover:bg-gray-800 px-4 py-2 sm:px-6 sm:py-2 md:px-8 md:py-3 text-xs sm:text-sm md:text-base"
               >
                 Githubu
               </Button>
             </div>
           </div>
+
           <div className="mt-8 text-center">
             <p>
               Máš účet?{" "}
@@ -191,7 +188,7 @@ const SignUp = () => {
           </div>
         </form>
       </div>
-    </Element>
+    </Row>
   );
 };
 

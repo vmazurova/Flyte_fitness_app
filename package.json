@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@material-tailwind/react": "^2.1.10",
+    "axios": "^1.7.7",
     "clsx": "^2.1.1",
     "framer-motion": "^6.5.1",
     "prettier": "^3.3.3",
@@ -20,7 +21,9 @@
     "react-intersection-observer": "^9.13.1",
     "react-router-dom": "^5.3.4",
     "react-scroll": "^1.9.0",
-    "react-slidedown": "^2.4.7"
+    "react-slidedown": "^2.4.7",
+    "react-toastify": "^8.2.0",
+    "reactstrap": "^9.2.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
