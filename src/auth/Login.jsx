@@ -1,37 +1,20 @@
 import React, { useState } from "react";
-import { Element } from "react-scroll";
-import { Link } from "react-router-dom";
-import CusotomButton from "../components/Button.jsx";
-import { Col, FormGroup, Input, Row } from "reactstrap";
+import { Row, FormGroup, Col, Input } from "reactstrap";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-{
-  /*
-   */
-}
+import CusotomButton from "../components/Button.jsx";
+import "react-toastify/dist/ReactToastify.css";
+
+const initialUser = {
+  email: "",
+  password: "",
+};
+
 const Login = () => {
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [errors, setErrors] = useState({
-    password: "",
-  });
-
-  const handleLogin = async () => {
-    const url = `http://localhost:1337/api/auth/local`;
-    try {
-      if (user.email && user.password) {
-        const res = await axios.post(url, user);
-        console.log({ res });
-      }
-    } catch (error) {
-      toast.error(error.message, {
-        hideProgressBar: true,
-      });
-    }
-  };
+  const [user, setUser] = useState(initialUser);
+  const [errors, setErrors] = useState({ password: "" });
+  const history = useHistory(); // Použití useHistory pro verzi 5.x
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
@@ -56,31 +39,47 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    validatePassword(formData.password);
+    try {
+      const url = `http://localhost:1337/api/auth/local`;
+      const userData = {
+        identifier: user.email, // Správné pole pro identifikátor
+        password: user.password,
+      };
 
-    if (!errors.password) {
-      console.log("Uživatel se přihlásil s údaji:", formData);
-    } else {
-      console.log("Chyba při přihlašování.");
+      const res = await axios.post(url, userData);
+      if (res.data.jwt) {
+        toast.success("Přihlášení proběhlo úspěšně!", {
+          hideProgressBar: true,
+        });
+        setUser(initialUser); // Vyprázdnění formuláře
+        history.push("/osobni-slozka"); // Přesměrování na jinou stránku
+      }
+    } catch (error) {
+      console.error("Chyba serveru:", error.response?.data);
+
+      toast.error(
+        error.response?.data?.error?.message || "Chyba při přihlašování.",
+        { hideProgressBar: true }
+      );
     }
   };
+
   return (
     <Row
       name="login"
       className="min-h-screen py-40 bg-black text-white flex items-center justify-center"
     >
+      <ToastContainer />
       <Col>
         <div className="w-10/14 lg:w-6/16 bg-slate-800 rounded-xl shadow-lg overflow-hidden p-8">
           <h2 className="text-4xl font-bold mb-6 text-center">Přihlášení</h2>
-
           <p className="mb-6 text-center">
             Přihlašte se do svého účtu a získejte přístup ke svému profilu.
           </p>
-
-          <div onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-5">
             <FormGroup>
               <Input
                 type="email"
@@ -107,44 +106,40 @@ const Login = () => {
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password}</p>
             )}
-
             <button
               type="submit"
               className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none"
-              onClick={handleLogin}
             >
               Přihlásit se
             </button>
-
-            <div className="mt-8 text-center">
-              <p>Nebo se přihlaš pomocí:</p>
-              <div className="flex justify-center gap-4 mt-4">
-                <CusotomButton
-                  icon="/images/logos/googleICON.png"
-                  className="bg-red-500 hover:bg-red-600"
-                >
-                  Google
-                </CusotomButton>
-                <CusotomButton
-                  icon="/images/logos/githubICON.png"
-                  className="bg-gray-700 hover:bg-gray-800"
-                >
-                  Githubu
-                </CusotomButton>
-              </div>
+          </form>
+          <div className="mt-8 text-center">
+            <p>Nebo se přihlaš pomocí:</p>
+            <div className="flex justify-center gap-4 mt-4">
+              <CusotomButton
+                icon="/images/logos/googleICON.png"
+                className="bg-red-500 hover:bg-red-600"
+              >
+                Google
+              </CusotomButton>
+              <CusotomButton
+                icon="/images/logos/githubICON.png"
+                className="bg-gray-700 hover:bg-gray-800"
+              >
+                Githubu
+              </CusotomButton>
             </div>
-
-            <div className="mt-8 text-center">
-              <p>
-                Nemáš účet?{" "}
-                <Link
-                  to="/auth/Registrace"
-                  className="text-purple-400 hover:text-purple-500 font-semibold"
-                >
-                  Registruj se tady
-                </Link>
-              </p>
-            </div>
+          </div>
+          <div className="mt-8 text-center">
+            <p>
+              Nemáš účet?{" "}
+              <Link
+                to="/auth/Registrace"
+                className="text-purple-400 hover:text-purple-500 font-semibold"
+              >
+                Registruj se tady
+              </Link>
+            </p>
           </div>
         </div>
       </Col>
