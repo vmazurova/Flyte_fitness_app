@@ -51,14 +51,14 @@ Aby byl projekt robustní a snadno spravovatelný, byly vybrány následující 
   - Navrhnout a vytvořit ERA diagram pro databázi, zahrnující entity jako Uživatelé, Kurzy, Rezervace, Platby, Tréninkové plány, a Jídelníčky.
 
 - [x] **Nastavení vývojového prostředí**
-  - [x]Nainstalovat a nastavit projekt v Node.js.
-  - [x]Přidat React.js a Tailwind CSS pro tvorbu uživatelského rozhraní.
-  - [x]Nastavit Strapi API pro backend a správu obsahu.
-  - [x]Implementovat autentifikaci uživatelů přes Strapi.
+  - [x] Nainstalovat a nastavit projekt v Node.js.
+  - [x] Přidat React.js a Tailwind CSS pro tvorbu uživatelského rozhraní.
+  - [x] Nastavit Strapi API pro backend a správu obsahu.
+  - [x] Implementovat autentifikaci uživatelů přes Strapi.
 
 - [ ] **Vývoj základních funkcí**
-  - [x]Vytvořit Landing Page s možností rezervace zkušební lekce.
-  - Implementovat registraci a přihlášení uživatelů přes Strapi.
+  - [x] Vytvořit Landing Page s možností rezervace zkušební lekce.
+  - [x] Implementovat registraci a přihlášení uživatelů přes Strapi.
   - Vytvořit základní strukturu Osobní karty s údaji o členovi.
   - Implementovat rezervační systém s kalendářem pro kurzy.
   - Připojit Stripe/PayPal pro platby a přidávání kreditu.
