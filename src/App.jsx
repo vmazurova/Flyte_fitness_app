@@ -16,6 +16,8 @@ import MealPlan from "./sections/MealPlan.jsx";
 import MemberDetail from "./pagesLogin/MemberDetail.jsx";
 //import Courses from "./pagesLogin/Courses.jsx";
 import LogOut from "./pagesLogin/LogOut.jsx";
+import ForgotPassword from "./auth/ForgotPassword.jsx";
+import CoursesList from "./pagesLogin/CoursesList.jsx";
 const App = () => {
   return (
     <main className="overflow-hidden">
@@ -31,6 +33,8 @@ const App = () => {
         <Route path="/auth/prihlaseni" component={Login} />
         <Route path="/osobni-slozka" component={MemberDetail} />
         <Route path="/odhlaseni" component={LogOut} />
+        <Route path="/zapomenute-heslo" component={ForgotPassword} />
+        <Route path="/vsechny-kurzy" component={CoursesList} />
 
         <Route path="/" exact>
           <Hero />

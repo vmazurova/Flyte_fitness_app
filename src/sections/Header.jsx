@@ -13,7 +13,6 @@ const Header = () => {
     const handleScroll = () => {
       setHasScrolled(window.scrollY > 32);
 
-      // Aktualizace `scrollProgress` na základě procenta posunu
       const scrollY = window.scrollY;
       const documentHeight =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -129,7 +128,6 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Progresní čára */}
       <motion.div
         className="h-1 bg-white fixed top-[74px] left-0 z-40"
         style={{ width: `${scrollProgress}%` }}

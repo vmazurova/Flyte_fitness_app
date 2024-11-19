@@ -220,7 +220,7 @@ type LoggingFunctionWithPosition = (
 
 export type ParseAst = (
 	input: string,
-	options?: { allowReturnOutsideFunction?: boolean }
+	options?: { allowReturnOutsideFunction?: boolean; jsx?: boolean }
 ) => ProgramNode;
 
 // declare AbortSignal here for environments without DOM lib or @types/node
@@ -231,7 +231,7 @@ declare global {
 
 export type ParseAstAsync = (
 	input: string,
-	options?: { allowReturnOutsideFunction?: boolean; signal?: AbortSignal }
+	options?: { allowReturnOutsideFunction?: boolean; jsx?: boolean; signal?: AbortSignal }
 ) => Promise<ProgramNode>;
 
 export interface PluginContext extends MinimalPluginContext {
@@ -512,7 +512,7 @@ export type PluginHooks = {
 
 export interface OutputPlugin
 	extends Partial<{ [K in OutputPluginHooks]: PluginHooks[K] }>,
-		Partial<{ [K in AddonHooks]: ObjectHook<AddonHook> }> {
+		Partial<Record<AddonHooks, ObjectHook<AddonHook>>> {
 	cacheKey?: string;
 	name: string;
 	version?: string;
@@ -522,6 +522,38 @@ export interface Plugin<A = any> extends OutputPlugin, Partial<PluginHooks> {
 	// for inter-plugin communication
 	api?: A;
 }
+
+export type JsxPreset = 'react' | 'react-jsx' | 'preserve' | 'preserve-react';
+
+export type NormalizedJsxOptions =
+	| NormalizedJsxPreserveOptions
+	| NormalizedJsxClassicOptions
+	| NormalizedJsxAutomaticOptions;
+
+interface NormalizedJsxPreserveOptions {
+	factory: string | null;
+	fragment: string | null;
+	importSource: string | null;
+	mode: 'preserve';
+}
+
+interface NormalizedJsxClassicOptions {
+	factory: string;
+	fragment: string;
+	importSource: string | null;
+	mode: 'classic';
+}
+
+interface NormalizedJsxAutomaticOptions {
+	factory: string;
+	importSource: string | null;
+	jsxImportSource: string;
+	mode: 'automatic';
+}
+
+export type JsxOptions = Partial<NormalizedJsxOptions> & {
+	preset?: JsxPreset;
+};
 
 export type TreeshakingPreset = 'smallest' | 'safest' | 'recommended';
 
@@ -545,6 +577,7 @@ interface ManualChunkMeta {
 	getModuleIds: () => IterableIterator<string>;
 	getModuleInfo: GetModuleInfo;
 }
+
 export type GetManualChunk = (id: string, meta: ManualChunkMeta) => string | NullValue;
 
 export type ExternalOption =
@@ -592,6 +625,7 @@ export interface InputOptions {
 	experimentalLogSideEffects?: boolean;
 	external?: ExternalOption;
 	input?: InputOption;
+	jsx?: false | JsxPreset | JsxOptions;
 	logLevel?: LogLevelOption;
 	makeAbsoluteExternalsRelative?: boolean | 'ifRelativeSource';
 	maxParallelFileOps?: number;
@@ -619,6 +653,7 @@ export interface NormalizedInputOptions {
 	experimentalLogSideEffects: boolean;
 	external: IsExternal;
 	input: string[] | Record<string, string>;
+	jsx: false | NormalizedJsxOptions;
 	logLevel: LogLevelOption;
 	makeAbsoluteExternalsRelative: boolean | 'ifRelativeSource';
 	maxParallelFileOps: number;
@@ -747,6 +782,7 @@ export interface OutputOptions {
 	sourcemapFileNames?: string | ((chunkInfo: PreRenderedChunk) => string);
 	sourcemapIgnoreList?: boolean | SourcemapIgnoreListOption;
 	sourcemapPathTransform?: SourcemapPathTransformOption;
+	sourcemapDebugIds?: boolean;
 	strict?: boolean;
 	systemNullSetters?: boolean;
 	validate?: boolean;
@@ -801,6 +837,7 @@ export interface NormalizedOutputOptions {
 	sourcemapFileNames: string | ((chunkInfo: PreRenderedChunk) => string) | undefined;
 	sourcemapIgnoreList: SourcemapIgnoreListOption;
 	sourcemapPathTransform: SourcemapPathTransformOption | undefined;
+	sourcemapDebugIds: boolean;
 	strict: boolean;
 	systemNullSetters: boolean;
 	validate: boolean;
@@ -815,8 +852,12 @@ export type WarningHandlerWithDefault = (
 export type SerializedTimings = Record<string, [number, number, number]>;
 
 export interface PreRenderedAsset {
+	/** @deprecated Use "names" instead. */
 	name: string | undefined;
+	names: string[];
+	/** @deprecated Use "originalFileNames" instead. */
 	originalFileName: string | null;
+	originalFileNames: string[];
 	source: string | Uint8Array;
 	type: 'asset';
 }
@@ -877,6 +918,7 @@ export interface RollupBuild {
 	cache: RollupCache | undefined;
 	close: () => Promise<void>;
 	closed: boolean;
+	[Symbol.asyncDispose](): Promise<void>;
 	generate: (outputOptions: OutputOptions) => Promise<RollupOutput>;
 	getTimings?: () => SerializedTimings;
 	watchFiles: string[];
