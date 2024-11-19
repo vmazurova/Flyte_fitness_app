@@ -1,4 +1,4 @@
-import { Route, Switch } from "react-router-dom"; // Importujte Route a Switch
+import { Route, Switch, useLocation } from "react-router-dom"; // Přidán useLocation
 import Header from "./sections/Header.jsx";
 import Hero from "./sections/Hero.jsx";
 import Features from "./sections/Features.jsx";
@@ -10,25 +10,22 @@ import Footer from "./sections/Footer.jsx";
 import SignUp from "./auth/SignUp.jsx";
 import Login from "./auth/Login.jsx";
 import MealPlan from "./sections/MealPlan.jsx";
-//import TrainingPlanLogin from "./pagesLogin/TrainingPlan.jsx";
-//import Settings from "./pagesLogin/Settings.jsx";
-//import Payments from "./pagesLogin/Payments.jsx";
 import MemberDetail from "./pagesLogin/MemberDetail.jsx";
-//import Courses from "./pagesLogin/Courses.jsx";
 import LogOut from "./pagesLogin/LogOut.jsx";
 import ForgotPassword from "./auth/ForgotPassword.jsx";
 import CoursesList from "./pagesLogin/CoursesList.jsx";
+
 const App = () => {
+  const location = useLocation(); // Získání aktuální cesty
+
+  // Cesty, na kterých nechceme zobrazovat Header
+  const hideHeaderPaths = ["/osobni-slozka", "/vsechny-kurzy"];
+  const showHeader = !hideHeaderPaths.includes(location.pathname);
+
   return (
     <main className="overflow-hidden">
-      <Header />
+      {showHeader && <Header />} {/* Podmíněné zobrazení Headeru */}
       <Switch>
-        {/* <Route path="/nastaveni" component={Settings} />
-        <Route path="/platby" component={Payments} />
-        <Route path="/jidelnicek" component={MealPlan} />
-        
-        <Route path="/kurzy" component={Courses} /> 
-         <Route path="/treninkovy-plan" component={TrainingPlanLogin} />*/}
         <Route path="/auth/registrace" component={SignUp} />
         <Route path="/auth/prihlaseni" component={Login} />
         <Route path="/osobni-slozka" component={MemberDetail} />

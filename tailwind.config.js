@@ -9,6 +9,7 @@ export default {
         p3: "#A35CFF",
         p4: "#EAEDFF",
         p5: "#C4CBF5",
+        p6: "#7B17DF",
         gray: {
           400: '#9CA3AF', 
         },

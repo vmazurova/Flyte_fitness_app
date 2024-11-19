@@ -10,10 +10,9 @@ import Button from "../components/Button.jsx";
 const Pricing = () => {
   const [monthly, setMonthly] = useState(false);
 
-  // Použití useInView pro sledování viditelnosti nadpisu
   const { ref, inView } = useInView({
-    triggerOnce: true, // Spustí animaci pouze jednou
-    threshold: 0.1, // Spustí se, když je alespoň 10 % nadpisu v zobrazení
+    triggerOnce: true,
+    threshold: 0.1,
   });
 
   return (
@@ -22,11 +21,11 @@ const Pricing = () => {
         <div className="container mb-20">
           <div className="max-w-960 pricing-head_before relative mx-auto border-l border-r border-s2 bg-s1/50 pb-40 pt-28 max-xl:max-w-4xl max-lg:border-none max-md:pb-32 max-md:pt-16">
             <motion.h3
-              ref={ref} // Přidání ref pro sledování viditelnosti
+              ref={ref}
               className="h3 max-lg:h4 max-md:h5 z-3 relative mx-auto mb-14 max-w-lg text-center text-p4 max-md:mb-11 max-sm:max-w-sm"
-              initial={{ x: 100, opacity: 0 }} // Výchozí pozice (mimo obrazovku vpravo)
-              animate={inView ? { x: 0, opacity: 1 } : {}} // Spuštění animace pouze při zobrazení
-              transition={{ duration: 1.2, ease: "easeOut" }} // Nastavení délky animace
+              initial={{ x: 100, opacity: 0 }}
+              animate={inView ? { x: 0, opacity: 1 } : {}}
+              transition={{ duration: 1.2, ease: "easeOut" }}
             >
               Flexibilní ceny pro všechny
             </motion.h3>
