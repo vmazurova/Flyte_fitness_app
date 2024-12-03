@@ -81,4 +81,4 @@ Aby byl projekt robustní a snadno spravovatelný, byly vybrány následující 
 - [ ] **Dokumentace**
   - Vytvořit podrobnou dokumentaci ke všem částem aplikace.
   - Seznam použité technologie a postupy pro uživatelské role (admin, trenér, člen).
->>>>>>> origin/main
+

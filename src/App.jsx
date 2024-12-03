@@ -14,7 +14,7 @@ import MemberDetail from "./pagesLogin/MemberDetail.jsx";
 import LogOut from "./pagesLogin/LogOut.jsx";
 import ForgotPassword from "./auth/ForgotPassword.jsx";
 import CoursesList from "./pagesLogin/CoursesList.jsx";
-
+import CoursesDetail from "./pagesLogin/CourseDetail.jsx";
 const App = () => {
   const location = useLocation();
 
@@ -37,7 +37,7 @@ const App = () => {
         <Route path="/odhlaseni" component={LogOut} />
         <Route path="/zapomenute-heslo" component={ForgotPassword} />
         <Route path="/vsechny-kurzy" component={CoursesList} />
-
+        <Route path="/detail/:id" component={CoursesDetail} />
         <Route path="/" exact>
           <Hero />
           <Features />

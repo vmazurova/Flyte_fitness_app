@@ -12,7 +12,7 @@ const initialUser = {
 const Login = () => {
   const [user, setUser] = useState(initialUser);
   const [errors, setErrors] = useState({ password: "" });
-  const history = useHistory(); // Použití useHistory pro verzi 5.x
+  const history = useHistory();
 
   const handleChange = ({ target }) => {
     const { name, value } = target;

@@ -91,7 +91,7 @@ export default function CourseList() {
                         Datum: {formattedDate}
                       </p>
                       <div className="text-center">
-                        <Link to={`/detail/${course.id}`}>
+                        <Link to={`/detail/${course.documentId}`}>
                           <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
