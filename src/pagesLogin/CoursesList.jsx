@@ -10,8 +10,14 @@ export default function CourseList() {
     data = { data: [] },
   } = useFetch("http://localhost:1337/api/courses?populate=*");
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (loading)
+    return <p className="text-white text-center mt-20 text-xl">Načítání...</p>;
+  if (error)
+    return (
+      <p className="text-red-500 text-center mt-20 text-xl">
+        Chyba: {error.message}
+      </p>
+    );
 
   const courses = data?.data.filter((course) => {
     const courseDate = new Date(course.date);
@@ -19,76 +25,92 @@ export default function CourseList() {
   });
 
   return (
-    <div className="flex">
+    <div className="h-screen w-screen bg-cover bg-fixed bg-center flex flex-col lg:flex-row">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-800 text-white">
-        <Sidebar />
-      </div>
+      <Sidebar />
 
-      {/* Content Section */}
-      <section className="flex-1 py-12 bg-gray-900">
-        <motion.h2
-          className="h2 mt-10 max-lg:h4 max-md:h5 z-3 relative mx-auto mb-14 max-w-lg text-center text-white max-md:mb-11 max-sm:max-w-sm"
+      {/* Main Content */}
+      <section className="flex-1 overflow-y-auto lg:ml-64 py-12 px-6">
+        {/* Title Section */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          Otevřené kurzy
-        </motion.h2>
-        <div className="container mx-auto px-4 sm:px-6 mt-20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {courses.length > 0 ? (
-              courses.map((course, index) => {
-                const imageUrl = course.image?.[0]?.formats?.medium?.url
-                  ? `http://localhost:1337${course.image[0].formats.medium.url}`
-                  : "https://via.placeholder.com/400x200";
+          <h1 className="text-3xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-500 drop-shadow-md">
+            Otevřené kurzy
+          </h1>
+          <p className="text-base lg:text-lg text-gray-300 mt-4">
+            Vyberte si z naší nabídky aktuálních kurzů a začněte ještě dnes.
+          </p>
+        </motion.div>
 
-                const formattedDate = new Date(course.date).toLocaleString(
-                  "cs-CZ",
-                  {
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  }
-                );
+        {/* Course Grid */}
+        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.length > 0 ? (
+            courses.map((course, index) => {
+              const imageUrl = course.image?.[0]?.formats?.medium?.url
+                ? `http://localhost:1337${course.image[0].formats.medium.url}`
+                : "https://via.placeholder.com/400x200";
 
-                return (
-                  <motion.div
-                    key={course.id}
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.2, duration: 0.6 }}
-                    className="group relative h-full overflow-hidden rounded-2xl bg-gradient-to-r from-p3 to-p2 shadow-lg"
-                  >
-                    <div className="relative z-10 h-full overflow-hidden rounded-[inherit] bg-s1/50">
-                      <img
-                        className="inline-flex opacity-80 w-full h-56 object-cover"
-                        src={imageUrl}
-                        alt={course.title}
-                      />
-                      <div className="p-6 z-20">
-                        <h3 className="text-lg font-semibold text-white truncate mb-3">
-                          {course.title}
-                        </h3>
-                        <p className="text-gray-400 text-sm line-clamp-3">
-                          {course.description}
-                        </p>
-                        <p className="text-gray-300 text-xs mt-2">
-                          {formattedDate}
-                        </p>
-                        <div className="mt-4 text-center">
-                          <Link to={`/detail/${course.id}`}>
-                            <button className="px-6 py-2 bg-p3 text-white rounded-full hover:bg-p2 transition">
-                              Přihlásit se
-                            </button>
-                          </Link>
-                        </div>
+              const formattedDate = new Date(course.date).toLocaleString(
+                "cs-CZ",
+                {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                }
+              );
+
+              return (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.2, duration: 0.6 }}
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.4)",
+                  }}
+                  className="group relative h-full overflow-hidden rounded-xl shadow-lg bg-gradient-to-br from-gray-900 via-gray-800 to-black transition-transform duration-300"
+                >
+                  <div className="relative z-10 h-full overflow-hidden rounded-[inherit]">
+                    <img
+                      className="w-full h-40 lg:h-56 object-cover rounded-t-xl group-hover:opacity-100 transition-opacity duration-300"
+                      src={imageUrl}
+                      alt={course.title}
+                    />
+                    <div className="p-4 lg:p-6 z-20">
+                      <h3 className="text-lg lg:text-2xl font-semibold text-white truncate mb-2 lg:mb-4">
+                        {course.title}
+                      </h3>
+                      <p className="text-gray-400 text-sm lg:text-base mb-2 lg:mb-4 line-clamp-3">
+                        {course.description}
+                      </p>
+                      <p className="text-gray-500 text-xs lg:text-sm mb-2">
+                        Datum: {formattedDate}
+                      </p>
+                      <div className="text-center">
+                        <Link to={`/detail/${course.id}`}>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="px-4 lg:px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow"
+                          >
+                            Přihlásit se
+                          </motion.button>
+                        </Link>
                       </div>
                     </div>
-                  </motion.div>
-                );
-              })
-            ) : (
-              <p className="text-center text-white">Žádné kurzy nenalezeny.</p>
-            )}
-          </div>
+                  </div>
+                </motion.div>
+              );
+            })
+          ) : (
+            <p className="text-center text-white text-xl">
+              Žádné kurzy nenalezeny.
+            </p>
+          )}
         </div>
       </section>
     </div>

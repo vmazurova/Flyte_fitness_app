@@ -1,32 +1,24 @@
 import React, { useState } from "react";
-import { Row, FormGroup } from "reactstrap";
-import Button from "../components/Button.jsx";
+import { ToastContainer, toast } from "react-toastify";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const initialUser = { email: "", password: "", username: "" };
+
 const SignUp = () => {
   const [user, setUser] = useState(initialUser);
   const Navigate = useHistory();
-  const [errors, setErrors] = useState({
-    username: "",
-    password: "",
-  });
+  const [errors, setErrors] = useState({ username: "", password: "" });
 
   const handleUserChange = ({ target }) => {
     const { name, value } = target;
-
-    setUser((currentUser) => ({
-      ...currentUser,
-      [name]: value,
-    }));
+    setUser((currentUser) => ({ ...currentUser, [name]: value }));
 
     if (name === "username") {
       setErrors((prevErrors) => ({ ...prevErrors, username: "" }));
     }
-
     if (name === "password") {
       validatePassword(value);
     }
@@ -35,47 +27,33 @@ const SignUp = () => {
   const validatePassword = (password) => {
     const hasNumber = /[0-9]/.test(password);
     const hasUppercase = /[A-Z]/.test(password);
-
     let passwordError = "";
 
     if (!hasNumber || !hasUppercase) {
       passwordError =
         "Heslo musí obsahovat alespoň jedno číslo a jedno velké písmeno.";
     }
-
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      password: passwordError,
-    }));
+    setErrors((prevErrors) => ({ ...prevErrors, password: passwordError }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!errors.password && !errors.username) {
       try {
         const url = `http://localhost:1337/api/auth/local/register`;
-
         const userData = {
           username: user.username.trim(),
           email: user.email,
           password: user.password,
         };
 
-        console.log("Data k odeslání:", userData);
-
         const res = await axios.post(url, userData);
         if (res) {
           setUser(initialUser);
           Navigate.push("/auth/prihlaseni");
         }
-        console.log("Formulář byl odeslán:", res.data);
-        toast.success("Registrace byla úspěšná!", {
-          hideProgressBar: true,
-        });
+        toast.success("Registrace byla úspěšná!");
       } catch (error) {
-        console.error("Chyba serveru:", error.response?.data);
-
         if (
           error.response?.data?.error?.message ===
           "Email or Username are already taken"
@@ -85,108 +63,112 @@ const SignUp = () => {
             username: "Zadej jiné jméno nebo email, už je zabrané.",
           }));
         } else {
-          toast.error(`Chyba při odesílání formuláře:`, {
-            hideProgressBar: true,
-          });
+          toast.error("Chyba při odesílání formuláře.");
         }
       }
     } else {
-      console.log("Formulář nebyl odeslán kvůli chybám.");
+      console.log("Formulář obsahuje chyby.");
     }
   };
 
   return (
-    <Row
-      name="signup"
-      className="min-h-screen py-40 bg-black text-white flex items-center justify-center"
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
+      style={{
+        backgroundImage: "url('/images/gradient_puple.webp')",
+      }}
     >
+      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
       <ToastContainer />
-      <div className="w-10/12 lg:w-6/12 bg-slate-800 rounded-xl shadow-lg overflow-hidden p-8">
-        <h2 className="text-4xl font-bold mb-6 text-center">Registrace</h2>
+      <div className="relative w-full max-w-md bg-[#1A1A2E] text-white rounded-xl shadow-2xl p-6">
+        <h2 className="text-center text-3xl font-bold mb-6">
+          Registruj se pomocí:
+        </h2>
 
-        <p className="mb-6 text-center">
-          Vytvoř si účet a podívej se, co všechno Flyte umí.
-        </p>
+        <div className="flex justify-center space-x-4 mb-6">
+          <button className="w-12 h-12 rounded-full flex items-center justify-center border border-gray-500 hover:bg-gray-700">
+            <i className="fa-brands fa-github"></i>
+          </button>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <FormGroup>
+          <button className="w-12 h-12 rounded-full flex items-center justify-center border border-gray-500 hover:bg-gray-700">
+            <i className="fab fa-google text-white"></i>
+          </button>
+        </div>
+
+        <p className="text-center text-gray-400 mb-4">nebo zadej:</p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Uživatelské jméno
+            </label>
             <input
               type="text"
               name="username"
               placeholder="Uživatelské jméno"
               value={user.username}
               onChange={handleUserChange}
-              className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+              className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
             />
             {errors.username && (
               <p className="text-red-500 text-sm">{errors.username}</p>
             )}
-          </FormGroup>
+          </div>
 
-          <FormGroup>
+          <div>
+            <label className="block text-sm font-medium mb-2">Email</label>
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="Váš email"
               value={user.email}
               onChange={handleUserChange}
-              className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+              className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
             />
-          </FormGroup>
+          </div>
 
-          <FormGroup>
+          <div>
+            <label className="block text-sm font-medium mb-2">Heslo</label>
             <input
               type="password"
               name="password"
-              placeholder="Heslo"
+              placeholder="Vaše heslo"
               value={user.password}
               onChange={handleUserChange}
-              className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
+              className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
             />
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password}</p>
             )}
-          </FormGroup>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              className="w-5 h-5 text-purple-500 bg-transparent border-gray-500 rounded focus:outline-none"
+            />
+            <label className="text-gray-400 text-sm">Zapamatovat si mě</label>
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none sm:px-6 sm:py-2 md:px-8 md:py-3"
+            className="w-full bg-purple-600 py-3 rounded-lg text-white font-bold hover:bg-purple-700 transition"
           >
             Registrovat!
           </button>
-
-          <div className="mt-8 text-center">
-            <p>Nebo se přihlaš pomocí:</p>
-            <div className="flex justify-center gap-4 mt-4 flex-wrap">
-              <Button
-                icon="/images/logos/googleICON.png"
-                className="bg-red-500 hover:bg-red-600 px-4 py-2 sm:px-6 sm:py-2 md:px-8 md:py-3 text-xs sm:text-sm md:text-base"
-              >
-                Google
-              </Button>
-              <Button
-                icon="/images/logos/githubICON.png"
-                className="bg-gray-700 hover:bg-gray-800 px-4 py-2 sm:px-6 sm:py-2 md:px-8 md:py-3 text-xs sm:text-sm md:text-base"
-              >
-                Githubu
-              </Button>
-            </div>
-          </div>
-
-          <div className="mt-8 text-center">
-            <p>
-              Máš účet?{" "}
-              <Link
-                to="/auth/Prihlaseni"
-                className="text-purple-400 hover:text-purple-500 font-semibold"
-              >
-                Přihlaš se tady
-              </Link>
-            </p>
-          </div>
         </form>
+
+        <p className="text-center mt-6 text-gray-400">
+          Máte účet?{" "}
+          <Link
+            to="/auth/prihlaseni"
+            className="text-purple-400 hover:text-purple-500 font-semibold"
+          >
+            Přihlaste se zde
+          </Link>
+        </p>
       </div>
-    </Row>
+    </div>
   );
 };
 

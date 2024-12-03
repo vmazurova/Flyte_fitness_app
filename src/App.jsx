@@ -1,4 +1,4 @@
-import { Route, Switch, useLocation } from "react-router-dom"; // Přidán useLocation
+import { Route, Switch, useLocation } from "react-router-dom";
 import Header from "./sections/Header.jsx";
 import Hero from "./sections/Hero.jsx";
 import Features from "./sections/Features.jsx";
@@ -16,15 +16,20 @@ import ForgotPassword from "./auth/ForgotPassword.jsx";
 import CoursesList from "./pagesLogin/CoursesList.jsx";
 
 const App = () => {
-  const location = useLocation(); // Získání aktuální cesty
+  const location = useLocation();
 
-  // Cesty, na kterých nechceme zobrazovat Header
-  const hideHeaderPaths = ["/osobni-slozka", "/vsechny-kurzy"];
+  const hideHeaderPaths = [
+    "/osobni-slozka",
+    "/vsechny-kurzy",
+    "/auth/Registrace",
+    "/auth/registrace",
+    "/auth/prihlaseni",
+  ];
   const showHeader = !hideHeaderPaths.includes(location.pathname);
 
   return (
     <main className="overflow-hidden">
-      {showHeader && <Header />} {/* Podmíněné zobrazení Headeru */}
+      {showHeader && <Header />}
       <Switch>
         <Route path="/auth/registrace" component={SignUp} />
         <Route path="/auth/prihlaseni" component={Login} />

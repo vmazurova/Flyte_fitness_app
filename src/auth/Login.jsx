@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Row, FormGroup, Col, Input } from "reactstrap";
+import { ToastContainer, toast } from "react-toastify";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import CusotomButton from "../components/Button.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 const initialUser = {
@@ -68,82 +66,84 @@ const Login = () => {
   };
 
   return (
-    <Row
-      name="login"
-      className="min-h-screen py-40 bg-black text-white flex items-center justify-center"
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
+      style={{
+        backgroundImage: "url('/images/gradient_puple.webp')", // Cesta k obrázku pozadí
+      }}
     >
+      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
       <ToastContainer />
-      <Col>
-        <div className="w-10/14 lg:w-6/16 bg-slate-800 rounded-xl shadow-lg overflow-hidden p-8">
-          <h2 className="text-4xl font-bold mb-6 text-center">Přihlášení</h2>
-          <p className="mb-6 text-center">
-            Přihlašte se do svého účtu a získejte přístup ke svému profilu.
-          </p>
-          <form onSubmit={handleLogin} className="space-y-5">
-            <FormGroup>
-              <Input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={user.email}
-                onChange={handleChange}
-                className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
-              />
-            </FormGroup>
-            <FormGroup>
-              <Input
-                type="password"
-                name="password"
-                placeholder="Heslo"
-                value={user.password}
-                onChange={(e) => {
-                  handleChange(e);
-                  validatePassword(e.target.value);
-                }}
-                className="border border-gray-600 py-2 px-3 bg-white text-black rounded-lg focus:border-purple-500 focus:outline-none w-full"
-              />
-            </FormGroup>
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password}</p>
-            )}
-            <button
-              type="submit"
-              className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none"
-            >
-              Přihlásit se
-            </button>
-          </form>
-          <div className="mt-8 text-center">
-            <p>Nebo se přihlaš pomocí:</p>
-            <div className="flex justify-center gap-4 mt-4">
-              <CusotomButton
-                icon="/images/logos/googleICON.png"
-                className="bg-red-500 hover:bg-red-600"
-              >
-                Google
-              </CusotomButton>
-              <CusotomButton
-                icon="/images/logos/githubICON.png"
-                className="bg-gray-700 hover:bg-gray-800"
-              >
-                Githubu
-              </CusotomButton>
-            </div>
+      <div className="relative w-full max-w-md bg-[#1A1A2E] text-white rounded-xl shadow-2xl p-6">
+        <h2 className="text-center text-3xl font-bold mb-6">Přihlášení</h2>
+
+        <p className="mb-6 text-center">
+          Přihlašte se do svého účtu a získejte přístup ke svému profilu.
+        </p>
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={user.email}
+              onChange={handleChange}
+              className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+            />
           </div>
-          <div className="mt-8 text-center">
-            <p>
-              Nemáš účet?{" "}
-              <Link
-                to="/auth/Registrace"
-                className="text-purple-400 hover:text-purple-500 font-semibold"
-              >
-                Registruj se tady
-              </Link>
-            </p>
+          <div>
+            <label className="block text-sm font-medium mb-2">Heslo</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Heslo"
+              value={user.password}
+              onChange={(e) => {
+                handleChange(e);
+                validatePassword(e.target.value);
+              }}
+              className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+            />
+          </div>
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
+
+          <button
+            type="submit"
+            className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none transition"
+          >
+            Přihlásit se
+          </button>
+        </form>
+
+        <div className="mt-8 text-center">
+          <p>Nebo se přihlaš pomocí:</p>
+          <div className="flex justify-center gap-4 mt-4">
+            <button className="w-12 h-12 rounded-full flex items-center justify-center border border-gray-500 hover:bg-gray-700">
+              <i className="fab fa-google text-white"></i>
+            </button>
+            <button className="w-12 h-12 rounded-full flex items-center justify-center border border-gray-500 hover:bg-gray-700">
+              <i className="fab fa-github text-white"></i>
+            </button>
           </div>
         </div>
-      </Col>
-    </Row>
+
+        <div className="mt-8 text-center">
+          <p>
+            Nemáš účet?{" "}
+            <Link
+              to="/auth/Registrace"
+              className="text-purple-400 hover:text-purple-500 font-semibold"
+            >
+              Registruj se tady
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 
