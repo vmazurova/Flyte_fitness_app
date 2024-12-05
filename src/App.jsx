@@ -15,17 +15,27 @@ import LogOut from "./pagesLogin/LogOut.jsx";
 import ForgotPassword from "./auth/ForgotPassword.jsx";
 import CoursesList from "./pagesLogin/CoursesList.jsx";
 import CoursesDetail from "./pagesLogin/CourseDetail.jsx";
+
 const App = () => {
   const location = useLocation();
 
+  // Vytvoření regulárních výrazů pro dynamické cesty
   const hideHeaderPaths = [
     "/osobni-slozka",
     "/vsechny-kurzy",
-    "/auth/Registrace",
     "/auth/registrace",
     "/auth/prihlaseni",
+    "/zapomenute-heslo",
   ];
-  const showHeader = !hideHeaderPaths.includes(location.pathname);
+
+  // Přidání vzoru pro dynamické cesty
+  const hideHeaderPatterns = [
+    /^\/detail\/[a-zA-Z0-9]+$/, // Dynamická cesta pro detail kurzu
+  ];
+
+  const showHeader =
+    !hideHeaderPaths.includes(location.pathname) &&
+    !hideHeaderPatterns.some((pattern) => pattern.test(location.pathname));
 
   return (
     <main className="overflow-hidden">
@@ -47,7 +57,6 @@ const App = () => {
           <Faq />
           <Testimonials />
         </Route>
-        <toastContainer />
       </Switch>
       <Footer />
     </main>

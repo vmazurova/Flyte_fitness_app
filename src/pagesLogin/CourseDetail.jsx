@@ -1,5 +1,6 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import useFetch from "../hooks/useFetch";
 
 const CourseDetail = () => {
@@ -14,13 +15,17 @@ const CourseDetail = () => {
   );
 
   if (loading)
-    return <p className="text-white text-center mt-20 text-xl">Načítání...</p>;
+    return (
+      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+        <p className="text-white text-2xl animate-pulse">Načítání...</p>
+      </div>
+    );
 
   if (error || !data?.data?.length) {
     return (
-      <p className="text-red-500 text-center mt-20 text-xl">
-        Chyba: Kurz nenalezen.
-      </p>
+      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+        <p className="text-red-500 text-xl">Chyba: Kurz nenalezen.</p>
+      </div>
     );
   }
 
@@ -30,89 +35,118 @@ const CourseDetail = () => {
     : "https://via.placeholder.com/400x200";
 
   return (
-    <div className="min-h-screen w-screen bg-s1 text-white flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-200">
       {/* Header */}
-      <header className="py-6 shadow-md bg-gradient-to-r from-p3 via-p2 to-p6">
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <h1 className="text-3xl font-extrabold mt-20">Detaily kurzu</h1>
-          <Link
-            to="/vsechny-kurzy"
-            className="px-6 mt-20 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-lg hover:scale-105 transition-transform"
+      <header className="py-6 shadow-md bg-gradient-to-r from-purple-500 to-indigo-500">
+        <div className="container mt-10 mx-auto px-6 flex justify-between items-center">
+          <motion.h1
+            className="text-3xl font-extrabold text-white tracking-widest"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            Zpět na seznam kurzů
-          </Link>
+            Detaily kurzu
+          </motion.h1>
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <Link
+              to="/vsechny-kurzy"
+              className="px-4 py-2 bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-full shadow-md hover:shadow-xl hover:scale-105 transition-transform"
+            >
+              Zpět na seznam kurzů
+            </Link>
+          </motion.div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto flex flex-col md:flex-row gap-8 py-8 px-6">
-        {/* Levý panel */}
-        <aside className="w-full md:w-1/4 bg-s2 rounded-xl shadow-lg p-4">
-          <h2 className="text-xl font-bold mb-4 text-p4">Další lekce</h2>
-          <div className="space-y-4">
-            {allCourses?.data.map((otherCourse) => (
-              <Link
-                to={`/detail/${otherCourse.documentId}`}
-                key={otherCourse.id}
-                className="flex items-center gap-4 p-2 bg-gradient-to-r from-p5 to-p2 rounded-lg hover:scale-105 transition-transform"
-              >
-                <img
-                  src={
-                    otherCourse.image?.[0]?.formats?.thumbnail?.url
-                      ? `http://localhost:1337${otherCourse.image[0].formats.thumbnail.url}`
-                      : "https://via.placeholder.com/60x60"
-                  }
-                  alt={otherCourse.title}
-                  className="w-12 h-12 object-cover rounded-lg shadow-sm"
-                />
-                <p className="text-sm text-white">{otherCourse.title}</p>
+      <main className="container mx-auto py-12 px-6 grid grid-cols-1 lg:grid-cols-3 gap-12">
+        {/* Hlavní obsah */}
+        <section className="col-span-2 bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-xl shadow-lg p-8">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* Obrázek */}
+            <img
+              src={imageUrl}
+              alt={course.title}
+              className="w-full h-64 object-cover rounded-lg shadow-md"
+            />
+
+            {/* Detaily kurzu */}
+            <div className="mt-6">
+              <h1 className="text-4xl font-bold text-white">{course.title}</h1>
+              <p className="mt-4 text-gray-400 leading-relaxed">
+                {course.description}
+              </p>
+            </div>
+
+            {/* Datum a tlačítko */}
+            <div className="flex justify-between items-center mt-8">
+              <p className="text-lg bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
+                {course.date
+                  ? new Date(course.date).toLocaleString("cs-CZ", {
+                      dateStyle: "long",
+                      timeStyle: "short",
+                    })
+                  : "Datum není k dispozici"}
+              </p>
+              <Link to={`/enroll/${course.id}`}>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full shadow-md hover:shadow-xl"
+                >
+                  Přihlásit se
+                </motion.button>
               </Link>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Pravý panel */}
+        <aside className="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-xl shadow-lg p-6">
+          <h2 className="text-xl font-bold text-white mb-4">Další lekce</h2>
+          <div className="space-y-4">
+            {allCourses?.data.map((otherCourse, index) => (
+              <motion.div
+                key={otherCourse.id}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.2, duration: 0.6 }}
+              >
+                <Link
+                  to={`/detail/${otherCourse.documentId}`}
+                  className="flex items-center gap-4 p-3 bg-gradient-to-r from-gray-700 via-gray-800 to-black rounded-lg hover:scale-105 transition-transform"
+                >
+                  <img
+                    src={
+                      otherCourse.image?.[0]?.formats?.thumbnail?.url
+                        ? `http://localhost:1337${otherCourse.image[0].formats.thumbnail.url}`
+                        : "https://via.placeholder.com/60x60"
+                    }
+                    alt={otherCourse.title}
+                    className="w-14 h-14 object-cover rounded-md"
+                  />
+                  <div>
+                    <p className="text-white font-semibold">
+                      {otherCourse.title}
+                    </p>
+                    <p className="text-gray-400 text-sm">
+                      {otherCourse.date
+                        ? new Date(otherCourse.date).toLocaleDateString("cs-CZ")
+                        : "Datum neznámé"}
+                    </p>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </aside>
-
-        {/* Hlavní část */}
-        <section className="flex-1 bg-s2 rounded-xl shadow-lg p-8">
-          <div className="mb-8">
-            {/* Obrázek */}
-            <div className="overflow-hidden rounded-lg shadow-md">
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt={course.title}
-                  className="w-full h-64 object-cover"
-                />
-              ) : (
-                <p className="text-gray-400 text-center py-24">
-                  Obrázek není k dispozici.
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Popis kurzu */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-extrabold text-p4 mb-4">
-              {course.title}
-            </h1>
-            <p className="text-lg text-gray-400">{course.description}</p>
-          </div>
-
-          {/* Datum a tlačítko */}
-          <div className="flex justify-between items-center">
-            <p className="text-2xl font-bold bg-gradient-to-r from-p4 to-p5 bg-clip-text text-transparent">
-              {course.date
-                ? new Date(course.date).toLocaleString("cs-CZ", {
-                    dateStyle: "long",
-                    timeStyle: "short",
-                  })
-                : "Datum není k dispozici"}
-            </p>
-            <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-lg hover:scale-105 transition-transform">
-              Přihlásit se
-            </button>
-          </div>
-        </section>
       </main>
     </div>
   );
