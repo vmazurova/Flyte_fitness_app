@@ -1,74 +1,122 @@
-import { Element } from "react-scroll";
-import Button from "../components/Button.jsx";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { userData } from "../helpers.jsx";
+import React, { useState } from "react";
+import Chart from "react-apexcharts";
 
-const Hero = () => {
-  const { username } = userData();
+const DashboardCharts = () => {
+  // Data pro první graf (Sales Overview)
+  const [salesChart, setSalesChart] = useState({
+    series: [
+      {
+        name: "Websites",
+        data: [200, 300, 400, 500, 300, 200, 400, 300, 350, 330, 400, 500],
+      },
+      {
+        name: "Mobile Apps",
+        data: [150, 250, 300, 400, 250, 150, 300, 250, 200, 250, 300, 400],
+      },
+    ],
+    options: {
+      chart: {
+        type: "area",
+        height: 350,
+        toolbar: { show: false },
+      },
+      colors: ["#A35CFF", "#8D36FF"],
+      dataLabels: { enabled: false },
+      stroke: { curve: "smooth", width: 2 },
+      xaxis: {
+        categories: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
+        labels: {
+          style: { colors: "#C4CBF5", fontFamily: "Poppins" },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: { colors: "#C4CBF5", fontFamily: "Poppins" },
+        },
+      },
+      tooltip: { theme: "dark" },
+      grid: { borderColor: "#333" },
+    },
+  });
+
+  // Data pro druhý graf (Active Users)
+  const [usersChart, setUsersChart] = useState({
+    series: [
+      {
+        name: "Active Users",
+        data: [320, 250, 400, 150, 200, 300],
+      },
+    ],
+    options: {
+      chart: {
+        type: "bar",
+        height: 350,
+        toolbar: { show: false },
+      },
+      colors: ["#712BCD"],
+      plotOptions: {
+        bar: {
+          borderRadius: 5,
+          columnWidth: "45%",
+        },
+      },
+      dataLabels: { enabled: false },
+      xaxis: {
+        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        labels: {
+          style: { colors: "#C4CBF5", fontFamily: "Poppins" },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: { colors: "#C4CBF5", fontFamily: "Poppins" },
+        },
+      },
+      tooltip: { theme: "dark" },
+      grid: { borderColor: "#333" },
+    },
+  });
+
   return (
-    <section className="relative pt-60 pb-40 max-lg:pt-52 max-lg:pb-36 max-md:pt-36 max-md:pb-32">
-      <Element name="hero">
-        <div className="container">
-          <div className="relative z-2 max-w-512 max-lg:max-w-388">
-            <motion.div
-              initial={{ x: -100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 2.0, ease: "easeOut" }}
-              className="caption small-2 uppercase text-p3"
-            >
-              Fitness aplikace
-            </motion.div>
+    <div className="flex flex-row gap-8 bg-s1 p-8 rounded-20">
+      {/* První graf */}
+      <div className="bg-s2 p-6 rounded-20 shadow-200 flex-1">
+        <h2 className="text-p4 text-2xl font-bold mb-2">Sales Overview</h2>
+        <p className="text-p5 text-sm">+5% more in 2021</p>
+        <Chart
+          options={salesChart.options}
+          series={salesChart.series}
+          type="area"
+          height={350}
+        />
+      </div>
 
-            <motion.h1
-              initial={{ x: -100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 2.0, ease: "easeOut" }}
-              className="mb-6 h1 text-p4 uppercase max-lg:mb-7 max-lg:h2 max-md:mb-4 max-md:text-5xl max-md:leading-12"
-            >
-              Vitej {username}
-            </motion.h1>
-
-            <p className="max-w-440 mb-14 body-1 max-md:mb-10">
-              Překroč své limity s aplikací, která tě provede na cestě od snu k
-              realitě!
-            </p>
-
-            <Link
-              to="/LogOut"
-              className="text-purple-400 hover:text-purple-500 font-semibold"
-            >
-              <motion.div
-                whileHover={{ scale: 1.2 }}
-                whileTap={{
-                  scale: 0.8,
-                  borderRadius: "100%",
-                }}
-                initial={{ scale: 0 }}
-                animate={{ rotate: 360, scale: 1 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 40,
-                  duration: 3.0,
-                }}
-              >
-                <Button icon="/images/zap.svg">Odhlasit</Button>
-              </motion.div>
-            </Link>
-          </div>
-
-          <div className="absolute -top-32 left-[calc(50%-340px)] w-[1230px] pointer-events-none hero-img_res">
-            <img
-              src="/images/hero.png"
-              className="size-200 max-lg:h-auto"
-              alt="hero"
-            />
-          </div>
-        </div>
-      </Element>
-    </section>
+      {/* Druhý graf */}
+      <div className="bg-s2 p-6 rounded-20 shadow-200 flex-1">
+        <h2 className="text-p4 text-2xl font-bold mb-2">Active Users</h2>
+        <p className="text-green-400 text-sm">(+23%) than last week</p>
+        <Chart
+          options={usersChart.options}
+          series={usersChart.series}
+          type="bar"
+          height={350}
+        />
+      </div>
+    </div>
   );
 };
 
-export default Hero;
+export default DashboardCharts;

@@ -48,7 +48,11 @@ const Login = () => {
       };
 
       const res = await axios.post(url, userData);
+
+      // Uložení JWT tokenu do localStorage
       if (res.data.jwt) {
+        localStorage.setItem("jwt", res.data.jwt);
+
         toast.success("Přihlášení proběhlo úspěšně!", {
           hideProgressBar: true,
         });

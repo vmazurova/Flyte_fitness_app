@@ -15,11 +15,11 @@ import LogOut from "./pagesLogin/LogOut.jsx";
 import ForgotPassword from "./auth/ForgotPassword.jsx";
 import CoursesList from "./pagesLogin/CoursesList.jsx";
 import CoursesDetail from "./pagesLogin/CourseDetail.jsx";
-
+import Bookings from "./pagesLogin/Bookings.jsx";
+import BookingDetail from "./pagesLogin/BookingDetail.jsx";
 const App = () => {
   const location = useLocation();
 
-  // Vytvoření regulárních výrazů pro dynamické cesty
   const hideHeaderPaths = [
     "/osobni-slozka",
     "/vsechny-kurzy",
@@ -28,10 +28,7 @@ const App = () => {
     "/zapomenute-heslo",
   ];
 
-  // Přidání vzoru pro dynamické cesty
-  const hideHeaderPatterns = [
-    /^\/detail\/[a-zA-Z0-9]+$/, // Dynamická cesta pro detail kurzu
-  ];
+  const hideHeaderPatterns = [/^\/detail\/[a-zA-Z0-9]+$/];
 
   const showHeader =
     !hideHeaderPaths.includes(location.pathname) &&
@@ -48,6 +45,8 @@ const App = () => {
         <Route path="/zapomenute-heslo" component={ForgotPassword} />
         <Route path="/vsechny-kurzy" component={CoursesList} />
         <Route path="/detail/:id" component={CoursesDetail} />
+        <Route path="/bookings" component={Bookings}></Route>
+        <Route path="/bookings/:id" exacomponent={BookingDetail} ct></Route>
         <Route path="/" exact>
           <Hero />
           <Features />

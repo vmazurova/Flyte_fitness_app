@@ -1,18 +1,119 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import useFetch from "../hooks/useFetch";
 
 const CourseDetail = () => {
   const { id: documentId } = useParams();
+  const [isBooked, setIsBooked] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
+  const [loadingAction, setLoadingAction] = useState(false);
 
+  // Fetch course data
   const { loading, error, data } = useFetch(
     `http://localhost:1337/api/courses?filters[documentId][$eq]=${documentId}&populate=*`
   );
 
-  const { data: allCourses } = useFetch(
-    `http://localhost:1337/api/courses?populate=*`
-  );
+  const course = data?.data?.[0];
+
+  // Check if user is booked
+  useEffect(() => {
+    const checkBooking = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+
+        if (!token) {
+          console.error("User is not logged in.");
+          return;
+        }
+
+        const userId = JSON.parse(atob(token.split(".")[1])).id;
+
+        const response = await fetch(
+          `http://localhost:1337/api/bookings?filters[course][documentId][$eq]=${documentId}&filters[user][id][$eq]=${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Unauthorized or invalid token");
+        }
+
+        const result = await response.json();
+
+        if (result?.data?.length > 0) {
+          setIsBooked(true);
+          setBookingId(result.data[0].id);
+        } else {
+          setIsBooked(false);
+          setBookingId(null);
+        }
+      } catch (err) {
+        console.error("Error checking booking:", err);
+      }
+    };
+
+    checkBooking();
+  }, [documentId]);
+
+  const handleBook = async () => {
+    setLoadingAction(true);
+    try {
+      const token = localStorage.getItem("jwt");
+
+      const response = await fetch("http://localhost:1337/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          data: {
+            course: documentId,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        setIsBooked(true);
+        const result = await response.json();
+        setBookingId(result.data.id);
+      }
+    } catch (err) {
+      console.error("Error booking:", err);
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+
+  const handleCancelBooking = async () => {
+    setLoadingAction(true);
+    try {
+      const token = localStorage.getItem("jwt");
+
+      const response = await fetch(
+        `http://localhost:1337/api/bookings/${bookingId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        setIsBooked(false);
+        setBookingId(null);
+      }
+    } catch (err) {
+      console.error("Error cancelling booking:", err);
+    } finally {
+      setLoadingAction(false);
+    }
+  };
 
   if (loading)
     return (
@@ -29,16 +130,11 @@ const CourseDetail = () => {
     );
   }
 
-  const course = data.data[0];
-  const imageUrl = course.image?.[0]?.formats?.medium?.url
-    ? `http://localhost:1337${course.image[0].formats.medium.url}`
-    : "https://via.placeholder.com/400x200";
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-200">
       {/* Header */}
       <header className="py-6 shadow-md bg-gradient-to-r from-purple-500 to-indigo-500">
-        <div className="container mt-10 mx-auto px-6 flex justify-between items-center">
+        <div className="container mx-auto px-6 flex justify-between items-center">
           <motion.h1
             className="text-3xl font-extrabold text-white tracking-widest"
             initial={{ opacity: 0, x: -50 }}
@@ -64,31 +160,21 @@ const CourseDetail = () => {
 
       {/* Main Content */}
       <main className="container mx-auto py-12 px-6 grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Hlavní obsah */}
         <section className="col-span-2 bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-xl shadow-lg p-8">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Obrázek */}
-            <img
-              src={imageUrl}
-              alt={course.title}
-              className="w-full h-64 object-cover rounded-lg shadow-md"
-            />
-
-            {/* Detaily kurzu */}
-            <div className="mt-6">
-              <h1 className="text-4xl font-bold text-white">{course.title}</h1>
-              <p className="mt-4 text-gray-400 leading-relaxed">
-                {course.description}
-              </p>
-            </div>
-
-            {/* Datum a tlačítko */}
-            <div className="flex justify-between items-center mt-8">
-              <p className="text-lg bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-indigo-400">
+            <h1 className="text-4xl font-bold text-white mb-6">
+              {course.title}
+            </h1>
+            <p className="text-gray-400 leading-relaxed mb-6">
+              {course.description}
+            </p>
+            <div className="flex justify-between items-center">
+              <p className="text-lg text-gray-400">
+                Datum:{" "}
                 {course.date
                   ? new Date(course.date).toLocaleString("cs-CZ", {
                       dateStyle: "long",
@@ -96,57 +182,20 @@ const CourseDetail = () => {
                     })
                   : "Datum není k dispozici"}
               </p>
-              <Link to={`/enroll/${course.id}`}>
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full shadow-md hover:shadow-xl"
-                >
-                  Přihlásit se
-                </motion.button>
-              </Link>
+              <button
+                onClick={isBooked ? handleCancelBooking : handleBook}
+                disabled={loadingAction}
+                className={`px-6 py-3 ${
+                  isBooked
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                } text-white rounded-full shadow-md transition-transform`}
+              >
+                {isBooked ? "Odhlásit se" : "Přihlásit se"}
+              </button>
             </div>
           </motion.div>
         </section>
-
-        {/* Pravý panel */}
-        <aside className="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Další lekce</h2>
-          <div className="space-y-4">
-            {allCourses?.data.map((otherCourse, index) => (
-              <motion.div
-                key={otherCourse.id}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.2, duration: 0.6 }}
-              >
-                <Link
-                  to={`/detail/${otherCourse.documentId}`}
-                  className="flex items-center gap-4 p-3 bg-gradient-to-r from-gray-700 via-gray-800 to-black rounded-lg hover:scale-105 transition-transform"
-                >
-                  <img
-                    src={
-                      otherCourse.image?.[0]?.formats?.thumbnail?.url
-                        ? `http://localhost:1337${otherCourse.image[0].formats.thumbnail.url}`
-                        : "https://via.placeholder.com/60x60"
-                    }
-                    alt={otherCourse.title}
-                    className="w-14 h-14 object-cover rounded-md"
-                  />
-                  <div>
-                    <p className="text-white font-semibold">
-                      {otherCourse.title}
-                    </p>
-                    <p className="text-gray-400 text-sm">
-                      {otherCourse.date
-                        ? new Date(otherCourse.date).toLocaleDateString("cs-CZ")
-                        : "Datum neznámé"}
-                    </p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </aside>
       </main>
     </div>
   );
