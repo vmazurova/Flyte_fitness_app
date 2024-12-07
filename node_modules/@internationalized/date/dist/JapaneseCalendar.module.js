@@ -159,8 +159,7 @@ class $62225008020f0a13$export$b746ab2b60cdffbf extends (0, $3b62074eb05584b2$ex
         return start && date.month === start[1] ? start[2] : 1;
     }
     constructor(...args){
-        super(...args);
-        this.identifier = 'japanese';
+        super(...args), this.identifier = 'japanese';
     }
 }
 function $62225008020f0a13$var$getMinimums(date) {

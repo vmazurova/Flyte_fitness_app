@@ -1,16 +1,19 @@
-import React, { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import Spotlight from "./Spotlight";
 import WorflowImg01 from "../images/workflow-01.png";
 import WorflowImg02 from "../images/workflow-02.png";
 import WorflowImg03 from "../images/workflow-03.png";
 
 export default function Features() {
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true });
+  const [ref, inView] = useInView({
+    triggerOnce: true, // Animace se spustí pouze jednou
+    threshold: 0.1, // Spustí se, když je 10 % elementu viditelných
+  });
 
   return (
-    <section ref={sectionRef}>
+    <section ref={ref}>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="pb-12 md:pb-20">
           {/* Section header */}
@@ -35,8 +38,8 @@ export default function Features() {
           <Spotlight className="group mx-auto grid max-w-sm items-start gap-6 lg:max-w-none lg:grid-cols-3">
             <motion.a
               initial={{ x: -200, opacity: 0 }}
-              animate={isInView ? { x: 0, opacity: 1 } : {}}
-              transition={{ delay: 1, duration: 1 }}
+              animate={inView ? { x: 0, opacity: 1 } : {}}
+              transition={{ delay: 0.5, duration: 1 }}
               className="group relative h-full overflow-hidden rounded-2xl bg-s2 p-px"
               href="#0"
             >
@@ -62,7 +65,10 @@ export default function Features() {
               </div>
             </motion.a>
 
-            <a
+            <motion.a
+              initial={{ x: 0, opacity: 0 }}
+              animate={inView ? { x: 0, opacity: 1 } : {}}
+              transition={{ delay: 0.5, duration: 1 }}
               className="group relative h-full overflow-hidden rounded-2xl bg-s2 p-px"
               href="#0"
             >
@@ -86,12 +92,12 @@ export default function Features() {
                   </p>
                 </div>
               </div>
-            </a>
+            </motion.a>
 
             <motion.a
               initial={{ x: 200, opacity: 0 }}
-              animate={isInView ? { x: 0, opacity: 1 } : {}}
-              transition={{ delay: 1, duration: 1 }}
+              animate={inView ? { x: 0, opacity: 1 } : {}}
+              transition={{ delay: 0.5, duration: 1 }}
               className="group relative h-full overflow-hidden rounded-2xl bg-s2 p-px"
               href="#0"
             >

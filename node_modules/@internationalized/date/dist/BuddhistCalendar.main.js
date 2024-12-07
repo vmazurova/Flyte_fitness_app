@@ -41,8 +41,7 @@ class $561c4ef058278b74$export$42d20a78301dee44 extends (0, $af14c9812fdceb33$ex
     }
     balanceDate() {}
     constructor(...args){
-        super(...args);
-        this.identifier = 'buddhist';
+        super(...args), this.identifier = 'buddhist';
     }
 }
 function $561c4ef058278b74$var$toGregorian(date) {

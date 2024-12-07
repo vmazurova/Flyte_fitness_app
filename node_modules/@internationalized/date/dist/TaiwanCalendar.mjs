@@ -61,8 +61,7 @@ class $5f31bd6f0c8940b2$export$65e01080afcb0799 extends (0, $3b62074eb05584b2$ex
         return date.era === 'before_minguo' ? 9999 : 9999 - $5f31bd6f0c8940b2$var$TAIWAN_ERA_START;
     }
     constructor(...args){
-        super(...args);
-        this.identifier = 'roc' // Republic of China
+        super(...args), this.identifier = 'roc' // Republic of China
         ;
     }
 }

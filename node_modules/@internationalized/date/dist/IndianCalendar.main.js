@@ -98,8 +98,7 @@ class $5f1dfa5c67609fe6$export$39f31c639fa15726 extends (0, $af14c9812fdceb33$ex
     }
     balanceDate() {}
     constructor(...args){
-        super(...args);
-        this.identifier = 'indian';
+        super(...args), this.identifier = 'indian';
     }
 }
 

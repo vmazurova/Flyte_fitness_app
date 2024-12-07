@@ -144,7 +144,7 @@ function $11d87f3f76e88657$export$1b96692a1ba042ac(ms, timeZone) {
     let minute = date.getUTCMinutes();
     let second = date.getUTCSeconds();
     let millisecond = date.getUTCMilliseconds();
-    return new (0, $35ea8db9cb2ccb90$export$d3b7288e7994edea)(year, month, day, timeZone, offset, hour, minute, second, millisecond);
+    return new (0, $35ea8db9cb2ccb90$export$d3b7288e7994edea)(year < 1 ? 'BC' : 'AD', year < 1 ? -year + 1 : year, month, day, timeZone, offset, hour, minute, second, millisecond);
 }
 function $11d87f3f76e88657$export$e57ff100d91bd4b9(date, timeZone) {
     return $11d87f3f76e88657$export$1b96692a1ba042ac(date.getTime(), timeZone);

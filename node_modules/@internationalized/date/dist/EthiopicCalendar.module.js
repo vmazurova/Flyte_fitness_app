@@ -106,8 +106,7 @@ class $b956b2d7a6cf451f$export$d72e0c37005a4914 extends $b956b2d7a6cf451f$export
         return 9999;
     }
     constructor(...args){
-        super(...args);
-        this.identifier = 'ethioaa' // also known as 'ethiopic-amete-alem' in ICU
+        super(...args), this.identifier = 'ethioaa' // also known as 'ethiopic-amete-alem' in ICU
         ;
     }
 }
@@ -153,8 +152,7 @@ class $b956b2d7a6cf451f$export$fe6243cbe1a4b7c1 extends $b956b2d7a6cf451f$export
         return date.era === 'BCE' ? 9999 : 9715;
     }
     constructor(...args){
-        super(...args);
-        this.identifier = 'coptic';
+        super(...args), this.identifier = 'coptic';
     }
 }
 

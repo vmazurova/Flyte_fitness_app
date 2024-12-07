@@ -17,18 +17,20 @@ import CoursesList from "./pagesLogin/CoursesList.jsx";
 import CoursesDetail from "./pagesLogin/CourseDetail.jsx";
 import Bookings from "./pagesLogin/Bookings.jsx";
 import BookingDetail from "./pagesLogin/BookingDetail.jsx";
+import MealPlanList from "./pagesLogin/MealplansList.jsx";
 const App = () => {
   const location = useLocation();
 
   const hideHeaderPaths = [
     "/osobni-slozka",
-    "/vsechny-kurzy",
+    "/kurzy",
     "/auth/registrace",
     "/auth/prihlaseni",
     "/zapomenute-heslo",
+    "/jidelnicky",
   ];
 
-  const hideHeaderPatterns = [/^\/detail\/[a-zA-Z0-9]+$/];
+  const hideHeaderPatterns = [/^\/kurz\/[a-zA-Z0-9]+$/];
 
   const showHeader =
     !hideHeaderPaths.includes(location.pathname) &&
@@ -43,10 +45,12 @@ const App = () => {
         <Route path="/osobni-slozka" component={MemberDetail} />
         <Route path="/odhlaseni" component={LogOut} />
         <Route path="/zapomenute-heslo" component={ForgotPassword} />
-        <Route path="/vsechny-kurzy" component={CoursesList} />
-        <Route path="/detail/:id" component={CoursesDetail} />
+        <Route path="/kurzy" component={CoursesList} />
+        <Route path="/kurz/:id" component={CoursesDetail} />
         <Route path="/bookings" component={Bookings}></Route>
-        <Route path="/bookings/:id" exacomponent={BookingDetail} ct></Route>
+        <Route path="/bookings/:id" component={BookingDetail}></Route>
+        <Route path="/jidelnicky" component={MealPlanList}></Route>
+
         <Route path="/" exact>
           <Hero />
           <Features />

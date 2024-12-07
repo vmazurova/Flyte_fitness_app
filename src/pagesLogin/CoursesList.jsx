@@ -25,8 +25,7 @@ export default function CourseList() {
   });
 
   return (
-    <div className="h-screen w-screen bg-cover bg-fixed bg-center flex flex-col lg:flex-row">
-      {/* Sidebar */}
+    <div className="h-screen w-screen bg-cover bg-fixed bg-center flex flex-col lg:flex-row ">
       <Sidebar />
 
       {/* Main Content */}
@@ -89,7 +88,7 @@ export default function CourseList() {
                       Datum: {formattedDate}
                     </p>
                     <div className="text-center">
-                      <Link to={`/detail/${course.documentId}`}>
+                      <Link to={`/kurz/${course.documentId}`}>
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}

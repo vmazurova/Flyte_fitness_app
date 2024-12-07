@@ -22,6 +22,19 @@ export default {
           DEFAULT: "#000000",
           100: "#05091D",
         },
+        primary: {
+          100: '#C496FF',
+          200: '#8D36FF',
+          300: '#A35CFF',
+        },
+        secondary: {
+          100: '#080D27',
+          200: '#0C1838',
+          300: '#712BCD',
+        },
+        neutral: {
+          400: '#9CA3AF',
+        },
       },
       keyframes: {
         gradient: {
