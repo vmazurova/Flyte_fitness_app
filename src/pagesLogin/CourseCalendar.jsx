@@ -6,7 +6,6 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { Link } from "react-router-dom";
 import csLocale from "@fullcalendar/core/locales/cs";
 
 export default function CourseCalendar() {
@@ -39,7 +38,7 @@ export default function CourseCalendar() {
 
   return (
     <motion.div
-      className="h-screen w-screen bg-gradient-to-r from-gray-900 via-black to-gray-900 text-gray-100 flex flex-col lg:flex-row"
+      className="h-screen w-screen bg-gradient-to-br from-black to-gray-900 text-gray-100 flex flex-col lg:flex-row"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.5 }}
@@ -55,17 +54,16 @@ export default function CourseCalendar() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <h1 className="text-4xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-500 drop-shadow-lg">
+          <h1 className="text-5xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 drop-shadow-2xl">
             Kalendář kurzů
           </h1>
-          <p className="text-md lg:text-xl text-gray-400 mt-4 max-w-3xl mx-auto">
-            Prohlédněte si plánované kurzy v elegantním kalendáři s možností
-            zobrazit detaily všech lekcí.
+          <p className="text-md lg:text-xl text-gray-300 mt-4 max-w-3xl mx-auto">
+            Prohlédněte si plánované kurzy s moderním a elegantním vzhledem.
           </p>
         </motion.div>
 
         {/* Calendar */}
-        <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-lg shadow-2xl">
+        <div className="backdrop-blur-lg bg-opacity-30 bg-white/10 p-8 rounded-2xl shadow-2xl border border-gray-700">
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
@@ -83,18 +81,18 @@ export default function CourseCalendar() {
             }}
             eventContent={(eventInfo) => (
               <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="flex items-center justify-center text-center rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-2"
+                whileHover={{ scale: 1.05 }}
+                className="flex items-center justify-center text-center rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-2 py-1 shadow-md max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
               >
-                <span className="font-semibold text-sm">
+                <span className="text-xs font-semibold">
                   {eventInfo.timeText}
                 </span>
-                <span className="ml-2 text-base font-bold">
+                <span className="ml-1 text-sm font-bold truncate">
                   {eventInfo.event.title}
                 </span>
               </motion.div>
             )}
-            dayHeaderClassNames="bg-gradient-to-r from-purple-500 to-indigo-500 text-white"
+            dayHeaderClassNames="bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-sm"
             dayHeaderContent={(dateInfo) => (
               <span className="text-white font-semibold px-2 py-1 block h-full w-full text-center rounded-lg">
                 {dateInfo.text}
@@ -105,7 +103,7 @@ export default function CourseCalendar() {
             eventTextColor="#ffffff"
             height="auto"
             dayMaxEventRows={true}
-            slotLabelClassNames="text-purple-400 font-semibold"
+            slotLabelClassNames="text-cyan-400 font-semibold"
             slotMinTime="06:00:00"
             slotMaxTime="22:00:00"
             contentHeight="auto"
@@ -126,14 +124,6 @@ export default function CourseCalendar() {
               hour: "2-digit",
               minute: "2-digit",
               hour12: false,
-            }}
-            viewDidMount={(viewInfo) => {
-              const calendarGrid = document.querySelector(".fc-scrollgrid");
-              if (calendarGrid) {
-                calendarGrid.style.borderColor = "transparent";
-                calendarGrid.style.borderImage =
-                  "linear-gradient(to right, #8b5cf6, #7c3aed) 1";
-              }
             }}
           />
         </div>

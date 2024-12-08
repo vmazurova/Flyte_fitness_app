@@ -13,6 +13,9 @@ const CourseDetail = () => {
   const { loading, error, data } = useFetch(
     `http://localhost:1337/api/courses?filters[documentId][$eq]=${documentId}&populate=*`
   );
+  const { data: allCourses } = useFetch(
+    `http://localhost:1337/api/courses?populate=*`
+  );
 
   const course = data?.data?.[0];
 
@@ -149,7 +152,7 @@ const CourseDetail = () => {
             transition={{ duration: 0.8 }}
           >
             <Link
-              to="/vsechny-kurzy"
+              to="/kurzy"
               className="px-4 py-2 bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-full shadow-md hover:shadow-xl hover:scale-105 transition-transform"
             >
               Zpět na seznam kurzů
@@ -160,7 +163,18 @@ const CourseDetail = () => {
 
       {/* Main Content */}
       <main className="container mx-auto py-12 px-6 grid grid-cols-1 lg:grid-cols-3 gap-12">
+        {/* Left - Main Course Details */}
         <section className="col-span-2 bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-xl shadow-lg p-8">
+          <motion.img
+            src={
+              course?.image?.[0]?.formats?.medium?.url
+                ? `http://localhost:1337${course.image[0].formats.medium.url}`
+                : "https://via.placeholder.com/800x400"
+            }
+            alt={course.title}
+            className="w-full h-64 object-cover rounded-lg mb-6"
+          />
+
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -196,6 +210,38 @@ const CourseDetail = () => {
             </div>
           </motion.div>
         </section>
+
+        {/* Right - List of Other Courses */}
+        <aside className="col-span-1 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-white mb-4">Další kurzy</h2>
+          <ul className="space-y-4">
+            {allCourses?.data
+              ?.filter((course) => {
+                const courseDate = new Date(course.date);
+                return courseDate > new Date(); // Filtruje pouze budoucí kurzy
+              })
+              .map((course) => (
+                <li key={course.id} className="flex items-center space-x-4">
+                  <img
+                    src={
+                      course?.image?.[0]?.formats?.thumbnail?.url
+                        ? `http://localhost:1337${course.image[0].formats.thumbnail.url}`
+                        : "https://via.placeholder.com/150x100"
+                    }
+                    alt={course.title}
+                    className="w-16 h-16 object-cover rounded-lg"
+                  />
+
+                  <Link
+                    to={`/kurz/${course.documentId}`}
+                    className="text-lg font-semibold text-purple-400 hover:text-purple-300 transition-colors"
+                  >
+                    {course.title}
+                  </Link>
+                </li>
+              ))}
+          </ul>
+        </aside>
       </main>
     </div>
   );

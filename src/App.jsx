@@ -19,6 +19,7 @@ import Bookings from "./pagesLogin/Bookings.jsx";
 import BookingDetail from "./pagesLogin/BookingDetail.jsx";
 import MealPlanList from "./pagesLogin/MealplansList.jsx";
 import Kalendar from "./pagesLogin/CourseCalendar.jsx";
+import MealPlanAdd from "./pagesLogin/MealPlanAdd.jsx";
 const App = () => {
   const location = useLocation();
 
@@ -53,6 +54,7 @@ const App = () => {
         <Route path="/bookings" component={Bookings}></Route>
         <Route path="/bookings/:id" component={BookingDetail}></Route>
         <Route path="/jidelnicky" component={MealPlanList}></Route>
+        <Route path="/jidelnicek-pridani" component={MealPlanAdd}></Route>
 
         <Route path="/" exact>
           <Hero />
