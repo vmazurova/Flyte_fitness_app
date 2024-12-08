@@ -18,6 +18,7 @@ import CoursesDetail from "./pagesLogin/CourseDetail.jsx";
 import Bookings from "./pagesLogin/Bookings.jsx";
 import BookingDetail from "./pagesLogin/BookingDetail.jsx";
 import MealPlanList from "./pagesLogin/MealplansList.jsx";
+import Kalendar from "./pagesLogin/CourseCalendar.jsx";
 const App = () => {
   const location = useLocation();
 
@@ -28,6 +29,7 @@ const App = () => {
     "/auth/prihlaseni",
     "/zapomenute-heslo",
     "/jidelnicky",
+    "/kalendar",
   ];
 
   const hideHeaderPatterns = [/^\/kurz\/[a-zA-Z0-9]+$/];
@@ -46,6 +48,7 @@ const App = () => {
         <Route path="/odhlaseni" component={LogOut} />
         <Route path="/zapomenute-heslo" component={ForgotPassword} />
         <Route path="/kurzy" component={CoursesList} />
+        <Route path="/kalendar" component={Kalendar} />
         <Route path="/kurz/:id" component={CoursesDetail} />
         <Route path="/bookings" component={Bookings}></Route>
         <Route path="/bookings/:id" component={BookingDetail}></Route>

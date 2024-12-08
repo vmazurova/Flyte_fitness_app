@@ -29,7 +29,7 @@ const Sidebar = ({ logoText = "Flyte" }) => {
   const routesData = [
     {
       name: "Otevřené kurzy",
-      path: "/vsechny-kurzy",
+      path: "/kurzy",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +129,7 @@ const Sidebar = ({ logoText = "Flyte" }) => {
     },
     {
       name: "Kalendář",
-      path: "/kalendar",
+      path: "/calendar",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
