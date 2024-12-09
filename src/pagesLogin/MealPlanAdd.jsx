@@ -1,73 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+import Sidebar from "./Sidebar.jsx";
 
 const MealPlanAdd = () => {
-  const [mealPlans, setMealPlans] = useState([]);
-  const [users, setUsers] = useState([]); // Přidáno: Seznam uživatelů
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
-    images: [],
-    selectedUser: "", // Přidáno: ID vybraného uživatele
+    week_start: "",
+    image: null,
+    monday: { breakfast: "", snack1: "", lunch: "", snack2: "", dinner: "" },
+    tuesday: { breakfast: "", snack1: "", lunch: "", snack2: "", dinner: "" },
+    wednesday: { breakfast: "", snack1: "", lunch: "", snack2: "", dinner: "" },
+    thursday: { breakfast: "", snack1: "", lunch: "", snack2: "", dinner: "" },
+    friday: { breakfast: "", snack1: "", lunch: "", snack2: "", dinner: "" },
+    saturday: { breakfast: "", snack1: "", lunch: "", snack2: "", dinner: "" },
+    sunday: { breakfast: "", snack1: "", lunch: "", snack2: "", dinner: "" },
   });
+
   const [loading, setLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Stav sidebaru
 
-  // Načtení jídelníčků
-  useEffect(() => {
-    const fetchMealPlans = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:1337/api/meal-plans?populate=*"
-        );
-        setMealPlans(response.data.data);
-      } catch (error) {
-        console.error("Error fetching meal plans:", error);
-      }
-    };
-    fetchMealPlans();
-  }, []);
-
-  // Načtení uživatelů
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const token = localStorage.getItem("jwt");
-        if (!token) {
-          console.error("Token není dostupný. Přihlaste se.");
-          return;
-        }
-
-        const response = await axios.get("http://localhost:1337/api/users", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log("Načtení uživatelů:", response.data); // Logování dat
-        setUsers(response.data); // Uložení dat do stavu
-      } catch (error) {
-        console.error(
-          "Chyba při načítání uživatelů:",
-          error.response?.data || error.message
-        );
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  // Zpracování změn ve formuláři
-  const handleInputChange = (e) => {
+  const handleInputChange = (e, day, mealType) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (day) {
+      setFormData((prev) => ({
+        ...prev,
+        [day]: { ...prev[day], [mealType]: value },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
-  // Zpracování nahrávání souborů
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, images: Array.from(e.target.files) }));
+    setFormData((prev) => ({
+      ...prev,
+      image: e.target.files[0],
+    }));
   };
 
-  // Odeslání formuláře
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -75,131 +50,220 @@ const MealPlanAdd = () => {
     try {
       const token = localStorage.getItem("jwt");
       if (!token) {
-        alert("Prosím, přihlaste se.");
+        toast.error("Prosím, přihlaste se.", { hideProgressBar: true });
         return;
       }
 
-      // Vytvoření FormData
-      const form = new FormData();
-      form.append(
-        "data",
-        JSON.stringify({
+      let uploadedImageId = null;
+      if (formData.image) {
+        const formDataForImage = new FormData();
+        formDataForImage.append("files", formData.image);
+
+        const imageUploadResponse = await axios.post(
+          "http://localhost:1337/api/upload",
+          formDataForImage,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        uploadedImageId = imageUploadResponse.data[0].id;
+      }
+
+      const payload = {
+        data: {
           title: formData.title,
-          description: formData.description,
-          users: [formData.selectedUser], // Přidáno: Vybraný uživatel
-          created_plan_at: new Date().toISOString(),
-        })
-      );
+          week_start: formData.week_start,
+          image: uploadedImageId,
+          ...Object.keys(formData)
+            .filter((day) => typeof formData[day] === "object")
+            .reduce((acc, day) => {
+              Object.keys(formData[day]).forEach((mealType) => {
+                acc[`${day}_${mealType}`] = formData[day][mealType];
+              });
+              return acc;
+            }, {}),
+        },
+      };
 
-      formData.images.forEach((file) => form.append("files.image", file));
+      await axios.post("http://localhost:1337/api/meal-plans", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-      const response = await axios.post(
-        "http://localhost:1337/api/meal-plans",
-        form,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      toast.success("Jídelníček byl úspěšně uložen!", {
+        hideProgressBar: true,
+      });
 
-      setMealPlans((prev) => [...prev, response.data.data]);
-      setFormData({ title: "", description: "", images: [], selectedUser: "" });
+      setFormData({
+        title: "",
+        week_start: "",
+        image: null,
+        monday: {
+          breakfast: "",
+          snack1: "",
+          lunch: "",
+          snack2: "",
+          dinner: "",
+        },
+        tuesday: {
+          breakfast: "",
+          snack1: "",
+          lunch: "",
+          snack2: "",
+          dinner: "",
+        },
+        wednesday: {
+          breakfast: "",
+          snack1: "",
+          lunch: "",
+          snack2: "",
+          dinner: "",
+        },
+        thursday: {
+          breakfast: "",
+          snack1: "",
+          lunch: "",
+          snack2: "",
+          dinner: "",
+        },
+        friday: {
+          breakfast: "",
+          snack1: "",
+          lunch: "",
+          snack2: "",
+          dinner: "",
+        },
+        saturday: {
+          breakfast: "",
+          snack1: "",
+          lunch: "",
+          snack2: "",
+          dinner: "",
+        },
+        sunday: {
+          breakfast: "",
+          snack1: "",
+          lunch: "",
+          snack2: "",
+          dinner: "",
+        },
+      });
     } catch (error) {
-      console.error(
-        "Chyba při odesílání:",
-        error.response?.data || error.message
-      );
+      toast.error("Chyba při ukládání jídelníčku.", { hideProgressBar: true });
     } finally {
       setLoading(false);
     }
   };
 
+  const renderDaySection = (day, index) => (
+    <div
+      className={`p-4 rounded-lg mb-6 ${
+        index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"
+      }`}
+    >
+      <h3 className="text-xl font-bold mb-4 text-white capitalize">{day}</h3>
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {["breakfast", "snack1", "lunch", "snack2", "dinner"].map(
+          (mealType) => (
+            <div key={mealType}>
+              <label className="block text-sm font-medium mb-2 capitalize text-white">
+                {mealType}
+              </label>
+              <input
+                type="text"
+                value={formData[day][mealType]}
+                onChange={(e) => handleInputChange(e, day, mealType)}
+                placeholder={`Zadejte ${mealType}`}
+                className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+          )
+        )}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="container mx-auto py-12">
-      <h1 className="text-3xl font-bold mb-8">Jídelníčky</h1>
-
-      {/* Formulář */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-gray-800 p-6 rounded-lg shadow-lg mb-8"
+    <div className="flex">
+      <Sidebar
+        isOpen={isSidebarOpen}
+        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+      />
+      <div
+        className={`min-h-screen transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-16"
+        } bg-cover bg-center relative`}
+        style={{
+          backgroundImage: "url('/images/gradient_puple.webp')",
+        }}
       >
-        <div className="mb-4">
-          <label htmlFor="title" className="block text-gray-400 mb-2">
-            Název jídelníčku
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white"
-            required
-          />
+        <ToastContainer />
+        <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+        <div className="relative w-full max-w-5xl mx-auto bg-[#1A1A2E] text-white rounded-xl shadow-2xl p-6">
+          <h2 className="text-center text-3xl font-bold mb-6">
+            Týdenní jídelníček
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium mb-2 text-white">
+                Název jídelníčku
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2 text-white">
+                Začátek týdne
+              </label>
+              <input
+                type="date"
+                name="week_start"
+                value={formData.week_start}
+                onChange={handleInputChange}
+                className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2 text-white">
+                Obrázek jídelníčku
+              </label>
+              <input
+                type="file"
+                name="image"
+                onChange={handleFileChange}
+                className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+            {[
+              "monday",
+              "tuesday",
+              "wednesday",
+              "thursday",
+              "friday",
+              "saturday",
+              "sunday",
+            ].map((day, index) => renderDaySection(day, index))}
+            <button
+              type="submit"
+              className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none transition"
+              disabled={loading}
+            >
+              {loading ? "Ukládání..." : "Uložit jídelníček"}
+            </button>
+          </form>
         </div>
-
-        <div className="mb-4">
-          <label htmlFor="description" className="block text-gray-400 mb-2">
-            Popis
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="selectedUser" className="block text-gray-400 mb-2">
-            Vyberte uživatele
-          </label>
-          <select
-            id="selectedUser"
-            name="selectedUser"
-            value={formData.selectedUser}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white"
-            required
-          >
-            <option value="" disabled>
-              -- Vyberte uživatele --
-            </option>
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.username || user.email}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="images" className="block text-gray-400 mb-2">
-            Obrázky/soubory
-          </label>
-          <input
-            type="file"
-            id="images"
-            name="images"
-            onChange={handleFileChange}
-            multiple
-            className="w-full px-4 py-2 bg-gray-700 text-white"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
-          disabled={loading}
-        >
-          {loading ? "Odesílání..." : "Přidat jídelníček"}
-        </button>
-      </form>
+      </div>
     </div>
   );
 };

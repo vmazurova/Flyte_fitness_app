@@ -35,7 +35,7 @@
     "react-router-dom": "^5.3.4",
     "react-scroll": "^1.9.0",
     "react-slidedown": "^2.4.7",
-    "react-toastify": "^8.2.0",
+    "react-toastify": "^10.0.6",
     "reactstrap": "^9.2.3"
   },
   "devDependencies": {
