@@ -11,7 +11,7 @@ const CoursesAdd = () => {
     description: "",
     date: "",
     max_capacity: "",
-    images: [],
+    image: [],
   });
   const [loading, setLoading] = useState(false);
 
@@ -29,11 +29,11 @@ const CoursesAdd = () => {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("jwt");
-      if (!token) {
-        toast.error("Prosím, přihlaste se.", { hideProgressBar: true });
-        return;
-      }
+      // const token = localStorage.getItem("jwt");
+      // if (!token) {
+      //   toast.error("Prosím, přihlaste se.", { hideProgressBar: true });
+      //   return;
+      // }
 
       const coursePayload = {
         data: {
@@ -49,13 +49,15 @@ const CoursesAdd = () => {
         coursePayload,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            // Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         }
       );
 
       console.log("Course created:", courseResponse.data);
+
+      const courseId = courseResponse.data.data.id;
 
       if (formData.images.length > 0) {
         const form = new FormData();
@@ -66,7 +68,7 @@ const CoursesAdd = () => {
 
         await axios.post("http://localhost:1337/api/upload", form, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            // Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         });
@@ -81,6 +83,7 @@ const CoursesAdd = () => {
       });
       toast.success("Kurz byl úspěšně přidán!", { hideProgressBar: true });
     } catch (error) {
+      console.error("Error details:", error.response?.data || error.message);
       toast.error(
         error.response?.data?.error?.message || "Chyba při přidávání kurzu.",
         { hideProgressBar: true }
