@@ -21,6 +21,8 @@ import MealPlanList from "./pagesLogin/MealplansList.jsx";
 import Kalendar from "./pagesLogin/CourseCalendar.jsx";
 import MealPlanAdd from "./pagesLogin/MealPlanAdd.jsx";
 import CourseAdd from "./pagesLogin/CoursesAdd.jsx";
+import TrainingPlany from "./pagesLogin/TrainingPlan.jsx";
+import TrainingPlanList from "./pagesLogin/TrainingPlanList.jsx";
 const App = () => {
   const location = useLocation();
 
@@ -34,6 +36,7 @@ const App = () => {
     "/kalendar",
     "/kurz-pridani",
     "/jidelnicek-pridani",
+    "/treninky",
   ];
 
   const hideHeaderPatterns = [/^\/kurz\/[a-zA-Z0-9]+$/];
@@ -59,7 +62,8 @@ const App = () => {
         <Route path="/jidelnicky" component={MealPlanList}></Route>
         <Route path="/jidelnicek-pridani" component={MealPlanAdd}></Route>
         <Route path="/kurz-pridani" component={CourseAdd}></Route>
-
+        <Route path="/treninkovy-plany" component={TrainingPlany}></Route>
+        <Route path="/treninky" component={TrainingPlanList}></Route>
         <Route path="/" exact>
           <Hero />
           <Features />

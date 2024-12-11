@@ -59,7 +59,7 @@ Aby byl projekt robustní a snadno spravovatelný, byly vybrány následující 
 - [ ] **Vývoj základních funkcí**
   - [x] Vytvořit Landing Page s možností rezervace zkušební lekce.
   - [x] Implementovat registraci a přihlášení uživatelů přes Strapi.
-  - Vytvořit základní strukturu Osobní karty s údaji o členovi.
+  - [x] Vytvořit základní strukturu Osobní karty s údaji o členovi.
   - Implementovat rezervační systém s kalendářem pro kurzy.
   - Připojit Stripe/PayPal pro platby a přidávání kreditu.
 
@@ -82,3 +82,10 @@ Aby byl projekt robustní a snadno spravovatelný, byly vybrány následující 
   - Vytvořit podrobnou dokumentaci ke všem částem aplikace.
   - Seznam použité technologie a postupy pro uživatelské role (admin, trenér, člen).
 
+##  Reference: 
+  - (https://www.youtube.com/watch?v=4Ntd414raYc&list=PL4cUxeGkcC9h6OY8_8Oq6JerWqsKdAPxn)
+  - (https://docs.strapi.io/dev-docs/intro)
+  - (https://react.dev/reference/react)
+  - (https://tailwindui.com/documentation)
+  - (https://fullcalendar.io/)
+  - (https://apexcharts.com/)

@@ -39,11 +39,11 @@ const Sidebar = ({ logoText = "Flyte" }) => {
     { name: "Otevřené kurzy", path: "/kurzy", icon: <FaBookOpen /> },
     {
       name: "Tréninkové plány",
-      path: "/treninkove-plany",
+      path: "/treninky",
       icon: <FaDumbbell />,
     },
     { name: "Jídelníčky", path: "/jidelnicky", icon: <FaUtensils /> },
-    { name: "Osobní karta", path: "/osobni-karta", icon: <FaIdCard /> },
+    { name: "Osobní karta", path: "/osobni-slozka", icon: <FaIdCard /> },
     { name: "Kalendář", path: "/kalendar", icon: <FaCalendarAlt /> },
   ];
 
