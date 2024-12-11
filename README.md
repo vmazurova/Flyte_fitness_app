@@ -83,9 +83,11 @@ Aby byl projekt robustní a snadno spravovatelný, byly vybrány následující 
   - Seznam použité technologie a postupy pro uživatelské role (admin, trenér, člen).
 
 ##  Reference: 
-  - (https://www.youtube.com/watch?v=4Ntd414raYc&list=PL4cUxeGkcC9h6OY8_8Oq6JerWqsKdAPxn)
-  - (https://docs.strapi.io/dev-docs/intro)
-  - (https://react.dev/reference/react)
-  - (https://tailwindui.com/documentation)
-  - (https://fullcalendar.io/)
-  - (https://apexcharts.com/)
+  - Tutorialy:
+        - https://www.youtube.com/watch?v=4Ntd414raYc&list=PL4cUxeGkcC9h6OY8_8Oq6JerWqsKdAPxn
+
+  - Strapi - https://docs.strapi.io/dev-docs/intro
+  - React - https://react.dev/reference/react
+  - Tailwind - https://tailwindui.com/documentation
+  - FullCalendar - https://fullcalendar.io/
+  - ApexCharts - https://apexcharts.com/
