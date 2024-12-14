@@ -43,7 +43,7 @@ export default function TrainingPlanList() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <h1 className="text-3xl mt-20lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-teal-500 drop-shadow-md">
+          <h1 className="text-3xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-teal-500 drop-shadow-md">
             Tréninkové plány
           </h1>
           <p className="text-sm lg:text-lg text-gray-300 mt-4">
