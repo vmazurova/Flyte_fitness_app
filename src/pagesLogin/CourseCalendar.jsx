@@ -16,10 +16,12 @@ export default function CourseCalendar() {
   } = useFetch("http://localhost:1337/api/courses?populate=*");
 
   if (loading)
-    return <p className="text-white text-center mt-20 text-xl">Načítání...</p>;
+    return (
+      <p className="text-gray-500 text-center mt-20 text-lg">Načítání...</p>
+    );
   if (error)
     return (
-      <p className="text-red-500 text-center mt-20 text-xl">
+      <p className="text-red-500 text-center mt-20 text-lg">
         Chyba: {error.message}
       </p>
     );
@@ -27,8 +29,8 @@ export default function CourseCalendar() {
   const events = data?.data.map((course) => ({
     id: course.id,
     title:
-      course.title.length > 20
-        ? `${course.title.substring(0, 17)}...`
+      course.title.length > 30
+        ? `${course.title.substring(0, 27)}...`
         : course.title,
     start: course.date,
     end: course.endDate || null,
@@ -37,33 +39,29 @@ export default function CourseCalendar() {
   }));
 
   return (
-    <motion.div
-      className="h-screen w-screen bg-gradient-to-br from-black to-gray-900 text-gray-100 flex flex-col lg:flex-row"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1.5 }}
-    >
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-800 text-gray-800">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <section className="flex-1 overflow-y-auto lg:ml-64 py-12 px-6">
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-        >
-          <h1 className="text-5xl lg:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 drop-shadow-2xl">
+      <section className="flex-1 p-8 lg:ml-64">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <motion.h1
+            className="text-4xl font-bold text-white"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
             Kalendář kurzů
-          </h1>
-          <p className="text-md lg:text-xl text-gray-300 mt-4 max-w-3xl mx-auto">
-            Prohlédněte si plánované kurzy s moderním a elegantním vzhledem.
+          </motion.h1>
+          <p className="text-gray-500 mt-2">
+            Prohlédněte si plánované kurzy na jednom místě.
           </p>
-        </motion.div>
+        </div>
 
         {/* Calendar */}
-        <div className="backdrop-blur-lg bg-opacity-30 bg-white/10 p-8 rounded-2xl shadow-2xl border border-gray-700">
+        <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
@@ -80,32 +78,16 @@ export default function CourseCalendar() {
               window.open(url, "_self");
             }}
             eventContent={(eventInfo) => (
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="flex items-center justify-center text-center rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-2 py-1 shadow-md max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
-              >
-                <span className="text-xs font-semibold">
-                  {eventInfo.timeText}
-                </span>
-                <span className="ml-1 text-sm font-bold truncate">
-                  {eventInfo.event.title}
-                </span>
-              </motion.div>
+              <div className="bg-gray-800 text-white px-3 py-1 rounded-lg text-sm truncate">
+                {eventInfo.event.title}
+              </div>
             )}
-            dayHeaderClassNames="bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-sm"
-            dayHeaderContent={(dateInfo) => (
-              <span className="text-white font-semibold px-2 py-1 block h-full w-full text-center rounded-lg">
-                {dateInfo.text}
-              </span>
-            )}
+            dayHeaderClassNames="text-gray-700 font-semibold"
             eventBackgroundColor="transparent"
             eventBorderColor="transparent"
-            eventTextColor="#ffffff"
+            eventTextColor="#1a202c"
             height="auto"
             dayMaxEventRows={true}
-            slotLabelClassNames="text-cyan-400 font-semibold"
-            slotMinTime="06:00:00"
-            slotMaxTime="22:00:00"
             contentHeight="auto"
             buttonText={{
               today: "Dnes",
@@ -113,7 +95,6 @@ export default function CourseCalendar() {
               week: "Týden",
               day: "Den",
             }}
-            themeSystem="standard"
             timeZone="local"
             slotLabelFormat={{
               hour: "2-digit",
@@ -128,6 +109,6 @@ export default function CourseCalendar() {
           />
         </div>
       </section>
-    </motion.div>
+    </div>
   );
 }

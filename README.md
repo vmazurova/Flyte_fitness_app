@@ -2,6 +2,9 @@
 
 ![lyte__3_-removebg-preview](https://github.com/user-attachments/assets/87eb6fb5-6510-4b09-b192-260e14ce8932)
 
+- [Backend](https://github.com/vmazurova/flyte_maturitni_projekt/tree/master/backend)
+- [Frontend](https://github.com/vmazurova/frontend-mat)
+
 ## Popis projektu:
 
 Můj maturitní projekt je webová aplikace určená pro fitness centrum, která usnadňuje správu uživatelů (členů) a umožňuje jim přístup k jejich osobním údajům, rezervacím, tréninkovým plánům a jídelníčkům. Aplikace je určena jak pro neznámé uživatele, kteří mohou provést rezervaci na zkušební lekci, tak pro stávající členy, kteří mohou spravovat svůj účet, sledovat pokroky a přihlašovat se na vedené kurzy. Trenéři mohou přidávat tréninkové a jídelní plány pro své klienty a administrátoři mají přístup ke správě všech uživatelů a kurzů.

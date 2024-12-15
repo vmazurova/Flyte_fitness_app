@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import useFetch from "../hooks/useFetch";
 import Sidebar from "./Sidebar.jsx";
+import { Link } from "react-router-dom";
 
 export default function TrainingPlanList() {
   const {
@@ -9,11 +10,6 @@ export default function TrainingPlanList() {
     error,
     data = { data: [] },
   } = useFetch("http://localhost:1337/api/training-plans?populate=*");
-
-  // Debugging
-  console.log("Loading:", loading);
-  console.log("Error:", error);
-  console.log("Data:", data);
 
   if (loading)
     return <p className="text-white text-center mt-20 text-xl">Načítání...</p>;
@@ -25,7 +21,6 @@ export default function TrainingPlanList() {
     );
 
   const trainingPlans = Array.isArray(data.data) ? data.data : [];
-  console.log("Training Plans:", trainingPlans);
 
   const formatLenght = (lenght) => {
     if (!lenght) return "N/A";
@@ -34,9 +29,9 @@ export default function TrainingPlanList() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex justify-center items-center">
+    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex justify-center">
       <Sidebar />
-      <div className="w-full max-w-4xl py-12 px-6 flex flex-col items-center">
+      <div className="w-full max-w-4xl py-12 px-6 flex flex-col items-center overflow-y-auto">
         <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: -50 }}
@@ -62,6 +57,7 @@ export default function TrainingPlanList() {
                 difficulty,
                 lenght,
                 goals,
+                documentId,
               } = plan;
 
               return (
@@ -80,6 +76,7 @@ export default function TrainingPlanList() {
                     <p className="text-gray-400 text-sm mt-2">
                       {description || "Bez popisu"}
                     </p>
+                    <br />
                     <div className="flex items-center mt-4 space-x-4">
                       <img
                         src={
@@ -97,14 +94,19 @@ export default function TrainingPlanList() {
                         <p className="text-gray-500 text-sm">
                           Délka: {formatLenght(lenght)}
                         </p>
-
                         <p className="text-gray-500 text-sm">Cíl: {goals}</p>
                       </div>
                     </div>
                     <div className="mt-4 flex justify-end">
-                      <button className="px-6 py-2 bg-gradient-to-r from-green-400 to-teal-500 text-white rounded-full shadow-lg hover:shadow-xl transition">
-                        Zobrazit detaily
-                      </button>
+                      <Link to={`/treninky/${documentId}`}>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="px-6 py-2 bg-gradient-to-r from-green-400 to-teal-500 text-white rounded-full shadow-lg hover:shadow-xl transition"
+                        >
+                          Zobrazit detaily
+                        </motion.button>
+                      </Link>
                     </div>
                   </div>
                 </motion.div>
