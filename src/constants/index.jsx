@@ -114,7 +114,7 @@ export const faq = [
 export const plans = [
   {
     id: "0",
-    title: "3 měsíční členství",
+    title: "1 měsíční členství",
     priceMonthly: 1497,
     priceFull: 4490,
     caption: "Pokud si nejsi jistý",

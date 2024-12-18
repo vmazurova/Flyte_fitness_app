@@ -26,6 +26,7 @@ const TrainingPlanDetail = () => {
 
   // Převod délky z enum (např. Minut30 -> 30 minut)
   const formatLength = (length) => {
+    if (!length) return "Neznámá délka";
     return length.replace("Minut", "") + " minut";
   };
 
@@ -63,7 +64,10 @@ const TrainingPlanDetail = () => {
   }
 
   return (
-    <div className=" min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white flex flex-col items-center py-8 px-4">
+    <div
+      className="bg-[radial-gradient(circle_at_top_left,_#2b2e3b,_#1f2029,_#141517)]
+ min-h-screen from-gray-800 via-gray-900 to-black text-white flex flex-col items-center py-8 px-4"
+    >
       {/* Zpět na seznam */}
       <Link
         to="/treninky"
@@ -103,7 +107,7 @@ const TrainingPlanDetail = () => {
             <span className="text-gray-400">{trainingPlan.difficulty}</span>
           </div>
           <div className="text-gray-400 flex justify-between items-center mb-4">
-            <span>{formatLength(trainingPlan.lenght)}</span>
+            <span>{formatLength(trainingPlan?.lenght)}</span>
           </div>
           <h1 className="text-3xl font-bold">{trainingPlan.title}</h1>
           <p className="text-sm text-gray-400 mt-4">

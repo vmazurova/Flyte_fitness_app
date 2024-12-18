@@ -69,7 +69,7 @@ const TrainingPlan = () => {
               <div className="rounded-40 relative w-[855px] border-2 border-s5 p-2">
                 <div className="relative rounded-3xl bg-s1 px-5 pb-5 pt-5">
                   <img
-                    src="/images/screen.jpg"
+                    src="/images/training_plan_web2.png"
                     width={855}
                     height={655}
                     alt="screen"
