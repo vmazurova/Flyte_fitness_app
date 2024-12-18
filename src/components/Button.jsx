@@ -29,7 +29,7 @@ const Button = ({
     </>
   );
 
-  const MotionTag = href ? motion.a : motion.button; // Dynamicky vybereme tag
+  const MotionTag = href ? motion.a : motion.button; 
 
   return (
     <MotionTag

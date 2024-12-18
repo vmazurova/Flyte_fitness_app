@@ -1,192 +1,106 @@
-import React, { useState, useEffect } from "react";
-import Chart from "react-apexcharts";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Drawer, { drawerClasses } from "@mui/material/Drawer";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import Container from "@mui/material/Container";
+import {
+  FitnessCenter,
+  AccountCircle,
+  Notifications,
+} from "@mui/icons-material";
+import SearchIcon from "@mui/icons-material/Search";
+import Badge from "@mui/material/Badge";
 
-const MemberDetail = () => {
-  // Data pro první graf (Sales Overview)
-  const [salesChart, setSalesChart] = useState({
-    series: [
-      {
-        name: "Websites",
-        data: [200, 300, 400, 500, 300, 200, 400, 300, 350, 330, 400, 500],
-      },
-      {
-        name: "Mobile Apps",
-        data: [150, 250, 300, 400, 250, 150, 300, 250, 200, 250, 300, 400],
-      },
-    ],
-    options: {
-      chart: {
-        type: "area",
-        height: 350,
-        toolbar: { show: false },
-      },
-      colors: ["#A35CFF", "#8D36FF"],
-      dataLabels: { enabled: false },
-      stroke: { curve: "smooth", width: 2 },
-      xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ],
-        labels: {
-          style: { colors: "#C4CBF5", fontFamily: "Poppins" },
-        },
-      },
-      yaxis: {
-        labels: {
-          style: { colors: "#C4CBF5", fontFamily: "Poppins" },
-        },
-      },
-      tooltip: { theme: "dark" },
-      grid: { borderColor: "#333" },
-    },
-  });
+const navData = [
+  { path: "/", title: "Dashboard", icon: <FitnessCenter /> },
+  { path: "/workouts", title: "Workouts", icon: <FitnessCenter /> },
+  { path: "/nutrition", title: "Nutrition", icon: <FitnessCenter /> },
+  { path: "/profile", title: "Profile", icon: <AccountCircle /> },
+];
 
-  // Data pro druhý graf (Active Users)
-  const [usersChart, setUsersChart] = useState({
-    series: [
-      {
-        name: "Active Users",
-        data: [320, 250, 400, 150, 200, 300],
-      },
-    ],
-    options: {
-      chart: {
-        type: "bar",
-        height: 350,
-        toolbar: { show: false },
-      },
-      colors: ["#712BCD"],
-      plotOptions: {
-        bar: {
-          borderRadius: 5,
-          columnWidth: "45%",
-        },
-      },
-      dataLabels: { enabled: false },
-      xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        labels: {
-          style: { colors: "#C4CBF5", fontFamily: "Poppins" },
-        },
-      },
-      yaxis: {
-        labels: {
-          style: { colors: "#C4CBF5", fontFamily: "Poppins" },
-        },
-      },
-      tooltip: { theme: "dark" },
-      grid: { borderColor: "#333" },
-    },
-  });
-
-  // Data pro seznam kurzů
-  const [courses, setCourses] = useState([]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch("http://localhost:1337/api/courses");
-        const result = await response.json();
-        setCourses(result.data || []);
-      } catch (error) {
-        console.error("Chyba při načítání kurzů:", error);
-      }
-    };
-    fetchCourses();
-  }, []);
-
-  const handleEnroll = (courseId) => {
-    console.log(`Přihlášen na kurz s ID: ${courseId}`);
-  };
+const DashboardLayout = ({ children }) => {
+  const theme = useTheme();
+  const [navOpen, setNavOpen] = useState(false);
 
   return (
-    <div
-      className="min-h-screen bg-cover bg-center"
-      style={{
-        backgroundImage: "url('/path/to/your-background.jpg')",
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+        backgroundColor: theme.palette.background.default,
       }}
     >
-      <div className="flex flex-col gap-8 p-8">
-        {/* Sekce grafů */}
-        <div className="flex flex-row gap-8">
-          {/* První graf */}
-          <div className="bg-s2 p-6 rounded-20 shadow-200 flex-1">
-            <h2 className="text-p4 text-2xl font-bold mb-2">Sales Overview</h2>
-            <p className="text-p5 text-sm">+5% more in 2021</p>
-            <Chart
-              options={salesChart.options}
-              series={salesChart.series}
-              type="area"
-              height={350}
-            />
-          </div>
+      {/* AppBar */}
+      <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={() => setNavOpen(!navOpen)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
+            Fitness Dashboard
+          </Typography>
+          <Box display="flex" alignItems="center" gap={2}>
+            <IconButton color="inherit">
+              <SearchIcon />
+            </IconButton>
+            <IconButton color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <Notifications />
+              </Badge>
+            </IconButton>
+            <IconButton color="inherit">
+              <AccountCircle />
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
 
-          {/* Druhý graf */}
-          <div className="bg-s2 p-6 rounded-20 shadow-200 flex-1">
-            <h2 className="text-p4 text-2xl font-bold mb-2">Active Users</h2>
-            <p className="text-green-400 text-sm">(+23%) than last week</p>
-            <Chart
-              options={usersChart.options}
-              series={usersChart.series}
-              type="bar"
-              height={350}
-            />
-          </div>
-        </div>
+      {/* Drawer */}
+      <Drawer
+        variant="persistent"
+        open={navOpen}
+        sx={{
+          [`& .${drawerClasses.paper}`]: {
+            width: 240,
+            boxSizing: "border-box",
+          },
+        }}
+      >
+        <Toolbar />
+        <Divider />
+        <List>
+          {navData.map((item) => (
+            <ListItem key={item.title} disablePadding>
+              <ListItemButton href={item.path}>
+                <Box sx={{ marginRight: 2 }}>{item.icon}</Box>
+                {item.title}
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
 
-        {/* Sekce kurzů (pod jedním grafem) */}
-        <div className="bg-s2 p-6 rounded-20 shadow-200 flex-1">
-          <h2 className="text-p4 text-2xl font-bold mb-4">Dostupné kurzy</h2>
-          <div className="flex flex-col gap-4">
-            {courses.length > 0 ? (
-              courses.map((course) => {
-                const formattedDate = course.attributes?.date
-                  ? new Date(course.attributes.date).toLocaleDateString("cs-CZ")
-                  : "Datum není dostupné";
-
-                return (
-                  <motion.div
-                    key={course.id}
-                    className="bg-s3 p-4 rounded-lg flex justify-between items-center"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <div>
-                      <h3 className="text-white font-bold text-lg">
-                        {course.attributes?.title || "Neznámý název"}
-                      </h3>
-                      <p className="text-p5 text-sm">Datum: {formattedDate}</p>
-                    </div>
-                    <Link to={`/jidelnicek/${course.id}`}>
-                      <button className="px-4 py-2 bg-p1 hover:bg-p2 text-white rounded-full shadow-md">
-                        Přihlásit
-                      </button>
-                    </Link>
-                  </motion.div>
-                );
-              })
-            ) : (
-              <p className="text-center text-white">
-                Žádné kurzy nejsou dostupné.
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* Main Content */}
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Toolbar />
+        <Container maxWidth="lg">{children}</Container>
+      </Box>
+    </Box>
   );
 };
 
-export default MemberDetail;
+export default DashboardLayout;

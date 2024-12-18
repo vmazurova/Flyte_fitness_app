@@ -12,66 +12,19 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-    if (window.innerWidth > 768) {
-      setIsOpen(true);
-    }
-  };
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
+const Sidebar = ({ isOpen, toggleSidebar }) => {
   const routesData = [
     { name: "Otevřené kurzy", path: "/kurzy", icon: <FaBookOpen /> },
-    {
-      name: "Tréninkové plány",
-      path: "/treninky",
-      icon: <FaDumbbell />,
-    },
+    { name: "Tréninkové plány", path: "/treninky", icon: <FaDumbbell /> },
     { name: "Jídelníčky", path: "/jidelnicky", icon: <FaUtensils /> },
     { name: "Osobní karta", path: "/osobni-slozka", icon: <FaIdCard /> },
     { name: "Kalendář", path: "/kalendar", icon: <FaCalendarAlt /> },
   ];
 
-  const createLinks = () =>
-    routesData.map((route, key) => (
-      <NavLink
-        to={route.path}
-        key={key}
-        className={`flex flex-col items-center px-6 py-5 text-base rounded-lg ${
-          isOpen ? "justify-start" : "justify-center"
-        } hover:bg-gradient-to-r hover:from-gray-700 hover:to-gray-500 group transition-all duration-300 shadow-lg`}
-        onClick={() => isMobile && setIsOpen(false)}
-      >
-        <div className="flex justify-center items-center h-12 w-12 text-xl text-gray-300 group-hover:text-white">
-          {route.icon}
-        </div>
-        {isOpen && (
-          <span className="mt-2 text-center text-gray-300 group-hover:text-white font-semibold">
-            {route.name}
-          </span>
-        )}
-      </NavLink>
-    ));
-
   return (
     <motion.div
       className={clsx(
-        "fixed top-0 left-0 h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white shadow-2xl z-50 flex flex-col",
+        "fixed top-0 left-0 h-full bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white shadow-xl z-50 flex flex-col",
         isOpen ? "w-72" : "w-20",
         "transition-all duration-300"
       )}
@@ -102,7 +55,24 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 overflow-y-auto px-3">{createLinks()}</nav>
+      <nav className="flex-1 overflow-y-auto px-3">
+        {routesData.map((route, key) => (
+          <NavLink
+            to={route.path}
+            key={key}
+            className="flex items-center px-4 py-3 text-base rounded-lg hover:bg-gradient-to-r hover:from-gray-700 hover:to-gray-500 group transition-all duration-300 shadow-lg"
+          >
+            <div className="flex items-center justify-center w-10 h-10 text-xl text-gray-300 group-hover:text-white">
+              {route.icon}
+            </div>
+            {isOpen && (
+              <span className="ml-4 text-gray-300 group-hover:text-white">
+                {route.name}
+              </span>
+            )}
+          </NavLink>
+        ))}
+      </nav>
 
       {/* Bottom Buttons */}
       <div className="flex flex-col items-center py-5 border-t border-gray-600">

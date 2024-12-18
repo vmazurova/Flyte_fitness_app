@@ -17,7 +17,7 @@ import CoursesList from "./pagesLogin/CoursesList.jsx";
 import CoursesDetail from "./pagesLogin/CourseDetail.jsx";
 import Bookings from "./pagesLogin/Bookings.jsx";
 import BookingDetail from "./pagesLogin/BookingDetail.jsx";
-import MealPlanList from "./pagesLogin/MealplansList.jsx";
+import MealPlanList from "./pagesLogin/MealPlanList.jsx";
 import Kalendar from "./pagesLogin/CourseCalendar.jsx";
 import MealPlanAdd from "./pagesLogin/MealPlanAdd.jsx";
 import CourseAdd from "./pagesLogin/CoursesAdd.jsx";

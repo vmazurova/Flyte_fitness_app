@@ -134,7 +134,6 @@ const CourseDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-200">
-      <Sidebar />
       <header className="py-4 bg-gray-900 shadow-sm">
         <div className="container mx-auto px-6 flex justify-between items-center">
           <motion.h1
