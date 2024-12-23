@@ -23,6 +23,11 @@ import MealPlanAdd from "./pagesLogin/MealPlanAdd.jsx";
 import CourseAdd from "./pagesLogin/CoursesAdd.jsx";
 import TrainingPlanDetail from "./pagesLogin/TrainingPlanDetail.jsx";
 import TrainingPlanList from "./pagesLogin/TrainingPlanList.jsx";
+import TrainingPlanAdd from "./pagesLogin/TrainingPlanAdd.jsx";
+import MealPlanDetail from "./pagesLogin/MealPlanDetail.jsx";
+import ProtectedRoute from "./auth/ProtectedRoute"; // Nová komponenta
+import AuthProvider from "./auth/AuthProvider";
+
 const App = () => {
   const location = useLocation();
 
@@ -37,11 +42,13 @@ const App = () => {
     "/kurz-pridani",
     "/jidelnicek-pridani",
     "/treninky",
+    "/trenink-pridani",
   ];
 
   const hideHeaderPatterns = [
     /^\/kurz\/[a-zA-Z0-9]+$/,
-    /^\/treninky\/[a-zA-Z0-9]+$/,
+    /^\/trenink\/[a-zA-Z0-9]+$/,
+    /^\/jidelnicek\/[a-zA-Z0-9]+$/,
   ];
 
   const showHeader =
@@ -49,36 +56,42 @@ const App = () => {
     !hideHeaderPatterns.some((pattern) => pattern.test(location.pathname));
 
   return (
-    <main className="overflow-hidden">
-      {showHeader && <Header />}
-      <Switch>
-        <Route path="/auth/registrace" component={SignUp} />
-        <Route path="/auth/prihlaseni" component={Login} />
-        <Route path="/osobni-slozka" component={MemberDetail} />
-        <Route path="/odhlaseni" component={LogOut} />
-        <Route path="/zapomenute-heslo" component={ForgotPassword} />
-        <Route path="/kurzy" component={CoursesList} />
-        <Route path="/kalendar" component={Kalendar} />
-        <Route path="/kurz/:id" component={CoursesDetail} />
-        <Route path="/bookings" component={Bookings}></Route>
-        <Route path="/bookings/:id" component={BookingDetail}></Route>
-        <Route path="/jidelnicky" component={MealPlanList}></Route>
-        <Route path="/jidelnicek-pridani" component={MealPlanAdd}></Route>
-        <Route path="/kurz-pridani" component={CourseAdd}></Route>
-        <Route path="/treninky/:id" component={TrainingPlanDetail}></Route>
-        <Route path="/treninky" component={TrainingPlanList}></Route>
-        <Route path="/" exact>
-          <Hero />
-          <Features />
-          <Pricing />
-          <MealPlan />
-          <TrainingPlan />
-          <Faq />
-          <Testimonials />
-        </Route>
-      </Switch>
-      <Footer />
-    </main>
+    <AuthProvider>
+      {" "}
+      {/* AuthProvider obklopuje celou aplikaci */}
+      <main className="overflow-hidden">
+        {showHeader && <Header />}
+        <Switch>
+          <Route path="/auth/registrace" component={SignUp} />
+          <Route path="/auth/prihlaseni" component={Login} />
+          <Route path="/zapomenute-heslo" component={ForgotPassword} />
+          <ProtectedRoute path="/osobni-slozka" component={MemberDetail} />
+          <ProtectedRoute path="/odhlaseni" component={LogOut} />
+          <ProtectedRoute path="/kurzy" component={CoursesList} />
+          <ProtectedRoute path="/kalendar" component={Kalendar} />
+          <ProtectedRoute path="/kurz/:id" component={CoursesDetail} />
+          <ProtectedRoute path="/bookings" component={Bookings} />
+          <ProtectedRoute path="/bookings/:id" component={BookingDetail} />
+          <ProtectedRoute path="/jidelnicky" component={MealPlanList} />
+          <ProtectedRoute path="/jidelnicek-pridani" component={MealPlanAdd} />
+          <ProtectedRoute path="/kurz-pridani" component={CourseAdd} />
+          <ProtectedRoute path="/trenink/:id" component={TrainingPlanDetail} />
+          <ProtectedRoute path="/treninky" component={TrainingPlanList} />
+          <ProtectedRoute path="/trenink-pridani" component={TrainingPlanAdd} />
+          <ProtectedRoute path="/jidelnicek/:id" component={MealPlanDetail} />
+          <Route path="/" exact>
+            <Hero />
+            <Features />
+            <Pricing />
+            <MealPlan />
+            <TrainingPlan />
+            <Faq />
+            <Testimonials />
+          </Route>
+        </Switch>
+        <Footer />
+      </main>
+    </AuthProvider>
   );
 };
 

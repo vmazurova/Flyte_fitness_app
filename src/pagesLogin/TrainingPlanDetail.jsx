@@ -16,21 +16,19 @@ const TrainingPlanDetail = () => {
     return exerciseString.split(";").map((exercise) => {
       const parts = exercise.split("|").map((part) => part.trim());
       return {
-        name: parts[0] || "Neznámý cvik", // Název cviku
-        details: parts[1] || null, // Čas nebo počet opakování
-        icon: parts[2] || "❓", // Emoji
-        sets: parts[3] || null, // Počet setů
+        name: parts[0] || "Neznámý cvik",
+        details: parts[1] || null,
+        icon: parts[2] || "❓",
+        sets: parts[3] || null,
       };
     });
   };
 
-  // Převod délky z enum (např. Minut30 -> 30 minut)
   const formatLength = (length) => {
     if (!length) return "Neznámá délka";
     return length.replace("Minut", "") + " minut";
   };
 
-  // Barva kolečka podle obtížnosti
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
       case "Začátečník":
@@ -68,7 +66,6 @@ const TrainingPlanDetail = () => {
       className="bg-[radial-gradient(circle_at_top_left,_#2b2e3b,_#1f2029,_#141517)]
  min-h-screen from-gray-800 via-gray-900 to-black text-white flex flex-col items-center py-8 px-4"
     >
-      {/* Zpět na seznam */}
       <Link
         to="/treninky"
         className="absolute top-4 left-4 p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition"
@@ -76,9 +73,7 @@ const TrainingPlanDetail = () => {
         ← Zpět
       </Link>
 
-      {/* Obsah */}
       <div className=" mt-10 flex flex-col lg:flex-row items-center lg:items-start lg:space-x-6 max-w-7xl w-full">
-        {/* Obrázek */}
         <div className="lg:w-3/5 w-full rounded-xl overflow-hidden shadow-lg bg-gray-900 relative">
           <img
             src={
@@ -96,7 +91,6 @@ const TrainingPlanDetail = () => {
           </div>
         </div>
 
-        {/* Detaily */}
         <div className="lg:w-2/5 w-full bg-gray-900 rounded-xl p-6 shadow-lg">
           <div className="flex items-center mb-4">
             <div
@@ -116,9 +110,9 @@ const TrainingPlanDetail = () => {
           <h3 className="text-lg font-semibold mt-6">Cíle tréninku</h3>
           <ul className="list-disc list-inside text-gray-400 mt-2 space-y-1">
             {trainingPlan.goals
-              ?.split(";") // Rozdělíme cíle podle pomlčky
-              .map((goal) => goal.trim()) // Odstraníme mezery na začátku a na konci
-              .filter((goal) => goal) // Odstraníme prázdné řádky
+              ?.split(";")
+              .map((goal) => goal.trim())
+              .filter((goal) => goal)
               .map((goal, idx) => (
                 <li key={idx} className="whitespace-pre-line">
                   {goal}
@@ -135,7 +129,6 @@ const TrainingPlanDetail = () => {
               key={idx}
               className="flex items-center justify-between bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition"
             >
-              {/* Levá část: Emoji v kolečku a název */}
               <div className="flex items-center space-x-4 min-w-0">
                 <div className="w-12 h-12 bg-gray-700 flex items-center justify-center rounded-full text-2xl flex-shrink-0">
                   {exercise.icon}
@@ -145,7 +138,6 @@ const TrainingPlanDetail = () => {
                 </span>
               </div>
 
-              {/* Pravá část: Čas/opakování a počet setů */}
               <div className="text-gray-300 text-right flex-shrink-0 whitespace-nowrap">
                 {exercise.details && (
                   <span className="mr-4">{exercise.details}</span>

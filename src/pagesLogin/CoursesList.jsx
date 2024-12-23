@@ -2,6 +2,7 @@ import useFetch from "../hooks/useFetch";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar.jsx";
+import React, { useState, useEffect } from "react";
 
 export default function CourseList() {
   const {
@@ -9,6 +10,26 @@ export default function CourseList() {
     error,
     data = { data: [] },
   } = useFetch("http://localhost:1337/api/courses?populate=*");
+
+  const [userRole, setUserRole] = useState(null); // Stav pro roli uživatele
+
+  // Fetchování role uživatele
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const token = localStorage.getItem("jwt");
+      if (!token) return;
+      try {
+        const response = await fetch("http://localhost:1337/api/users/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const user = await response.json();
+        setUserRole(user.role?.name || null);
+      } catch (error) {
+        console.error("Chyba při načítání role uživatele:", error);
+      }
+    };
+    fetchUserRole();
+  }, []);
 
   if (loading)
     return <p className="text-white text-center mt-20 text-xl">Načítání...</p>;
@@ -25,7 +46,7 @@ export default function CourseList() {
   });
 
   return (
-    <div className="h-screen w-screen bg-cover bg-fixed bg-center flex flex-col lg:flex-row ">
+    <div className="h-screen w-screen bg-cover bg-fixed bg-center flex flex-col lg:flex-row">
       <Sidebar />
 
       {/* Main Content */}
@@ -44,6 +65,21 @@ export default function CourseList() {
             Vyberte si z naší nabídky aktuálních kurzů a začněte ještě dnes.
           </p>
         </motion.div>
+
+        {/* Button for Trainers */}
+        {userRole === "Trainer" && (
+          <div className="text-center mb-8">
+            <Link to="/kurz-pridani">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-4 lg:px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-full shadow-lg hover:shadow-xl transition-shadow"
+              >
+                Přidat kurz
+              </motion.button>
+            </Link>
+          </div>
+        )}
 
         {/* Course Grid */}
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">

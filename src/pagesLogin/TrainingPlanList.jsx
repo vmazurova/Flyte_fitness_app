@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import useFetch from "../hooks/useFetch";
 import Sidebar from "./Sidebar.jsx";
@@ -10,6 +10,26 @@ export default function TrainingPlanList() {
     error,
     data = { data: [] },
   } = useFetch("http://localhost:1337/api/training-plans?populate=*");
+
+  const [userRole, setUserRole] = useState(null); // Stav pro roli uživatele
+
+  // Fetchování role uživatele
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const token = localStorage.getItem("jwt");
+      if (!token) return;
+      try {
+        const response = await fetch("http://localhost:1337/api/users/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const user = await response.json();
+        setUserRole(user.role?.name || null);
+      } catch (error) {
+        console.error("Chyba při načítání role uživatele:", error);
+      }
+    };
+    fetchUserRole();
+  }, []);
 
   if (loading)
     return <p className="text-white text-center mt-20 text-xl">Načítání...</p>;
@@ -45,6 +65,21 @@ export default function TrainingPlanList() {
             Vyberte si plán, který vám pomůže dosáhnout vašich fitness cílů.
           </p>
         </motion.div>
+
+        {/* Button for Trainers */}
+        {userRole === "Trainer" && (
+          <div className="text-center mb-8">
+            <Link to="/trenink-pridani">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-2 bg-gradient-to-r from-green-400 to-teal-500 text-white rounded-full shadow-lg hover:shadow-xl transition"
+              >
+                Přidat tréninkový plán
+              </motion.button>
+            </Link>
+          </div>
+        )}
 
         <div className="relative border-l border-gray-700">
           {trainingPlans.length > 0 ? (
@@ -98,7 +133,7 @@ export default function TrainingPlanList() {
                       </div>
                     </div>
                     <div className="mt-4 flex justify-end">
-                      <Link to={`/treninky/${documentId}`}>
+                      <Link to={`/trenink/${documentId}`}>
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}

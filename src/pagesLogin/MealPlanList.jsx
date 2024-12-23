@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { SlideDown } from "react-slidedown";
+import clsx from "clsx";
+import "react-slidedown/lib/slidedown.css";
 import useFetch from "../hooks/useFetch";
 import Sidebar from "./Sidebar.jsx";
 import Slider from "react-slick";
@@ -8,25 +11,105 @@ import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 
 export default function MealPlanList() {
+  // Stavy
+  const [weight, setWeight] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const [activeId, setActiveId] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+
+  // Fetchování dat o jídelníčcích
   const {
     loading,
     error,
     data = { data: [] },
   } = useFetch("http://localhost:1337/api/meal-plans?populate=*");
 
-  const [weight, setWeight] = useState(0);
+  // Načtení detailů uživatele
+  const fetchUserDetails = async () => {
+    const token = localStorage.getItem("jwt");
 
-  // Výpočet makroživin na základě hmotnosti
+    if (!token) {
+      console.warn("JWT token nebyl nalezen.");
+      return null;
+    }
+
+    try {
+      const response = await fetch("http://localhost:1337/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        console.error(
+          "Chyba při získávání detailů uživatele:",
+          response.statusText
+        );
+        return null;
+      }
+
+      const user = await response.json();
+      console.log("Načtený uživatel:", user);
+      return user;
+    } catch (error) {
+      console.error("Chyba při volání API:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const getUserRole = async () => {
+      const user = await fetchUserDetails();
+      if (user && user.role) {
+        setUserRole(user.role.name); // Nastavení role
+      } else {
+        console.warn("Role není dostupná.");
+        setUserRole(null);
+      }
+    };
+
+    getUserRole();
+  }, []);
+
+  // Výpočet makroživin
   const calculateMacros = (weight) => {
     return {
-      proteins: (weight * 1.6).toFixed(1), // 1.6g bílkovin na kg
-      carbs: (weight * 4).toFixed(1), // 4g sacharidů na kg
-      fats: (weight * 0.8).toFixed(1), // 0.8g tuků na kg
-      sugars: (weight * 1).toFixed(1), // 1g cukrů na kg
+      proteins: (weight * 1.6).toFixed(1),
+      carbs: (weight * 4).toFixed(1),
+      fats: (weight * 0.8).toFixed(1),
+      sugars: (weight * 1).toFixed(1),
     };
   };
 
   const macros = calculateMacros(weight);
+
+  // Slider nastavení
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
+  };
 
   if (loading)
     return <p className="text-white text-center mt-20 text-xl">Načítání...</p>;
@@ -39,25 +122,12 @@ export default function MealPlanList() {
 
   const mealPlans = Array.isArray(data.data) ? data.data : [];
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 2,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
-  };
-
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col font-sans">
-      <Sidebar />
+    <div
+      className={`min-h-screen bg-gray-900 text-white flex flex-col font-sans transition-all duration-300 ${isSidebarOpen ? "ml-72" : "ml-16"}`}
+    >
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
       <div className="flex-1 py-12 px-6">
         {/* Header */}
         <motion.div
@@ -66,6 +136,10 @@ export default function MealPlanList() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
+          <p className="text-center text-gray-500">
+            Přihlášen jako: {userRole || "Nepřihlášený uživatel"}
+          </p>
+
           <h1 className="text-4xl lg:text-6xl font-bold text-white">
             Tvoje jídelníčky
           </h1>
@@ -74,9 +148,24 @@ export default function MealPlanList() {
           </p>
         </motion.div>
 
+        {/* Tlačítko Přidat jídelníček */}
+        {userRole === "Trainer" && (
+          <div className="mb-6 text-center">
+            <Link to="/jidelnicek-pridani">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300"
+              >
+                Přidat jídelníček
+              </motion.button>
+            </Link>
+          </div>
+        )}
+
         {/* Slider */}
-        <div className="max-w-screen-lg mx-auto">
-          <Slider {...settings}>
+        <div className="w-full">
+          <Slider {...settings} className="w-full">
             {mealPlans.map((mealPlan, index) => {
               const {
                 id,
@@ -103,7 +192,7 @@ export default function MealPlanList() {
                     <img
                       src={imageUrl}
                       alt={title || "Jídelníček"}
-                      className="w-full h-64 object-cover"
+                      className="w-full h-80 object-cover"
                     />
                     <div className="p-6 text-center">
                       <h3 className="text-xl font-semibold text-white mb-2">
@@ -119,7 +208,7 @@ export default function MealPlanList() {
                           : "N/A"}
                       </p>
                       <div className="mt-4">
-                        <Link to={`/meal-plan/${documentId}`}>
+                        <Link to={`/jidelnicek/${documentId}`}>
                           <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
@@ -135,40 +224,6 @@ export default function MealPlanList() {
               );
             })}
           </Slider>
-        </div>
-
-        {/* Makroživiny */}
-        <div className="mt-16 text-center">
-          <h2 className="text-3xl font-semibold text-white mb-6">
-            Spočítejte si makroživiny
-          </h2>
-          <input
-            type="number"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            placeholder="Zadejte svou hmotnost (kg)"
-            className="p-3 w-72 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12 max-w-screen-lg mx-auto">
-            {[
-              { label: "Bílkoviny", value: macros.proteins, unit: "g" },
-              { label: "Sacharidy", value: macros.carbs, unit: "g" },
-              { label: "Tuky", value: macros.fats, unit: "g" },
-              { label: "Cukry", value: macros.sugars, unit: "g" },
-            ].map((macro, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center justify-center p-6 bg-gray-800 rounded-lg shadow-md border border-gray-700 hover:bg-gray-700 transition duration-300"
-              >
-                <h3 className="text-lg font-semibold text-gray-300">
-                  {macro.label}
-                </h3>
-                <p className="text-4xl font-bold text-green-400 mt-2">
-                  {macro.value} {macro.unit}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useHistory } from "react-router-dom";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import {
@@ -10,14 +10,41 @@ import {
   FaCalendarAlt,
   FaCog,
   FaSignOutAlt,
+  FaPlus,
 } from "react-icons/fa";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null); // Stav pro roli uživatele
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false); // Stav pro rozbalovací menu
+  const history = useHistory();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    history.push("/auth/prihlaseni");
+  };
+
+  // Simulace načtení role uživatele (z tokenu nebo API)
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const token = localStorage.getItem("jwt");
+      if (!token) return;
+      try {
+        const response = await fetch("http://localhost:1337/api/users/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const user = await response.json();
+        setUserRole(user.role?.name || null);
+      } catch (error) {
+        console.error("Chyba při načítání role uživatele:", error);
+      }
+    };
+    fetchUserRole();
+  }, []);
 
   const routesData = [
     { name: "Otevřené kurzy", path: "/kurzy", icon: <FaBookOpen /> },
@@ -60,7 +87,7 @@ const Sidebar = () => {
       >
         {/* Header */}
         <div className="flex items-center justify-between h-16 px-4 bg-gray-900 border-b border-gray-800">
-          {isOpen && <h1 className="text-lg font-bold">Menu</h1>}
+          {isOpen && <h1 className="text-lg font-bold"></h1>}
         </div>
 
         {/* Navigation Links */}
@@ -84,6 +111,42 @@ const Sidebar = () => {
               {isOpen && <span>{route.name}</span>}
             </NavLink>
           ))}
+
+          {/* Vytvořit menu pro Trainer */}
+          {userRole === "Trainer" && (
+            <div className="relative group">
+              <button
+                onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}
+                className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
+              >
+                <FaPlus className="text-xl" />
+                {isOpen && <span>Vytvořit</span>}
+              </button>
+
+              {isCreateMenuOpen && (
+                <div className="absolute left-0 w-full mt-2 bg-gray-800 text-gray-400 rounded-lg shadow-lg overflow-hidden z-50">
+                  <NavLink
+                    to="/kurz-pridani"
+                    className="block px-4 py-2 hover:bg-gray-700 hover:text-white"
+                  >
+                    Vytvořit kurz
+                  </NavLink>
+                  <NavLink
+                    to="/trenink-pridani"
+                    className="block px-4 py-2 hover:bg-gray-700 hover:text-white"
+                  >
+                    Vytvořit trénink
+                  </NavLink>
+                  <NavLink
+                    to="/jidelnicek-pridani"
+                    className="block px-4 py-2 hover:bg-gray-700 hover:text-white"
+                  >
+                    Vytvořit jídelníček
+                  </NavLink>
+                </div>
+              )}
+            </div>
+          )}
         </nav>
 
         {/* Footer Buttons */}
@@ -92,7 +155,10 @@ const Sidebar = () => {
             <FaCog className="text-xl" />
             {isOpen && <span>Nastavení</span>}
           </button>
-          <button className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors">
+          <button
+            onClick={handleLogout}
+            className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
+          >
             <FaSignOutAlt className="text-xl" />
             {isOpen && <span>Odhlásit se</span>}
           </button>
