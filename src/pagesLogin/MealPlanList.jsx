@@ -124,7 +124,7 @@ export default function MealPlanList() {
 
   return (
     <div
-      className={`min-h-screen bg-gray-900 text-white flex flex-col font-sans transition-all duration-300 ${isSidebarOpen ? "ml-72" : "ml-16"}`}
+      className={`min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col font-sans transition-all duration-300 ${isSidebarOpen ? "ml-72" : "ml-16"}`}
     >
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
@@ -136,7 +136,7 @@ export default function MealPlanList() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
         >
-          <p className="text-center text-gray-500">
+          <p className="text-center text-gray-400">
             Přihlášen jako: {userRole || "Nepřihlášený uživatel"}
           </p>
 
@@ -147,7 +147,6 @@ export default function MealPlanList() {
             Vyber si ideální plán pro tvé zdraví.
           </p>
         </motion.div>
-
         {/* Tlačítko Přidat jídelníček */}
         {userRole === "Trainer" && (
           <div className="mb-6 text-center">
@@ -155,14 +154,13 @@ export default function MealPlanList() {
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300"
+                className="px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition duration-300"
               >
                 Přidat jídelníček
               </motion.button>
             </Link>
           </div>
         )}
-
         {/* Slider */}
         <div className="w-full">
           <Slider {...settings} className="w-full">

@@ -14,7 +14,7 @@ const Login = () => {
   const [user, setUser] = useState(initialUser);
   const [errors, setErrors] = useState({ password: "" });
   const history = useHistory();
-  const { setUser: setContextUser } = useContext(AuthContext); // Použití AuthContext
+  const { setUser: setContextUser } = useContext(AuthContext);
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
@@ -54,13 +54,13 @@ const Login = () => {
       if (res.data.jwt) {
         localStorage.setItem("jwt", res.data.jwt);
         const decodedToken = JSON.parse(atob(res.data.jwt.split(".")[1]));
-        setContextUser({ id: decodedToken.id }); // Nastavení uživatele do kontextu
+        setContextUser({ id: decodedToken.id });
 
         toast.success("Přihlášení proběhlo úspěšně!", {
           hideProgressBar: true,
         });
         setUser(initialUser);
-        history.push("/jidelnicky");
+        history.push("/treninky");
       }
     } catch (error) {
       console.error(

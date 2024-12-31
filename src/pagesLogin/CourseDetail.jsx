@@ -9,92 +9,49 @@ const CourseDetail = () => {
   const [isBooked, setIsBooked] = useState(false);
   const [bookingId, setBookingId] = useState(null);
   const [loadingAction, setLoadingAction] = useState(false);
-
+  const [loadingBookingStatus, setLoadingBookingStatus] = useState(true);
+  const [userRole, setUserRole] = useState(null);
+  const [enrolledUsers, setEnrolledUsers] = useState([]);
   const { loading, error, data } = useFetch(
     `http://localhost:1337/api/courses?filters[documentId][$eq]=${documentId}&populate=*`
-  );
-  const { data: allCourses } = useFetch(
-    `http://localhost:1337/api/courses?populate=*`
   );
 
   const course = data?.data?.[0];
 
   useEffect(() => {
-    const checkBooking = async () => {
+    const fetchUserRole = async () => {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        console.error("No valid token found.");
+        return;
+      }
+
       try {
-        const token = localStorage.getItem("jwt");
+        const response = await fetch("http://localhost:1337/api/users/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        if (!token) {
-          console.error("User is not logged in.");
-          return;
-        }
-
-        const userId = JSON.parse(atob(token.split(".")[1])).id;
-
-        const response = await fetch(
-          `http://localhost:1337/api/bookings?filters[course][documentId][$eq]=${documentId}&filters[user][id][$eq]=${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Unauthorized or invalid token");
-        }
-
-        const result = await response.json();
-
-        if (result?.data?.length > 0) {
-          setIsBooked(true);
-          setBookingId(result.data[0].id);
+        if (response.ok) {
+          const userData = await response.json();
+          setUserRole(userData.role?.name || null); // Zkontroluj, jestli role vrací "Trainer"
         } else {
-          setIsBooked(false);
-          setBookingId(null);
+          console.error("Failed to fetch user role:", response.statusText);
         }
-      } catch (err) {
-        console.error("Error checking booking:", err);
+      } catch (error) {
+        console.error("Error fetching user role:", error);
       }
     };
 
-    checkBooking();
-  }, [documentId]);
+    fetchUserRole();
+  }, []);
 
-  const handleBook = async () => {
-    setLoadingAction(true);
+  const handleRemoveUser = async (bookingId) => {
     try {
       const token = localStorage.getItem("jwt");
-
-      const response = await fetch("http://localhost:1337/api/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          data: {
-            course: documentId,
-          },
-        }),
-      });
-
-      if (response.ok) {
-        setIsBooked(true);
-        const result = await response.json();
-        setBookingId(result.data.id);
+      if (!bookingId) {
+        console.error("Neplatné bookingId.");
+        return;
       }
-    } catch (err) {
-      console.error("Error booking:", err);
-    } finally {
-      setLoadingAction(false);
-    }
-  };
-
-  const handleCancelBooking = async () => {
-    setLoadingAction(true);
-    try {
-      const token = localStorage.getItem("jwt");
 
       const response = await fetch(
         `http://localhost:1337/api/bookings/${bookingId}`,
@@ -107,22 +64,194 @@ const CourseDetail = () => {
       );
 
       if (response.ok) {
-        setIsBooked(false);
-        setBookingId(null);
+        console.log("Rezervace úspěšně odstraněna.");
+        setEnrolledUsers((prev) =>
+          prev.filter((user) => user.bookingId !== bookingId)
+        );
+      } else {
+        console.error(
+          "Chyba při odstraňování rezervace:",
+          await response.text()
+        );
       }
-    } catch (err) {
-      console.error("Error cancelling booking:", err);
+    } catch (error) {
+      console.error("Chyba při odstraňování rezervace:", error);
+    }
+  };
+
+  const fetchEnrolledUsers = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        console.error("No valid token found.");
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:1337/api/bookings?filters[course][documentId][$eq]=${documentId}&populate=user`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("API Response:", result.data); // Debugging
+        const users =
+          result?.data?.map((booking) => ({
+            bookingId: booking.id, // ID rezervace
+            username: booking.user?.username || "Neznámé jméno",
+            email: booking.user?.email || "Neznámý email",
+          })) || [];
+        setEnrolledUsers(users);
+      } else {
+        console.error("Chyba při načítání uživatelů:", await response.text());
+      }
+    } catch (error) {
+      console.error("Chyba při načítání uživatelů:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (documentId && userRole === "Trainer") {
+      fetchEnrolledUsers();
+    }
+  }, [documentId, userRole]);
+
+  const checkBooking = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        console.error("No valid token found.");
+        return;
+      }
+
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const userId = payload?.id;
+
+      console.log("Kontroluji rezervaci pro uživatele:", userId);
+      console.log("Kurz Document ID:", documentId);
+
+      const response = await fetch(
+        `http://localhost:1337/api/bookings?filters[user][id][$eq]=${userId}&filters[course][documentId][$eq]=${documentId}&populate=*`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("API Response:", result);
+
+        if (result?.data?.length > 0) {
+          console.log("Rezervace existuje:", result.data[0]);
+          setIsBooked(true);
+          setBookingId(result.data[0].id); // Nastavení správného bookingId
+        } else {
+          console.log("Rezervace neexistuje.");
+          setIsBooked(false);
+          setBookingId(null);
+        }
+      } else {
+        console.error("Chyba při načítání rezervace:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Chyba při kontrole rezervace:", error);
+    } finally {
+      setLoadingBookingStatus(false);
+    }
+  };
+
+  const handleBook = async () => {
+    setLoadingAction(true);
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        console.error("No valid token found.");
+        return;
+      }
+
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const userId = payload?.id;
+
+      const response = await fetch("http://localhost:1337/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          data: {
+            user: userId,
+            course: documentId,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Rezervace vytvořena:", result);
+        setIsBooked(true);
+        setBookingId(result.data.id);
+      } else {
+        console.error("Chyba při přihlášení na kurz:", await response.json());
+      }
+    } catch (error) {
+      console.error("Chyba při přihlášení na kurz:", error);
     } finally {
       setLoadingAction(false);
     }
   };
 
-  if (loading)
+  const handleCancelBooking = async () => {
+    setLoadingAction(true);
+    try {
+      const token = localStorage.getItem("jwt");
+      console.log("Zkouším odstranit booking s ID:", bookingId);
+
+      const response = await fetch(
+        `http://localhost:1337/api/bookings/${bookingId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log("Rezervace byla úspěšně zrušena.");
+        setIsBooked(false);
+        setBookingId(null);
+      } else {
+        const text = await response.text(); // Získání surového textu odpovědi
+        console.error("Chyba při odhlášení z kurzu:", text);
+      }
+    } catch (error) {
+      console.error("Chyba při odhlášení z kurzu:", error);
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+
+  useEffect(() => {
+    if (documentId) {
+      setLoadingBookingStatus(true);
+      checkBooking();
+    }
+  }, [documentId]);
+
+  if (loading || loadingBookingStatus) {
     return (
       <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
         <p className="text-white text-2xl animate-pulse">Načítání...</p>
       </div>
     );
+  }
 
   if (error || !data?.data?.length) {
     return (
@@ -159,9 +288,7 @@ const CourseDetail = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mx-auto py-12 px-6 grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Left - Main Course Details */}
         <section className="col-span-2 bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-xl shadow-lg p-8">
           <motion.img
             src={
@@ -194,66 +321,52 @@ const CourseDetail = () => {
                     })
                   : "Datum není k dispozici"}
               </p>
-              <button
-                onClick={isBooked ? handleCancelBooking : handleBook}
-                disabled={loadingAction}
-                className={`px-6 py-3 ${
-                  isBooked
-                    ? "bg-red-500 hover:bg-red-600"
-                    : "bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
-                } text-white rounded-full shadow-md transition-transform`}
-              >
-                {isBooked ? "Odhlásit se" : "Přihlásit se"}
-              </button>
+              {userRole === "Trainer" ? (
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4">
+                    Přihlášení uživatelé:
+                  </h3>
+                  {enrolledUsers.length > 0 ? (
+                    <ul>
+                      {enrolledUsers.map((user) => (
+                        <li
+                          key={user.bookingId}
+                          className="flex justify-between items-center text-gray-300 mb-2"
+                        >
+                          <span>
+                            {user.username} ({user.email})
+                          </span>
+                          <button
+                            onClick={() => handleRemoveUser(user.bookingId)}
+                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                          >
+                            Odebrat
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-400">
+                      Na tento kurz zatím nejsou žádní uživatelé přihlášeni.
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={isBooked ? handleCancelBooking : handleBook}
+                  disabled={loadingAction}
+                  className={`px-6 py-3 ${
+                    isBooked
+                      ? "bg-red-500 hover:bg-red-600"
+                      : "bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                  } text-white rounded-full shadow-md transition-transform`}
+                >
+                  {isBooked ? "Odhlásit se" : "Přihlásit se"}
+                </button>
+              )}
             </div>
           </motion.div>
         </section>
-
-        {/* Right - List of Other Courses */}
-        <aside className="col-span-1 bg-gray-900 rounded-xl p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Další kurzy</h2>
-          <ul className="space-y-6">
-            {allCourses?.data
-              ?.filter((course) => {
-                const courseDate = new Date(course.date);
-                return courseDate > new Date(); // Filtruje pouze budoucí kurzy
-              })
-              .map((course) => (
-                <li key={course.id} className="flex flex-col">
-                  <Link
-                    to={`/kurz/${course.documentId}`}
-                    className="flex items-center p-4 hover:bg-gray-800 rounded-md transition"
-                  >
-                    <div className="w-14 h-14 overflow-hidden rounded-lg mr-4">
-                      <img
-                        src={
-                          course?.image?.[0]?.formats?.thumbnail?.url
-                            ? `http://localhost:1337${course.image[0].formats.thumbnail.url}`
-                            : "https://via.placeholder.com/100x100"
-                        }
-                        alt={course.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="text-white font-medium text-lg">
-                        {course.title}
-                      </h4>
-                      <p className="text-gray-400 text-sm">
-                        {course.date
-                          ? new Date(course.date).toLocaleDateString("cs-CZ", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })
-                          : "Datum není k dispozici"}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-          </ul>
-        </aside>
       </main>
     </div>
   );
