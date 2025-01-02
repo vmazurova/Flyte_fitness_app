@@ -89,7 +89,6 @@ const CourseDetail = () => {
       console.error("Chyba při odstraňování kurzu:", error);
     }
   };
-
   const handleRemoveUser = async (bookingId) => {
     try {
       const token = localStorage.getItem("jwt");
@@ -97,6 +96,8 @@ const CourseDetail = () => {
         console.error("Neplatné bookingId.");
         return;
       }
+
+      console.log("Snažím se odstranit rezervaci s ID:", bookingId);
 
       const response = await fetch(
         `http://localhost:1337/api/bookings/${bookingId}`,
@@ -109,17 +110,17 @@ const CourseDetail = () => {
       );
 
       if (response.ok) {
-        console.log("Rezervace úspěšně odstraněna.");
-        // Aktualizace seznamu uživatelů po úspěšném odstranění
+        console.log(`Rezervace s ID ${bookingId} byla úspěšně odstraněna.`);
+        // Aktualizace seznamu uživatelů na frontend
         setEnrolledUsers((prev) =>
           prev.filter((user) => user.bookingId !== bookingId)
         );
       } else {
         const errorText = await response.text();
-        console.error("Chyba při odstraňování rezervace:", errorText);
+        console.error("Chyba při mazání rezervace:", errorText);
       }
     } catch (error) {
-      console.error("Chyba při odstraňování rezervace:", error);
+      console.error("Chyba při mazání rezervace:", error);
     }
   };
 
@@ -264,15 +265,15 @@ const CourseDetail = () => {
   };
 
   const handleCancelBooking = async () => {
-    setLoadingAction(true); // Nastavení stavu na načítání
+    setLoadingAction(true); // Nastavení načítacího stavu
     try {
       const token = localStorage.getItem("jwt");
       if (!bookingId) {
-        console.error("Žádné platné bookingId pro odstranění.");
+        console.error("Chyba: Nebylo nalezeno platné bookingId.");
         return;
       }
 
-      console.log("Zkouším odstranit booking s ID:", bookingId);
+      console.log("Odstraňování rezervace s ID:", bookingId);
 
       const response = await fetch(
         `http://localhost:1337/api/bookings/${bookingId}`,
@@ -285,22 +286,39 @@ const CourseDetail = () => {
       );
 
       if (response.ok) {
-        console.log("Reservation has been cancelled.");
+        console.log("Rezervace byla úspěšně odstraněna.");
+        // Aktualizace stavů
+        console.log("Před aktualizací stavů:", {
+          isBooked,
+          bookingId,
+          enrolledUsers,
+        });
 
         setIsBooked(false);
         setBookingId(null);
 
+        // Aktualizace seznamu přihlášených uživatelů
         setEnrolledUsers((prev) =>
           prev.filter((user) => user.bookingId !== bookingId)
         );
+
+        console.log("Po aktualizaci stavů:", {
+          isBooked,
+          bookingId,
+          enrolledUsers,
+        });
+
+        // Opětovná kontrola přihlášení a aktualizace seznamu
+        await checkBooking();
+        await fetchEnrolledUsers();
       } else {
         const errorText = await response.text();
-        console.error("Error", errorText);
+        console.error("Chyba při odhlášení z kurzu:", errorText);
       }
     } catch (error) {
-      console.error("Error", error);
+      console.error("Chyba při odhlášení z kurzu:", error);
     } finally {
-      setLoadingAction(false);
+      setLoadingAction(false); // Ukončení načítacího stavu
     }
   };
 
