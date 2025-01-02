@@ -70,7 +70,7 @@ const Login = () => {
           hideProgressBar: true,
         });
         setUser({ email: "", password: "" });
-        history.push("/treninky");
+        history.push("/kurzy");
       }
     } catch (error) {
       console.error(

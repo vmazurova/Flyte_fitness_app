@@ -25,8 +25,8 @@ import TrainingPlanDetail from "./pagesLogin/TrainingPlanDetail.jsx";
 import TrainingPlanList from "./pagesLogin/TrainingPlanList.jsx";
 import TrainingPlanAdd from "./pagesLogin/TrainingPlanAdd.jsx";
 import MealPlanDetail from "./pagesLogin/MealPlanDetail.jsx";
-import ProtectedRoute from "./auth/ProtectedRoute";
-import AuthProvider from "./auth/AuthProvider";
+import ProtectedRoute from "./auth/ProtectedRoute.jsx";
+import AuthProvider from "./auth/AuthProvider.jsx";
 import Nastaveni from "./pagesLogin/Settings.jsx";
 
 const App = () => {

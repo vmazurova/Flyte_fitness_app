@@ -1,120 +1,151 @@
-import React from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import Chart from "react-apexcharts";
+import { motion } from "framer-motion";
 import useFetch from "../hooks/useFetch";
-import Sidebar from "./Sidebar";
 
-const MealPlanDetail = () => {
-  const { id: mealPlanId } = useParams();
+export default function MemberDetail() {
+  const [chartData, setChartData] = useState({
+    weight: [],
+    height: [],
+    bmi: [],
+    bodyFat: [],
+    labels: [],
+  });
 
-  const { loading, error, data } = useFetch(
-    `http://localhost:1337/api/meal-plans/${mealPlanId}?populate=*`
-  );
+  const [newRecord, setNewRecord] = useState({
+    weight: "",
+    height: "",
+    bmi: "",
+    body_fat_percentage: "",
+  });
 
-  const mealPlan = data?.data; // Vezmeme přímo data z API
+  const {
+    loading,
+    error,
+    data = { data: [] },
+  } = useFetch("http://localhost:1337/api/member-details");
 
-  if (loading) {
+  useEffect(() => {
+    if (data?.data?.length) {
+      const transformedData = {
+        weight: data.data.map((item) => item.weight),
+        height: data.data.map((item) => item.height),
+        bmi: data.data.map((item) => item.bmi),
+        bodyFat: data.data.map((item) => item.body_fat_percentage),
+        labels: data.data.map((item) =>
+          new Date(item.last_update).toLocaleDateString()
+        ),
+      };
+      setChartData(transformedData);
+    }
+  }, [data]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewRecord({ ...newRecord, [name]: value });
+  };
+
+  const handleAddRecord = async () => {
+    const token = localStorage.getItem("jwt");
+    const userPayload = JSON.parse(atob(token.split(".")[1]));
+    const userId = userPayload.id;
+
+    const payload = {
+      data: {
+        weight: parseFloat(newRecord.weight),
+        height: parseFloat(newRecord.height),
+        bmi: parseFloat(newRecord.bmi),
+        body_fat_percentage: parseFloat(newRecord.body_fat_percentage),
+        last_update: new Date(),
+        user: userId,
+      },
+    };
+
+    console.log("Odesílání dat:", payload); // Přidá logování
+
+    const response = await fetch("http://localhost:1337/api/member-details", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log("Úspěšně přidáno:", result);
+    } else {
+      const error = await response.json();
+      console.error("Chyba při přidávání:", error);
+    }
+  };
+
+  const chartOptions = {
+    chart: { id: "member-progress" },
+    xaxis: { categories: chartData.labels },
+    stroke: { curve: "smooth" },
+    tooltip: { theme: "dark" },
+    colors: ["#f39c12", "#3498db", "#2ecc71", "#e74c3c"],
+  };
+
+  const series = [
+    { name: "Váha", data: chartData.weight },
+    { name: "Výška", data: chartData.height },
+    { name: "BMI", data: chartData.bmi },
+    { name: "Tělesný tuk (%)", data: chartData.bodyFat },
+  ];
+
+  if (loading)
+    return <p className="text-gray-500 text-center mt-20">Načítání...</p>;
+  if (error)
     return (
-      <div className="flex justify-center items-center h-screen bg-gray-900">
-        <p className="text-white text-xl font-light animate-pulse">
-          Načítání...
-        </p>
-      </div>
+      <p className="text-red-500 text-center mt-20">Chyba: {error.message}</p>
     );
-  }
-
-  if (error || !mealPlan) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gray-900">
-        <p className="text-red-500 text-xl font-light">
-          Chyba: Jídelníček nenalezen.
-        </p>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
-      <Sidebar />
-      <Link
-        to="/jidelnicky"
-        className="absolute top-4 right-4 p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition"
+    <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
+      <motion.h1
+        className="text-3xl font-bold mb-6 text-center"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
       >
-        ← Zpět
-      </Link>
-      <header className="py-6 bg-gray-800 shadow-md">
-        <div className="container mx-auto px-6">
-          {/* Nadpis */}
-          <h1 className="text-4xl lg:text-5xl font-extrabold text-white mb-4">
-            {mealPlan.title || "Neznámý jídelníček"}
-          </h1>
+        Pokroky člena
+      </motion.h1>
 
-          {/* Popis jídelníčku */}
-          <p className="text-lg text-gray-300 italic">
-            {mealPlan.description || "Popis není k dispozici"}
-          </p>
+      <div className="mb-8">
+        <Chart
+          options={chartOptions}
+          series={series}
+          type="line"
+          height="350"
+        />
+      </div>
 
-          {/* Datum zahájení */}
-          <p className="text-gray-400 mt-4">
-            <span className="font-semibold text-white">Týden od:</span>{" "}
-            {mealPlan.week_start
-              ? new Date(mealPlan.week_start).toLocaleDateString("cs-CZ")
-              : "Datum neuvedeno"}
-          </p>
-        </div>
-      </header>
-
-      <main className="container mx-auto py-10 px-6 grid grid-cols-1 gap-6">
-        {mealPlan.image && (
-          <div className="mb-6">
-            <img
-              src={`http://localhost:1337${mealPlan.image.url}`}
-              alt={mealPlan.title || "Jídelníček"}
-              className="w-full h-auto rounded-md shadow-lg"
+      <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold mb-4">Přidat nový záznam</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {["weight", "height", "bmi", "body_fat_percentage"].map((field) => (
+            <input
+              key={field}
+              name={field}
+              type="number"
+              step="0.1"
+              placeholder={`Zadejte ${field}`}
+              value={newRecord[field]}
+              onChange={handleInputChange}
+              className="p-2 bg-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
             />
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 gap-8">
-          {[
-            "monday",
-            "tuesday",
-            "wednesday",
-            "thursday",
-            "friday",
-            "saturday",
-            "sunday",
-          ].map((day) => (
-            <section key={day} className="bg-gray-800 p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-semibold capitalize text-white mb-4">
-                {day.charAt(0).toUpperCase() + day.slice(1)}
-              </h2>
-              <ul className="space-y-2">
-                {[
-                  "breakfast",
-                  "morning_snack",
-                  "lunch",
-                  "afternoon_snack",
-                  "dinner",
-                ].map((meal) => (
-                  <li
-                    key={`${day}_${meal}`}
-                    className="flex justify-between items-center"
-                  >
-                    <span className="capitalize font-medium text-gray-300">
-                      {meal.replace("_", " ")}:
-                    </span>
-                    <span className="text-gray-400">
-                      {mealPlan[`${day}_${meal}`] || "Není k dispozici"}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
           ))}
         </div>
-      </main>
+        <button
+          onClick={handleAddRecord}
+          className="mt-4 bg-yellow-500 text-black py-2 px-4 rounded hover:bg-yellow-400"
+        >
+          Přidat záznam
+        </button>
+      </div>
     </div>
   );
-};
-
-export default MealPlanDetail;
+}

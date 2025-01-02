@@ -17,11 +17,11 @@ export default function CourseCalendar() {
 
   if (loading)
     return (
-      <p className="text-gray-500 text-center mt-20 text-lg">Načítání...</p>
+      <p className="text-gray-400 text-center mt-20 text-lg">Načítání...</p>
     );
   if (error)
     return (
-      <p className="text-red-500 text-center mt-20 text-lg">
+      <p className="text-red-400 text-center mt-20 text-lg">
         Chyba: {error.message}
       </p>
     );
@@ -39,7 +39,7 @@ export default function CourseCalendar() {
   }));
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-800 text-gray-800">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-900 text-gray-100">
       {/* Sidebar */}
       <Sidebar />
 
@@ -55,13 +55,13 @@ export default function CourseCalendar() {
           >
             Kalendář kurzů
           </motion.h1>
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-400 mt-2">
             Prohlédněte si plánované kurzy na jednom místě.
           </p>
         </div>
 
         {/* Calendar */}
-        <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
+        <div className="bg-gray-800 shadow-lg rounded-lg p-6 border border-gray-700">
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
@@ -78,14 +78,14 @@ export default function CourseCalendar() {
               window.open(url, "_self");
             }}
             eventContent={(eventInfo) => (
-              <div className="bg-gray-800 text-white px-3 py-1 rounded-lg text-sm truncate">
+              <div className="bg-gray-700 text-white px-3 py-1 rounded-lg text-sm truncate shadow-md">
                 {eventInfo.event.title}
               </div>
             )}
-            dayHeaderClassNames="text-gray-700 font-semibold"
+            dayHeaderClassNames="text-gray-300 font-semibold"
             eventBackgroundColor="transparent"
             eventBorderColor="transparent"
-            eventTextColor="#1a202c"
+            eventTextColor="#f9fafb"
             height="auto"
             dayMaxEventRows={true}
             contentHeight="auto"

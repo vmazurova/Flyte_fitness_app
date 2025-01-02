@@ -29,7 +29,11 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("jwt");
+
     history.push("/auth/prihlaseni");
+
+    window.location.reload();
   };
 
   useEffect(() => {

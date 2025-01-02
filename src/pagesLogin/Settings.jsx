@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import useFetch from "../hooks/useFetch";
+import Sidebar from "./Sidebar";
 
 const Settings = () => {
   const [user, setUser] = useState(null);
@@ -21,24 +21,29 @@ const Settings = () => {
         const response = await fetch("http://localhost:1337/api/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         if (!response.ok) {
           throw new Error("Failed to fetch user data.");
         }
+
         const userData = await response.json();
+
         setUser(userData);
         setFormData({
-          username: userData.username,
-          email: userData.email,
+          username: userData.username || "",
+          email: userData.email || "",
           firstName: userData.firstName || "",
           secondName: userData.secondName || "",
           password: "",
         });
+
         setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
       }
     };
+
     fetchUserData();
   }, []);
 
@@ -50,17 +55,25 @@ const Settings = () => {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem("jwt");
-      const response = await fetch("http://localhost:1337/api/users/me", {
+      const response = await fetch("http://localhost:1337/api/auth/user", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          firstName: formData.firstName,
+          secondName: formData.secondName,
+          ...(formData.password && { password: formData.password }),
+        }),
       });
+
       if (!response.ok) {
         throw new Error("Failed to update user data.");
       }
+
       const updatedUser = await response.json();
       setUser(updatedUser);
       alert("Uživatelská data byla úspěšně aktualizována.");
@@ -75,6 +88,7 @@ const Settings = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-6 bg-gray-900 text-white rounded-lg shadow-lg">
+      <Sidebar />
       <h1 className="text-3xl font-bold mb-6">Nastavení uživatele</h1>
       <div className="space-y-4">
         <div>

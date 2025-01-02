@@ -1,176 +1,225 @@
 import React, { useState, useEffect } from "react";
+import Chart from "react-apexcharts";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
-import Sidebar from "./Sidebar.jsx";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import Sidebar from "./Sidebar";
 
-export default function MemberDetail() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [userRole, setUserRole] = useState(null);
+export default function MemberDetail({ username }) {
+  const [chartData, setChartData] = useState({
+    weight: [],
+    height: [],
+    bmi: [],
+    bodyFat: [],
+    labels: [],
+  });
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const [newRecord, setNewRecord] = useState({
+    weight: "",
+    height: "",
+    bmi: "",
+    body_fat_percentage: "",
+  });
 
   const {
     loading,
     error,
     data = { data: [] },
-  } = useFetch("http://localhost:1337/api/meal-plans?populate=*");
+  } = useFetch("http://localhost:1337/api/member-details");
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      const token = localStorage.getItem("jwt");
-      if (!token) return;
-      try {
-        const response = await fetch("http://localhost:1337/api/users/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (response.ok) {
-          const user = await response.json();
-          setUserRole(user.role.name || null);
-        }
-      } catch (err) {
-        console.error("Chyba při získávání role uživatele:", err);
-      }
-    };
-    fetchUserRole();
-  }, []);
+    if (data?.data?.length) {
+      const transformedData = {
+        weight: data.data.map((item) => item.weight),
+        height: data.data.map((item) => item.height),
+        bmi: data.data.map((item) => item.bmi),
+        bodyFat: data.data.map((item) => item.body_fat_percentage),
+        labels: data.data.map((item) =>
+          new Date(item.last_update).toLocaleDateString()
+        ),
+      };
+      setChartData(transformedData);
+    }
+  }, [data]);
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 1 } },
-    ],
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewRecord({ ...newRecord, [name]: value });
   };
 
+  const fetchMemberDetails = async () => {
+    const token = localStorage.getItem("jwt");
+    const response = await fetch(
+      `http://localhost:1337/api/member-details?filters[user][id][$eq]=${userId}&populate=*`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    setChartData(transformData(data));
+  };
+  useEffect(() => {
+    const fetchMemberDetails = async () => {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        console.error("No valid token found.");
+        return;
+      }
+
+      const userPayload = JSON.parse(atob(token.split(".")[1]));
+      const userId = userPayload.id; // ID přihlášeného uživatele
+
+      try {
+        const response = await fetch(
+          `http://localhost:1337/api/member-details?filters[user][id][$eq]=${userId}&populate=*`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          const transformedData = {
+            weight: data.data.map((item) => item.weight),
+            height: data.data.map((item) => item.height),
+            bmi: data.data.map((item) => item.bmi),
+            bodyFat: data.data.map((item) => item.body_fat_percentage),
+            labels: data.data.map((item) =>
+              new Date(item.last_update).toLocaleDateString()
+            ),
+          };
+          setChartData(transformedData);
+        } else {
+          console.error("Failed to fetch member details:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching member details:", error);
+      }
+    };
+
+    fetchMemberDetails();
+  }, []);
+  const handleAddRecord = async () => {
+    const token = localStorage.getItem("jwt");
+    const userPayload = JSON.parse(atob(token.split(".")[1]));
+    const userId = userPayload.id;
+
+    const response = await fetch("http://localhost:1337/api/member-details", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        data: {
+          weight: parseFloat(newRecord.weight),
+          height: parseFloat(newRecord.height),
+          bmi: parseFloat(newRecord.bmi),
+          body_fat_percentage: parseFloat(newRecord.body_fat_percentage),
+          last_update: new Date(),
+          user: userId, // Zajistěte, že přidáváte uživatele
+        },
+      }),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log("Úspěšně přidáno:", result);
+    } else {
+      console.error("Chyba při přidávání:", await response.json());
+    }
+  };
+
+  const chartOptions = {
+    chart: {
+      id: "member-progress",
+      toolbar: { show: false },
+      animations: { enabled: true, easing: "easeinout", speed: 800 },
+      background: "transparent",
+    },
+    xaxis: {
+      categories: chartData.labels,
+      labels: { style: { colors: "#C084FC", fontSize: "14px" } },
+    },
+    yaxis: { labels: { style: { colors: "#C084FC", fontSize: "14px" } } },
+    stroke: { curve: "smooth", width: 3 },
+    tooltip: { theme: "dark" },
+    colors: ["#A78BFA", "#7C3AED", "#9333EA", "#C084FC"],
+    grid: { borderColor: "#6B21A8" },
+    legend: { position: "top", labels: { colors: "#C084FC" } },
+  };
+
+  const series = [
+    { name: "Váha (kg)", data: chartData.weight },
+    { name: "Výška (cm)", data: chartData.height },
+    { name: "BMI", data: chartData.bmi },
+    { name: "Tělesný tuk (%)", data: chartData.bodyFat },
+  ];
+
   if (loading)
-    return <p className="text-white text-center mt-20">Načítání...</p>;
+    return <p className="text-purple-300 text-center mt-20">Načítání...</p>;
   if (error)
     return (
-      <p className="text-red-500 text-center mt-20">Chyba: {error.message}</p>
+      <p className="text-red-400 text-center mt-20">Chyba: {error.message}</p>
     );
 
-  const mealPlans = Array.isArray(data.data) ? data.data : [];
-
   return (
-    <div className="relative min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
-      {/* Sidebar */}
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div
-        className={`relative transition-transform duration-300 ${
-          isSidebarOpen ? "ml-72" : "ml-0"
-        }`}
-      >
-        {/* Header */}
-        <div className="px-6 py-12">
-          <motion.div
-            className="text-center mb-8"
-            initial={{ opacity: 0, y: -50 }}
+    <div className="min-h-screen bg-black text-gray-200">
+      <Sidebar />
+      <header className="py-6 bg-gray-900 shadow-md">
+        <div className="container mx-auto px-6 flex items-center justify-between">
+          <motion.h1
+            className="text-3xl font-semibold text-purple-400"
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2 }}
+            transition={{ duration: 0.6 }}
           >
-            <p className="text-gray-400">
-              Přihlášen jako: {userRole || "Nepřihlášený uživatel"}
-            </p>
-            <h1 className="text-4xl lg:text-5xl font-bold">Tvoje jídelníčky</h1>
-            <p className="text-gray-400 mt-2">Najdi plán, který ti vyhovuje.</p>
-          </motion.div>
-          {userRole === "Trainer" && (
-            <div className="text-center mb-8">
-              <Link to="/jidelnicek-pridani">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition"
-                >
-                  Přidat jídelníček
-                </motion.button>
-              </Link>
-            </div>
-          )}
+            Ahoj, {username}!
+          </motion.h1>
         </div>
+      </header>
 
-        {/* Carousel */}
-        <div className="px-6">
-          <Slider {...settings}>
-            {mealPlans.map((mealPlan, index) => (
-              <motion.div
-                key={mealPlan.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.2, duration: 0.5 }}
-                className="p-4"
-              >
-                <div className="bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <img
-                    src={
-                      mealPlan.image?.url
-                        ? `http://localhost:1337${mealPlan.image.url}`
-                        : "https://via.placeholder.com/400x200"
-                    }
-                    alt={mealPlan.title || "Jídelníček"}
-                    className="w-full h-56 object-cover"
-                  />
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold text-white">
-                      {mealPlan.title || "Neznámý jídelníček"}
-                    </h3>
-                    <p className="text-gray-400 mt-2 text-sm">
-                      {mealPlan.description || "Bez popisu"}
-                    </p>
-                    <div className="mt-4 text-center">
-                      <Link to={`/jidelnicek/${mealPlan.documentId}`}>
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="px-4 py-2 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg shadow-md hover:shadow-lg transition"
-                        >
-                          Detail jídelníčku
-                        </motion.button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </Slider>
-        </div>
-
-        {/* Additional Section */}
-        <div className="px-6 py-12 bg-gray-800 mt-12">
-          <h2 className="text-3xl font-semibold text-center mb-6">
-            Proč si vybrat naše jídelníčky?
+      {/* Main Content */}
+      <div className="container mx-auto py-10 px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Chart */}
+        <div className="col-span-2 bg-gray-900 rounded-xl shadow-lg p-6">
+          <h2 className="text-xl font-bold text-purple-400 mb-6">
+            Tvůj pokrok
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="p-6 bg-gray-700 rounded-lg shadow-md">
-              <h3 className="text-xl font-bold mb-2">Vědecký přístup</h3>
-              <p className="text-gray-400">
-                Všechny jídelníčky jsou sestavené podle aktuálních výživových
-                trendů a vědeckých studií.
-              </p>
-            </div>
-            <div className="p-6 bg-gray-700 rounded-lg shadow-md">
-              <h3 className="text-xl font-bold mb-2">Individuální plány</h3>
-              <p className="text-gray-400">
-                Přizpůsobujeme se tvým potřebám, ať už chceš zhubnout, nabrat
-                svaly nebo zlepšit kondici.
-              </p>
-            </div>
-            <div className="p-6 bg-gray-700 rounded-lg shadow-md">
-              <h3 className="text-xl font-bold mb-2">Podpora 24/7</h3>
-              <p className="text-gray-400">
-                Naše podpora je tu pro tebe, kdykoliv potřebuješ pomoc nebo
-                radu.
-              </p>
-            </div>
+          <Chart
+            options={chartOptions}
+            series={series}
+            type="line"
+            height="400"
+          />
+        </div>
+
+        {/* Add Record */}
+        <div className="bg-gray-900 rounded-xl shadow-lg p-6">
+          <h2 className="text-xl font-bold text-purple-400 mb-6">
+            Přidat Nový Záznam
+          </h2>
+          <div className="space-y-4">
+            {["weight", "height", "bmi", "body_fat_percentage"].map((field) => (
+              <input
+                key={field}
+                name={field}
+                type="number"
+                placeholder={`Zadejte ${field}`}
+                value={newRecord[field]}
+                onChange={handleInputChange}
+                className="w-full p-4 bg-gray-800 text-white rounded-lg focus:ring-2 focus:ring-purple-500"
+              />
+            ))}
           </div>
+          <button
+            onClick={handleAddRecord}
+            className="mt-6 w-full bg-gradient-to-r from-purple-500 to-purple-700 text-white py-3 px-6 rounded-lg shadow-lg hover:from-purple-600 hover:to-purple-800 transition"
+          >
+            Přidat Záznam
+          </button>
         </div>
       </div>
     </div>
