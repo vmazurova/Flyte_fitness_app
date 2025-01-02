@@ -14,9 +14,9 @@ import {
 } from "react-icons/fa";
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [userRole, setUserRole] = useState(null); // Stav pro roli uživatele
-  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false); // Stav pro rozbalovací menu
+  const [isOpen, setIsOpen] = useState(true);
+  const [userRole, setUserRole] = useState(null);
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const history = useHistory();
 
   const toggleSidebar = () => {
@@ -28,7 +28,6 @@ const Sidebar = () => {
     history.push("/auth/prihlaseni");
   };
 
-  // Simulace načtení role uživatele (z tokenu nebo API)
   useEffect(() => {
     const fetchUserRole = async () => {
       const token = localStorage.getItem("jwt");
@@ -56,7 +55,6 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Hamburger Button */}
       <button
         onClick={toggleSidebar}
         className="fixed top-4 left-4 z-50 p-2 bg-gray-900 text-white rounded-full shadow-lg focus:outline-none"

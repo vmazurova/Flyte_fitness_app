@@ -50,6 +50,10 @@ const Hero = () => {
                   damping: 40,
                   duration: 3.0,
                 }}
+                style={{
+                  display: "inline-block", // Zajistí, že se okolní prvky nebudou posouvat
+                  transformOrigin: "center", // Nastaví střed jako výchozí bod zvětšení
+                }}
               >
                 <Button icon="/images/zap.svg">Vyzkoušet</Button>
               </motion.div>

@@ -66,6 +66,66 @@ const MealPlanAdd = () => {
       },
     }));
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const formDataToSubmit = new FormData();
+
+      // Základní atributy
+      formDataToSubmit.append("title", formData.title);
+      formDataToSubmit.append("week_start", formData.week_start);
+
+      // Obrázek
+      if (formData.image) {
+        formDataToSubmit.append("files.image", formData.image);
+      }
+
+      // Přidání jídel pro jednotlivé dny
+      Object.keys(daysMap).forEach((day) => {
+        Object.keys(mealTypesMap).forEach((mealType) => {
+          const mealKey = `${day}_${mealType}`; // např. "monday_breakfast"
+          const mealsForType = formData.meals[day][mealType]
+            .map(
+              (meal) =>
+                `${meal.food || ""}|${meal.weight || ""}|${meal.side || ""}`
+            )
+            .join(";");
+          formDataToSubmit.append(mealKey, mealsForType); // Přidání jídel do formátu
+        });
+      });
+
+      // Debugging: Výpis odesílaných dat
+      console.log("FormData entries:", Array.from(formDataToSubmit.entries()));
+
+      // Odeslání dat na server
+      const response = await axios.post(
+        "http://localhost:1337/api/meal-plans",
+        formDataToSubmit,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        }
+      );
+
+      // Kontrola odpovědi
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Jídelníček byl úspěšně přidán!");
+        console.log("Úspěšná odpověď:", response.data);
+      } else {
+        toast.error("Při přidávání došlo k chybě.");
+        console.error("Chyba odpovědi:", response.data);
+      }
+    } catch (error) {
+      console.error("Chyba odeslání:", error);
+      toast.error("Nepodařilo se přidat jídelníček.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleMealChange = (e, day, mealType, index, field) => {
     const value = e.target.value;
@@ -136,7 +196,7 @@ const MealPlanAdd = () => {
             <button
               type="button"
               onClick={() => addMeal(day, mealType)}
-              className="w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+              className="w-full px-4 py-2 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg shadow-md hover:shadow-xl transition-shadow"
             >
               Přidat další
             </button>
@@ -160,27 +220,64 @@ const MealPlanAdd = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2 }}
         >
-          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-teal-500">
-            Přidání nového jídelníčku
-          </h1>
-          <p className="text-lg text-gray-300 mt-4">
-            Naplánujte ideální jídelníček pro vaše klienty.
-          </p>
+          <div className="max-w-3xl mx-auto">
+            <h1 className="mt-10 text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
+              Přidání nového jídelníčku
+            </h1>
+            <p className="text-lg text-white mt-4 p-5">
+              Vytvořte jídelníček pro své klienty pomocí tohoto formuláře.
+              <br />
+              Vyplňte název jídelníčku, vyberte den a přidejte jídla pro
+              jednotlivé části dne. <br />
+              Každé jídlo může mít zadanou gramáž a přílohu.
+            </p>
+          </div>
         </motion.div>
+
         <ToastContainer />
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-lg font-medium text-white mb-2">
               Název jídelníčku
             </label>
             <input
               type="text"
+              name="title"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, title: e.target.value }))
+              }
               className="w-full p-3 bg-gray-900 text-white rounded-lg"
             />
           </div>
+          {/* Nahrání obrázku */}
+          <div className="mb-6">
+            <label className="block text-lg font-medium text-white mb-2">
+              Obrázek jídelníčku
+            </label>
+            <input
+              type="file"
+              name="image"
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, image: e.target.files[0] }))
+              }
+              className="w-full p-3 bg-gray-900 text-white rounded-lg"
+              accept="image/*"
+            />
+          </div>
+          {/* Sekce dní */}
           {Object.keys(daysMap).map((day, index) =>
             renderDaySection(day, index)
           )}
+          {/* Submit tlačítko */}
+          <div className="mt-6 text-center">
+            <button
+              type="submit"
+              className="px-6 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+            >
+              Vytvořit jídelníček
+            </button>
+          </div>
         </form>
       </div>
     </div>

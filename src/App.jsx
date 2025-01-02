@@ -25,7 +25,7 @@ import TrainingPlanDetail from "./pagesLogin/TrainingPlanDetail.jsx";
 import TrainingPlanList from "./pagesLogin/TrainingPlanList.jsx";
 import TrainingPlanAdd from "./pagesLogin/TrainingPlanAdd.jsx";
 import MealPlanDetail from "./pagesLogin/MealPlanDetail.jsx";
-import ProtectedRoute from "./auth/ProtectedRoute"; // Nová komponenta
+import ProtectedRoute from "./auth/ProtectedRoute";
 import AuthProvider from "./auth/AuthProvider";
 
 const App = () => {
@@ -43,6 +43,7 @@ const App = () => {
     "/jidelnicek-pridani",
     "/treninky",
     "/trenink-pridani",
+    "/auth/Registrace",
   ];
 
   const hideHeaderPatterns = [
@@ -58,7 +59,6 @@ const App = () => {
   return (
     <AuthProvider>
       {" "}
-      {/* AuthProvider obklopuje celou aplikaci */}
       <main className="overflow-hidden">
         {showHeader && <Header />}
         <Switch>

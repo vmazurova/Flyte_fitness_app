@@ -11,6 +11,8 @@ const SignUp = () => {
   const [user, setUser] = useState(initialUser);
   const Navigate = useHistory();
   const [errors, setErrors] = useState({ username: "", password: "" });
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMatchError, setPasswordMatchError] = useState("");
 
   const handleUserChange = ({ target }) => {
     const { name, value } = target;
@@ -21,6 +23,17 @@ const SignUp = () => {
     }
     if (name === "password") {
       validatePassword(value);
+    }
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    const { value } = e.target;
+    setConfirmPassword(value);
+
+    if (value !== user.password) {
+      setPasswordMatchError("Hesla se neshodují.");
+    } else {
+      setPasswordMatchError("");
     }
   };
 
@@ -62,6 +75,10 @@ const SignUp = () => {
             ...prevErrors,
             username: "Zadej jiné jméno nebo email, už je zabrané.",
           }));
+          if (confirmPassword !== user.password) {
+            setPasswordMatchError("Hesla se neshodují.");
+            return;
+          }
         } else {
           toast.error("Chyba při odesílání formuláře.");
         }
@@ -141,6 +158,22 @@ const SignUp = () => {
               <p className="text-red-500 text-sm">{errors.password}</p>
             )}
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Potvrdit heslo
+            </label>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Zadejte heslo znovu"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+            />
+            {passwordMatchError && (
+              <p className="text-red-500 text-sm">{passwordMatchError}</p>
+            )}
+          </div>
 
           <div className="flex items-center space-x-2">
             <input
@@ -165,6 +198,14 @@ const SignUp = () => {
             className="text-purple-400 hover:text-purple-500 font-semibold"
           >
             Přihlaste se zde
+          </Link>
+          <br />
+          <br />
+          <Link
+            to="/"
+            className="text-white bg-gray-800 px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+          >
+            ← Zpět na hlavní stránku
           </Link>
         </p>
       </div>

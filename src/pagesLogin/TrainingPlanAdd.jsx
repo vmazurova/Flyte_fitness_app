@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import axios from "axios";
 import Sidebar from "./Sidebar.jsx";
-import { motion } from "framer-motion";
+import "react-toastify/dist/ReactToastify.css";
 
-const AddTrainingPlan = () => {
+const TrainingPlanAdd = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [formData, setFormData] = useState({
     title: "",
@@ -11,10 +14,15 @@ const AddTrainingPlan = () => {
     difficulty: "Začátečník",
     lenght: "Minut30",
     exercises: [],
+    image: [],
   });
   const [loading, setLoading] = useState(false);
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
+
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({ ...prev, images: Array.from(e.target.files) }));
+  };
 
   const addExercise = () => {
     setFormData((prev) => ({
@@ -59,43 +67,40 @@ const AddTrainingPlan = () => {
     setLoading(true);
 
     try {
-      // Zajištění, že formData.goals je vždy string
-      const goalsString =
-        typeof formData.goals === "string"
-          ? formData.goals
-              .split(";")
-              .map((goal) => goal.trim())
-              .join(";")
-          : "";
+      const formDataToSubmit = new FormData();
+      formDataToSubmit.append(
+        "data",
+        JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          goals: formData.goals.join(";"), // Spojení cílů do stringu
+          difficulty: formData.difficulty,
+          lenght: formData.lenght,
+          exercises: formData.exercises
+            .map(
+              (exercise) =>
+                `${exercise.name}|${exercise.details}|${exercise.icon}|${exercise.sets}`
+            )
+            .join(";"),
+          created_training_at: new Date().toISOString(),
+        })
+      );
 
-      // Převod cviků na řetězec oddělený středníkem
-      const exercisesString = formData.exercises
-        .map(
-          (exercise) =>
-            `${exercise.name}|${exercise.details}|${exercise.icon}|${exercise.sets}`
-        )
-        .join(";");
+      // Přidání obrázku do FormData
+      if (formData.images.length > 0) {
+        formData.images.forEach((image) => {
+          formDataToSubmit.append("files.image", image);
+        });
+      }
 
-      // Připravte data k odeslání
-      const dataToSubmit = {
-        title: formData.title,
-        description: formData.description,
-        goals: goalsString,
-        difficulty: formData.difficulty,
-        lenght: formData.lenght,
-        exercises: exercisesString,
-        created_training_at: new Date().toISOString(),
-      };
-
-      console.log("Data k odeslání:", dataToSubmit);
+      console.log("Data k odeslání:", formDataToSubmit);
 
       const response = await fetch("http://localhost:1337/api/training-plans", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
-        body: JSON.stringify(dataToSubmit),
+        body: formDataToSubmit,
       });
 
       if (response.ok) {
@@ -114,100 +119,92 @@ const AddTrainingPlan = () => {
   };
 
   return (
-    <div className="flex bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen">
-      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
-      <div
-        className={`flex-1 transition-all duration-300 ${
-          isOpen ? "ml-72" : "ml-20"
-        } p-6`}
-      >
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2 }}
-        >
-          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-teal-500">
-            Přidání nového tréninkového plánu
-          </h1>
-          <p className="text-lg text-gray-300 mt-4">
-            Vytvořte ideální tréninkový plán pro vaše klienty.
-          </p>
-        </motion.div>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="p-6 rounded-lg bg-gray-800 shadow-md">
-            <label className="block text-lg font-medium text-white">
-              Název
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-              className="w-full mt-2 p-3 bg-gray-900 text-white rounded-lg"
-              required
-            />
-          </div>
+    <div className="min-h-screen flex flex-row bg-cover bg-center relative">
+      <Sidebar />
+      <div className="flex-1 flex flex-col items-center justify-start py-12 px-6 relative bg-gradient-to-r from-purple-500 via-indigo-500 to-black">
+        <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+        <ToastContainer />
 
-          <div className="p-6 rounded-lg bg-gray-800 shadow-md">
-            <label className="block text-lg font-medium text-white">
-              Popis
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="w-full mt-2 p-3 bg-gray-900 text-white rounded-lg"
-              rows="3"
-            ></textarea>
-          </div>
+        <div className="relative w-full max-w-3xl flex justify-between mb-8">
+          <Link
+            to="/treninky"
+            className="text-white bg-gray-800 px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+          >
+            ← Zpět na tréninkové plány
+          </Link>
+        </div>
 
-          <div className="p-6 rounded-lg bg-gray-800 shadow-md">
-            <h2 className="text-lg font-medium text-white mb-4">Cíle</h2>
-            {formData.goals.map((goal, index) => (
+        <div className="relative w-full max-w-lg bg-[#1A1A2E] text-white rounded-xl shadow-2xl p-6 pb-20 mb-12">
+          <h2 className="text-center text-3xl font-bold mb-6">
+            Přidat nový tréninkový plán
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Název plánu
+              </label>
               <input
-                key={index}
                 type="text"
-                placeholder="Cíl"
-                value={goal}
-                onChange={(e) => handleGoalChange(index, e.target.value)}
-                className="w-full p-3 mb-2 bg-gray-900 text-white rounded-lg"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+                required
               />
-            ))}
-            <button
-              type="button"
-              onClick={addGoal}
-              className="px-6 py-2 bg-gradient-to-r from-green-400 to-teal-500 text-white rounded-lg shadow-lg hover:shadow-xl transition mt-2"
-            >
-              Přidat cíl
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="p-6 rounded-lg bg-gray-800 shadow-md">
-              <label className="block text-lg font-medium text-white">
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Popis</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Cíle</label>
+              {formData.goals.map((goal, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    placeholder="Cíl"
+                    value={goal}
+                    onChange={(e) => handleGoalChange(index, e.target.value)}
+                    className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addGoal}
+                className="mt-2 text-sm text-white bg-purple-600 px-4 py-2 rounded-lg hover:bg-purple-700 transition"
+              >
+                Přidat cíl
+              </button>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">
                 Obtížnost
               </label>
               <select
                 name="difficulty"
                 value={formData.difficulty}
                 onChange={handleInputChange}
-                className="w-full mt-2 p-3 bg-gray-900 text-white rounded-lg"
+                className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
               >
                 <option value="Začátečník">Začátečník</option>
                 <option value="Pokročilý">Pokročilý</option>
                 <option value="Obtížný">Obtížný</option>
               </select>
             </div>
-            <div className="p-6 rounded-lg bg-gray-800 shadow-md">
-              <label className="block text-lg font-medium text-white">
-                Délka
-              </label>
+            <div>
+              <label className="block text-sm font-medium mb-2">Délka</label>
               <select
                 name="lenght"
                 value={formData.lenght}
                 onChange={handleInputChange}
-                className="w-full mt-2 p-3 bg-gray-900 text-white rounded-lg"
+                className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
               >
                 <option value="Minut15">15 minut</option>
                 <option value="Minut30">30 minut</option>
@@ -217,73 +214,82 @@ const AddTrainingPlan = () => {
                 <option value="Minut120">120 minut</option>
               </select>
             </div>
-          </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Obrázky</label>
+              <input
+                type="file"
+                name="images"
+                onChange={handleFileChange}
+                multiple
+                className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <h2 className="block text-sm font-medium mb-2">Cviky</h2>
+              {formData.exercises.map((exercise, index) => (
+                <div
+                  key={index}
+                  className="p-4 mb-4 bg-gray-900 rounded-lg shadow-lg"
+                >
+                  <input
+                    type="text"
+                    placeholder="Název cviku"
+                    value={exercise.name}
+                    onChange={(e) =>
+                      handleExerciseChange(index, "name", e.target.value)
+                    }
+                    className="w-full p-2 mb-2 bg-gray-800 text-white rounded-lg"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Detaily"
+                    value={exercise.details}
+                    onChange={(e) =>
+                      handleExerciseChange(index, "details", e.target.value)
+                    }
+                    className="w-full p-2 mb-2 bg-gray-800 text-white rounded-lg"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Ikona (emoji)"
+                    value={exercise.icon}
+                    onChange={(e) =>
+                      handleExerciseChange(index, "icon", e.target.value)
+                    }
+                    className="w-full p-2 mb-2 bg-gray-800 text-white rounded-lg"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Sety"
+                    value={exercise.sets}
+                    onChange={(e) =>
+                      handleExerciseChange(index, "sets", e.target.value)
+                    }
+                    className="w-full p-2 bg-gray-800 text-white rounded-lg"
+                  />
+                </div>
+              ))}
 
-          <div className="p-6 rounded-lg bg-gray-800 shadow-md">
-            <h2 className="text-lg font-medium text-white mb-4">Cviky</h2>
-            {formData.exercises.map((exercise, index) => (
-              <div
-                key={index}
-                className="p-4 mb-4 bg-gray-900 rounded-lg shadow-lg"
+              <button
+                type="button"
+                onClick={addExercise}
+                className="mt-2 text-sm text-white bg-purple-600 px-4 py-2 rounded-lg hover:bg-purple-700 transition"
               >
-                <input
-                  type="text"
-                  placeholder="Název cviku"
-                  value={exercise.name}
-                  onChange={(e) =>
-                    handleExerciseChange(index, "name", e.target.value)
-                  }
-                  className="w-full p-2 mb-2 bg-gray-800 text-white rounded-lg"
-                />
-                <input
-                  type="text"
-                  placeholder="Detaily"
-                  value={exercise.details}
-                  onChange={(e) =>
-                    handleExerciseChange(index, "details", e.target.value)
-                  }
-                  className="w-full p-2 mb-2 bg-gray-800 text-white rounded-lg"
-                />
-                <input
-                  type="text"
-                  placeholder="Ikona (emoji)"
-                  value={exercise.icon}
-                  onChange={(e) =>
-                    handleExerciseChange(index, "icon", e.target.value)
-                  }
-                  className="w-full p-2 mb-2 bg-gray-800 text-white rounded-lg"
-                />
-                <input
-                  type="text"
-                  placeholder="Sety"
-                  value={exercise.sets}
-                  onChange={(e) =>
-                    handleExerciseChange(index, "sets", e.target.value)
-                  }
-                  className="w-full p-2 bg-gray-800 text-white rounded-lg"
-                />
-              </div>
-            ))}
+                Přidat cvik
+              </button>
+            </div>
             <button
-              type="button"
-              onClick={addExercise}
-              className="px-6 py-2 bg-gradient-to-r from-green-400 to-teal-500 text-white rounded-lg shadow-lg hover:shadow-xl transition mt-2"
+              type="submit"
+              className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none transition"
+              disabled={loading}
             >
-              Přidat cvik
+              {loading ? "Odesílání..." : "Přidat tréninkový plán"}
             </button>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full p-3 bg-gradient-to-r from-green-400 to-teal-500 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition"
-          >
-            {loading ? "Odesílání..." : "Vytvořit tréninkový plán"}
-          </button>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
 };
 
-export default AddTrainingPlan;
+export default TrainingPlanAdd;

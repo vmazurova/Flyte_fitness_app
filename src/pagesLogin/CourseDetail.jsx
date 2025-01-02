@@ -12,11 +12,26 @@ const CourseDetail = () => {
   const [loadingBookingStatus, setLoadingBookingStatus] = useState(true);
   const [userRole, setUserRole] = useState(null);
   const [enrolledUsers, setEnrolledUsers] = useState([]);
+  const [maxCapacity, setMaxCapacity] = useState(0);
   const { loading, error, data } = useFetch(
     `http://localhost:1337/api/courses?filters[documentId][$eq]=${documentId}&populate=*`
   );
+  const [showDangerZone, setShowDangerZone] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const {
+    data: allCourses,
+    loading: allCoursesLoading,
+    error: allCoursesError,
+  } = useFetch(`http://localhost:1337/api/courses?populate=*`);
 
   const course = data?.data?.[0];
+
+  useEffect(() => {
+    if (course) {
+      setMaxCapacity(course.max_capacity || 0);
+    }
+  }, [course]);
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -27,8 +42,10 @@ const CourseDetail = () => {
       }
 
       try {
-        const response = await fetch("http://localhost:1337/api/users/me", {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await fetch(`http://localhost:1337/api/users/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }, // Tato závorka byla správně
         });
 
         if (response.ok) {
@@ -44,6 +61,34 @@ const CourseDetail = () => {
 
     fetchUserRole();
   }, []);
+
+  useEffect(() => {
+    if (allCoursesError) {
+      console.error("Chyba při načítání všech kurzů:", allCoursesError);
+    }
+  }, [allCoursesError]);
+  const handleDeleteCourse = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      const response = await fetch(
+        `http://localhost:1337/api/courses/${documentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        console.log("Kurz byl úspěšně odstraněn.");
+        // Přesměrování nebo jiná logika po odstranění
+      } else {
+        console.error("Chyba při odstraňování kurzu:", await response.text());
+      }
+    } catch (error) {
+      console.error("Chyba při odstraňování kurzu:", error);
+    }
+  };
 
   const handleRemoveUser = async (bookingId) => {
     try {
@@ -65,14 +110,13 @@ const CourseDetail = () => {
 
       if (response.ok) {
         console.log("Rezervace úspěšně odstraněna.");
+        // Aktualizace seznamu uživatelů po úspěšném odstranění
         setEnrolledUsers((prev) =>
           prev.filter((user) => user.bookingId !== bookingId)
         );
       } else {
-        console.error(
-          "Chyba při odstraňování rezervace:",
-          await response.text()
-        );
+        const errorText = await response.text();
+        console.error("Chyba při odstraňování rezervace:", errorText);
       }
     } catch (error) {
       console.error("Chyba při odstraňování rezervace:", error);
@@ -88,7 +132,7 @@ const CourseDetail = () => {
       }
 
       const response = await fetch(
-        `http://localhost:1337/api/bookings?filters[course][documentId][$eq]=${documentId}&populate=user`,
+        `http://localhost:1337/api/bookings?filters[course][documentId][$eq]=${documentId}&populate=*`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -98,13 +142,15 @@ const CourseDetail = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("API Response:", result.data); // Debugging
-        const users =
-          result?.data?.map((booking) => ({
-            bookingId: booking.id, // ID rezervace
-            username: booking.user?.username || "Neznámé jméno",
-            email: booking.user?.email || "Neznámý email",
-          })) || [];
+        console.log("Bookings response:", result.data);
+
+        const users = result.data.map((booking) => ({
+          bookingId: booking.id,
+          username: booking?.user?.username || "Neznámé jméno",
+          email: booking?.user?.email || "Neznámý email",
+        }));
+
+        console.log("Transformed users list:", users);
         setEnrolledUsers(users);
       } else {
         console.error("Chyba při načítání uživatelů:", await response.text());
@@ -113,6 +159,12 @@ const CourseDetail = () => {
       console.error("Chyba při načítání uživatelů:", error);
     }
   };
+
+  useEffect(() => {
+    if (documentId) {
+      fetchEnrolledUsers();
+    }
+  }, [documentId]);
 
   useEffect(() => {
     if (documentId && userRole === "Trainer") {
@@ -146,6 +198,7 @@ const CourseDetail = () => {
       if (response.ok) {
         const result = await response.json();
         console.log("API Response:", result);
+        console.log("Raw response data:", result);
 
         if (result?.data?.length > 0) {
           console.log("Rezervace existuje:", result.data[0]);
@@ -178,7 +231,7 @@ const CourseDetail = () => {
       const payload = JSON.parse(atob(token.split(".")[1]));
       const userId = payload?.id;
 
-      const response = await fetch("http://localhost:1337/api/bookings", {
+      const response = await fetch(`http://localhost:1337/api/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -197,6 +250,9 @@ const CourseDetail = () => {
         console.log("Rezervace vytvořena:", result);
         setIsBooked(true);
         setBookingId(result.data.id);
+
+        // Načti znovu přihlášené uživatele
+        fetchEnrolledUsers();
       } else {
         console.error("Chyba při přihlášení na kurz:", await response.json());
       }
@@ -208,9 +264,14 @@ const CourseDetail = () => {
   };
 
   const handleCancelBooking = async () => {
-    setLoadingAction(true);
+    setLoadingAction(true); // Nastavení stavu na načítání
     try {
       const token = localStorage.getItem("jwt");
+      if (!bookingId) {
+        console.error("Žádné platné bookingId pro odstranění.");
+        return;
+      }
+
       console.log("Zkouším odstranit booking s ID:", bookingId);
 
       const response = await fetch(
@@ -224,15 +285,20 @@ const CourseDetail = () => {
       );
 
       if (response.ok) {
-        console.log("Rezervace byla úspěšně zrušena.");
+        console.log("Reservation has been cancelled.");
+
         setIsBooked(false);
         setBookingId(null);
+
+        setEnrolledUsers((prev) =>
+          prev.filter((user) => user.bookingId !== bookingId)
+        );
       } else {
-        const text = await response.text(); // Získání surového textu odpovědi
-        console.error("Chyba při odhlášení z kurzu:", text);
+        const errorText = await response.text();
+        console.error("Error", errorText);
       }
     } catch (error) {
-      console.error("Chyba při odhlášení z kurzu:", error);
+      console.error("Error", error);
     } finally {
       setLoadingAction(false);
     }
@@ -245,6 +311,11 @@ const CourseDetail = () => {
     }
   }, [documentId]);
 
+  useEffect(() => {
+    if (documentId && userRole === "Trainer") {
+      fetchEnrolledUsers();
+    }
+  }, [documentId, userRole]);
   if (loading || loadingBookingStatus) {
     return (
       <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
@@ -294,7 +365,7 @@ const CourseDetail = () => {
             src={
               course?.image?.[0]?.formats?.medium?.url
                 ? `http://localhost:1337${course.image[0].formats.medium.url}`
-                : "https://via.placeholder.com/800x400"
+                : `https://via.placeholder.com/800x400`
             }
             alt={course.title}
             className="w-full h-64 object-cover rounded-lg mb-6"
@@ -311,8 +382,21 @@ const CourseDetail = () => {
             <p className="text-gray-400 leading-relaxed mb-6">
               {course.description}
             </p>
-            <div className="flex justify-between items-center">
-              <p className="text-lg text-gray-400">
+            <p className="text-lg text-white mb-4">
+              Přihlášeno: {enrolledUsers.length}/{maxCapacity}
+            </p>
+            {enrolledUsers.length >= maxCapacity ? (
+              <p className="text-red-500 text-lg font-semibold">
+                Kurz je plně obsazen.
+              </p>
+            ) : (
+              <p className="text-green-500 text-lg font-semibold">
+                Volná místa jsou k dispozici.
+              </p>
+            )}
+
+            <div>
+              <p className="text-lg text-white mb-4">
                 Datum:{" "}
                 {course.date
                   ? new Date(course.date).toLocaleString("cs-CZ", {
@@ -321,21 +405,27 @@ const CourseDetail = () => {
                     })
                   : "Datum není k dispozici"}
               </p>
-              {userRole === "Trainer" ? (
-                <div>
+
+              {userRole === "Trainer" && (
+                <div className="mt-16">
                   <h3 className="text-xl font-semibold text-white mb-4">
                     Přihlášení uživatelé:
                   </h3>
                   {enrolledUsers.length > 0 ? (
-                    <ul>
+                    <ul className="space-y-4">
                       {enrolledUsers.map((user) => (
                         <li
                           key={user.bookingId}
-                          className="flex justify-between items-center text-gray-300 mb-2"
+                          className="flex justify-between items-center bg-gray-800 rounded-lg p-4"
                         >
-                          <span>
-                            {user.username} ({user.email})
-                          </span>
+                          <div>
+                            <p className="text-white font-medium">
+                              {user.username || "Neznámé jméno"}
+                            </p>
+                            <p className="text-gray-400 text-sm">
+                              {user.email || "Neznámý email"}
+                            </p>
+                          </div>
                           <button
                             onClick={() => handleRemoveUser(user.bookingId)}
                             className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
@@ -351,7 +441,9 @@ const CourseDetail = () => {
                     </p>
                   )}
                 </div>
-              ) : (
+              )}
+
+              {userRole !== "Trainer" && (
                 <button
                   onClick={isBooked ? handleCancelBooking : handleBook}
                   disabled={loadingAction}
@@ -364,9 +456,94 @@ const CourseDetail = () => {
                   {isBooked ? "Odhlásit se" : "Přihlásit se"}
                 </button>
               )}
+              {userRole === "Trainer" && (
+                <div className="mt-16  border border-red-600 p-4 rounded-md">
+                  <h3 className="text-xl font-semibold text-white mb-4">
+                    Nebezpečná zóna
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center bg-gray-800 rounded-lg p-4">
+                      <div>
+                        <p className="text-white font-medium">Odstanit kurz</p>
+                        <p className="text-gray-400 text-sm">
+                          Odstranění kurzu je nevratná akce.
+                        </p>
+                      </div>
+                      {!confirmDelete ? (
+                        <button
+                          onClick={() => setConfirmDelete(true)}
+                          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                        >
+                          Odstranit kurz
+                        </button>
+                      ) : (
+                        <div className="flex space-x-4">
+                          <Link
+                            onClick={handleDeleteCourse}
+                            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                            to="/kurzy"
+                          >
+                            Ano, odstranit
+                          </Link>
+                          <button
+                            onClick={() => setConfirmDelete(false)}
+                            className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800"
+                          >
+                            Zrušit
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         </section>
+        <aside className="col-span-1 bg-gray-900 rounded-xl p-6">
+          <h2 className="text-xl font-bold text-white mb-4">Další kurzy</h2>
+          <ul className="space-y-6">
+            {allCourses?.data
+              ?.filter((course) => {
+                const courseDate = new Date(course.date);
+                return courseDate > new Date();
+              })
+              .map((course) => (
+                <li key={course.id} className="flex flex-col">
+                  <Link
+                    to={`/kurz/${course.documentId}`}
+                    className="flex items-center p-4 hover:bg-gray-800 rounded-md transition"
+                  >
+                    <div className="w-14 h-14 overflow-hidden rounded-lg mr-4">
+                      <img
+                        src={
+                          course?.image?.[0]?.formats?.thumbnail?.url
+                            ? `http://localhost:1337${course.image[0].formats.thumbnail.url}`
+                            : `https://via.placeholder.com/100x100`
+                        }
+                        alt={course.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-white font-medium text-lg">
+                        {course.title}
+                      </h4>
+                      <p className="text-gray-400 text-sm">
+                        {course.date
+                          ? new Date(course.date).toLocaleDateString("cs-CZ", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })
+                          : "Datum není k dispozici"}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+          </ul>
+        </aside>
       </main>
     </div>
   );

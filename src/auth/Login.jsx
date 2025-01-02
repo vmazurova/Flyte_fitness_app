@@ -9,9 +9,13 @@ const initialUser = {
   email: "",
   password: "",
 };
-
 const Login = () => {
-  const [user, setUser] = useState(initialUser);
+  const [user, setUser] = useState(() => {
+    // Načtení uživatele z localStorage, pokud existuje
+    const savedUser = localStorage.getItem("rememberedUser");
+    return savedUser ? JSON.parse(savedUser) : { email: "", password: "" };
+  });
+  const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState({ password: "" });
   const history = useHistory();
   const { setUser: setContextUser } = useContext(AuthContext);
@@ -56,10 +60,16 @@ const Login = () => {
         const decodedToken = JSON.parse(atob(res.data.jwt.split(".")[1]));
         setContextUser({ id: decodedToken.id });
 
+        if (rememberMe) {
+          localStorage.setItem("rememberedUser", JSON.stringify(user));
+        } else {
+          localStorage.removeItem("rememberedUser");
+        }
+
         toast.success("Přihlášení proběhlo úspěšně!", {
           hideProgressBar: true,
         });
-        setUser(initialUser);
+        setUser({ email: "", password: "" });
         history.push("/treninky");
       }
     } catch (error) {
@@ -84,8 +94,22 @@ const Login = () => {
     >
       <div className="absolute inset-0 bg-black bg-opacity-60"></div>
       <ToastContainer />
+      <div className="absolute mt-4 ml-4"></div>
+
       <div className="relative w-full max-w-md bg-[#1A1A2E] text-white rounded-xl shadow-2xl p-6">
         <h2 className="text-center text-3xl font-bold mb-6">Přihlášení</h2>
+
+        <div className="flex justify-center space-x-4 mb-6">
+          <button className="w-12 h-12 rounded-full flex items-center justify-center border border-gray-500 hover:bg-gray-700">
+            <i className="fa-brands fa-github"></i>
+          </button>
+
+          <button className="w-12 h-12 rounded-full flex items-center justify-center border border-gray-500 hover:bg-gray-700">
+            <i className="fab fa-google text-white"></i>
+          </button>
+        </div>
+
+        <p className="text-center text-gray-400 mb-4">nebo zadej:</p>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
@@ -99,6 +123,7 @@ const Login = () => {
               className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium mb-2">Heslo</label>
             <input
@@ -112,18 +137,44 @@ const Login = () => {
               }}
               className="w-full p-3 bg-transparent border border-gray-500 rounded-lg focus:border-purple-500 focus:outline-none"
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password}</p>
+            )}
           </div>
-          {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password}</p>
-          )}
+
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              className="w-5 h-5 text-purple-500 bg-transparent border-gray-500 rounded focus:outline-none"
+            />
+            <label className="text-gray-400 text-sm">Zapamatovat si mě</label>
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-purple-600 py-3 text-center text-white rounded-lg hover:bg-purple-700 focus:outline-none transition"
+            className="w-full bg-purple-600 py-3 rounded-lg text-white font-bold hover:bg-purple-700 transition"
           >
             Přihlásit se
           </button>
         </form>
+
+        <p className="text-center mt-6 text-gray-400">
+          Nemáte účet?{" "}
+          <Link
+            to="/auth/registrace"
+            className="text-purple-400 hover:text-purple-500 font-semibold"
+          >
+            Zaregistrujte se zde
+          </Link>
+          <br />
+          <br />
+          <Link
+            to="/"
+            className="text-white bg-gray-800 px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+          >
+            ← Zpět na hlavní stránku
+          </Link>
+        </p>
       </div>
     </div>
   );
