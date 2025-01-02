@@ -17,10 +17,14 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [userRole, setUserRole] = useState(null);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
-  const history = useHistory();
+  const history = useHistory(); // Použití useHistory místo useNavigate
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleSettingsClick = () => {
+    history.push("/nastaveni"); // Používá push pro navigaci
   };
 
   const handleLogout = () => {
@@ -147,12 +151,15 @@ const Sidebar = () => {
           )}
         </nav>
 
-        {/* Footer Buttons */}
         <div className="flex flex-col items-center gap-2 px-2 py-4 border-t border-gray-800">
-          <button className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors">
+          <button
+            onClick={handleSettingsClick}
+            className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
+          >
             <FaCog className="text-xl" />
             {isOpen && <span>Nastavení</span>}
           </button>
+
           <button
             onClick={handleLogout}
             className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"

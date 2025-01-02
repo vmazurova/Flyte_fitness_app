@@ -27,6 +27,7 @@ import TrainingPlanAdd from "./pagesLogin/TrainingPlanAdd.jsx";
 import MealPlanDetail from "./pagesLogin/MealPlanDetail.jsx";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import AuthProvider from "./auth/AuthProvider";
+import Nastaveni from "./pagesLogin/Settings.jsx";
 
 const App = () => {
   const location = useLocation();
@@ -44,6 +45,7 @@ const App = () => {
     "/treninky",
     "/trenink-pridani",
     "/auth/Registrace",
+    "/nastaveni",
   ];
 
   const hideHeaderPatterns = [
@@ -79,6 +81,7 @@ const App = () => {
           <ProtectedRoute path="/treninky" component={TrainingPlanList} />
           <ProtectedRoute path="/trenink-pridani" component={TrainingPlanAdd} />
           <ProtectedRoute path="/jidelnicek/:id" component={MealPlanDetail} />
+          <ProtectedRoute path="/nastaveni" component={Nastaveni} />
           <Route path="/" exact>
             <Hero />
             <Features />

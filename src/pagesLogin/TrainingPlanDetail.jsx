@@ -64,14 +64,32 @@ const TrainingPlanDetail = () => {
   return (
     <div
       className="bg-[radial-gradient(circle_at_top_left,_#2b2e3b,_#1f2029,_#141517)]
- min-h-screen from-gray-800 via-gray-900 to-black text-white flex flex-col items-center py-8 px-4"
+ from-gray-800 via-gray-900 to-black text-white flex flex-col items-center "
     >
-      <Link
-        to="/treninky"
-        className="absolute top-4 left-4 p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition"
-      >
-        ← Zpět
-      </Link>
+      <header className="w-full py-4 bg-gray-900 shadow-sm">
+        <div className="flex justify-between items-center px-6 max-w-7xl mx-auto py-4">
+          <motion.h1
+            className="text-2xl font-semibold text-white"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Tvůj tréninkový plán
+          </motion.h1>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Link
+              to="/treninky"
+              className="px-5 py-2 bg-gray-800 text-sm text-gray-300 rounded-md border border-gray-700 hover:bg-gray-700 hover:text-white transition"
+            >
+              Zpět na seznam tréninkových plánů
+            </Link>
+          </motion.div>
+        </div>
+      </header>
 
       <div className=" mt-10 flex flex-col lg:flex-row items-center lg:items-start lg:space-x-6 max-w-7xl w-full">
         <div className="lg:w-3/5 w-full rounded-xl overflow-hidden shadow-lg bg-gray-900 relative">

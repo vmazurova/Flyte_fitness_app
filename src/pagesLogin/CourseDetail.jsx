@@ -90,15 +90,18 @@ const CourseDetail = () => {
     }
   };
   const handleRemoveUser = async (bookingId) => {
+    setLoadingAction(true); // Nastavení načítacího stavu
     try {
       const token = localStorage.getItem("jwt");
+
       if (!bookingId) {
-        console.error("Neplatné bookingId.");
+        console.error("Neplatné bookingId. Uživatele nelze odstranit.");
         return;
       }
 
-      console.log("Snažím se odstranit rezervaci s ID:", bookingId);
+      console.log(`Snažím se odstranit uživatele s bookingId: ${bookingId}`);
 
+      // Odešleme DELETE požadavek na backend
       const response = await fetch(
         `http://localhost:1337/api/bookings/${bookingId}`,
         {
@@ -111,16 +114,18 @@ const CourseDetail = () => {
 
       if (response.ok) {
         console.log(`Rezervace s ID ${bookingId} byla úspěšně odstraněna.`);
-        // Aktualizace seznamu uživatelů na frontend
+
         setEnrolledUsers((prev) =>
           prev.filter((user) => user.bookingId !== bookingId)
         );
       } else {
         const errorText = await response.text();
-        console.error("Chyba při mazání rezervace:", errorText);
+        console.error(`Chyba při pokusu o odstranění uživatele: ${errorText}`);
       }
     } catch (error) {
-      console.error("Chyba při mazání rezervace:", error);
+      console.error("Chyba při pokusu o odstranění uživatele:", error);
+    } finally {
+      setLoadingAction(false); // Ukončení načítacího stavu
     }
   };
 
@@ -252,7 +257,6 @@ const CourseDetail = () => {
         setIsBooked(true);
         setBookingId(result.data.id);
 
-        // Načti znovu přihlášené uživatele
         fetchEnrolledUsers();
       } else {
         console.error("Chyba při přihlášení na kurz:", await response.json());
@@ -297,7 +301,6 @@ const CourseDetail = () => {
         setIsBooked(false);
         setBookingId(null);
 
-        // Aktualizace seznamu přihlášených uživatelů
         setEnrolledUsers((prev) =>
           prev.filter((user) => user.bookingId !== bookingId)
         );
@@ -308,7 +311,6 @@ const CourseDetail = () => {
           enrolledUsers,
         });
 
-        // Opětovná kontrola přihlášení a aktualizace seznamu
         await checkBooking();
         await fetchEnrolledUsers();
       } else {
@@ -352,15 +354,15 @@ const CourseDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-200">
-      <header className="py-4 bg-gray-900 shadow-sm">
-        <div className="container mx-auto px-6 flex justify-between items-center">
+      <header className="py-4 bg-gray-900 shadow-sm ">
+        <div className="container mx-auto px-6 flex justify-between items-center py-4">
           <motion.h1
             className="text-2xl font-semibold text-white"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            Detaily kurzu
+            Kurz {course.title}
           </motion.h1>
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -377,7 +379,7 @@ const CourseDetail = () => {
         </div>
       </header>
 
-      <main className="container mx-auto py-12 px-6 grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <main className="container mx-auto py-10 px-10 grid grid-cols-1 lg:grid-cols-3 gap-12">
         <section className="col-span-2 bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-xl shadow-lg p-8">
           <motion.img
             src={
@@ -401,28 +403,29 @@ const CourseDetail = () => {
               {course.description}
             </p>
             <p className="text-lg text-white mb-4">
+              Datum:{" "}
+              {course.date
+                ? new Date(course.date).toLocaleString("cs-CZ", {
+                    dateStyle: "long",
+                    timeStyle: "short",
+                  })
+                : "Datum není k dispozici"}
+            </p>
+
+            <p className="text-lg text-white mb-4">
               Přihlášeno: {enrolledUsers.length}/{maxCapacity}
             </p>
+
             {enrolledUsers.length >= maxCapacity ? (
               <p className="text-red-500 text-lg font-semibold">
                 Kurz je plně obsazen.
               </p>
             ) : (
-              <p className="text-green-500 text-lg font-semibold">
-                Volná místa jsou k dispozici.
-              </p>
+              <p></p>
             )}
 
             <div>
-              <p className="text-lg text-white mb-4">
-                Datum:{" "}
-                {course.date
-                  ? new Date(course.date).toLocaleString("cs-CZ", {
-                      dateStyle: "long",
-                      timeStyle: "short",
-                    })
-                  : "Datum není k dispozici"}
-              </p>
+              <br />
 
               {userRole === "Trainer" && (
                 <div className="mt-16">
@@ -476,16 +479,10 @@ const CourseDetail = () => {
               )}
               {userRole === "Trainer" && (
                 <div className="mt-16  border border-red-600 p-4 rounded-md">
-                  <h3 className="text-xl font-semibold text-white mb-4">
-                    Nebezpečná zóna
-                  </h3>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center bg-gray-800 rounded-lg p-4">
                       <div>
-                        <p className="text-white font-medium">Odstanit kurz</p>
-                        <p className="text-gray-400 text-sm">
-                          Odstranění kurzu je nevratná akce.
-                        </p>
+                        <p className="text-white font-medium">Smazat</p>
                       </div>
                       {!confirmDelete ? (
                         <button
