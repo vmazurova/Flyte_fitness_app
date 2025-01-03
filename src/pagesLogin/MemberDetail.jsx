@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
 import { motion } from "framer-motion";
-import useFetch from "../hooks/useFetch";
 import Sidebar from "./Sidebar";
 
 export default function MemberDetail({ username }) {
@@ -20,14 +19,20 @@ export default function MemberDetail({ username }) {
     body_fat_percentage: "",
   });
 
-  const {
-    loading,
-    error,
-    data = { data: [] },
-  } = useFetch("http://localhost:1337/api/member-details");
+  const fetchMemberDetails = async () => {
+    const token = localStorage.getItem("jwt");
+    const userPayload = JSON.parse(atob(token.split(".")[1]));
+    const userId = userPayload.id;
 
-  useEffect(() => {
-    if (data?.data?.length) {
+    const response = await fetch(
+      `http://localhost:1337/api/member-details?filters[user][id][$eq]=${userId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
       const transformedData = {
         weight: data.data.map((item) => item.weight),
         height: data.data.map((item) => item.height),
@@ -39,92 +44,23 @@ export default function MemberDetail({ username }) {
       };
       setChartData(transformedData);
     }
-  }, [data]);
+  };
+
+  useEffect(() => {
+    fetchMemberDetails();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewRecord({ ...newRecord, [name]: value });
   };
 
-  const fetchMemberDetails = async () => {
-    const token = localStorage.getItem("jwt");
-    const response = await fetch(
-      `http://localhost:1337/api/member-details?filters[user][id][$eq]=${userId}&populate=*`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await response.json();
-    setChartData(transformData(data));
-  };
-  useEffect(() => {
-    const fetchMemberDetails = async () => {
-      const token = localStorage.getItem("jwt");
-      if (!token) {
-        console.error("No valid token found.");
-        return;
-      }
-
-      const userPayload = JSON.parse(atob(token.split(".")[1]));
-      const userId = userPayload.id; // ID přihlášeného uživatele
-
-      try {
-        const response = await fetch(
-          `http://localhost:1337/api/member-details?filters[user][id][$eq]=${userId}&populate=*`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          const transformedData = {
-            weight: data.data.map((item) => item.weight),
-            height: data.data.map((item) => item.height),
-            bmi: data.data.map((item) => item.bmi),
-            bodyFat: data.data.map((item) => item.body_fat_percentage),
-            labels: data.data.map((item) =>
-              new Date(item.last_update).toLocaleDateString()
-            ),
-          };
-          setChartData(transformedData);
-        } else {
-          console.error("Failed to fetch member details:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching member details:", error);
-      }
-    };
-
-    fetchMemberDetails();
-  }, []);
   const handleAddRecord = async () => {
     const token = localStorage.getItem("jwt");
     const userPayload = JSON.parse(atob(token.split(".")[1]));
     const userId = userPayload.id;
 
     try {
-      // Kontrola, zda uživatel již má záznam
-      const checkResponse = await fetch(
-        `http://localhost:1337/api/member-details?filters[user][id][$eq]=${userId}&populate=*`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const existingData = await checkResponse.json();
-
-      if (existingData.data.length > 0) {
-        console.error("Záznam již existuje pro tohoto uživatele.");
-        alert("Záznam pro tohoto uživatele již existuje!");
-        return; // Zabrání opakovanému vložení
-      }
-
       const response = await fetch("http://localhost:1337/api/member-details", {
         method: "POST",
         headers: {
@@ -144,22 +80,19 @@ export default function MemberDetail({ username }) {
       });
 
       if (response.ok) {
-        const result = await response.json();
-        console.log("Záznam byl úspěšně přidán:", result);
+        fetchMemberDetails();
+        setNewRecord({
+          weight: "",
+          height: "",
+          bmi: "",
+          body_fat_percentage: "",
+        });
       } else {
         const error = await response.json();
-        console.error("Chyba při přidávání záznamu:", error);
-        console.log("Odesílání dat:", {
-          weight: parseFloat(newRecord.weight),
-          height: parseFloat(newRecord.height),
-          bmi: parseFloat(newRecord.bmi),
-          body_fat_percentage: parseFloat(newRecord.body_fat_percentage),
-          last_update: new Date(),
-          user: userId,
-        });
+        alert(error.error?.message || "Chyba při přidávání záznamu.");
       }
     } catch (error) {
-      console.error("Chyba při zpracování požadavku:", error);
+      console.error("Chyba při přidávání záznamu:", error);
     }
   };
 
@@ -168,7 +101,6 @@ export default function MemberDetail({ username }) {
       id: "member-progress",
       toolbar: { show: false },
       animations: { enabled: true, easing: "easeinout", speed: 800 },
-      background: "transparent",
     },
     xaxis: {
       categories: chartData.labels,
@@ -189,35 +121,26 @@ export default function MemberDetail({ username }) {
     { name: "Tělesný tuk (%)", data: chartData.bodyFat },
   ];
 
-  if (loading)
-    return <p className="text-purple-300 text-center mt-20">Načítání...</p>;
-  if (error)
-    return (
-      <p className="text-red-400 text-center mt-20">Chyba: {error.message}</p>
-    );
-
   return (
-    <div className="min-h-screen bg-black text-gray-200">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-gray-200">
       <Sidebar />
-      <header className="py-6 bg-gray-900 shadow-md">
+      <header className="py-6 bg-gray-800 shadow-md">
         <div className="container mx-auto px-6 flex items-center justify-between">
           <motion.h1
-            className="text-3xl font-semibold text-purple-400"
+            className="text-3xl font-semibold text-white"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            Ahoj, {username}!
+            Tvá osobní karta!
           </motion.h1>
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="container mx-auto py-10 px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Chart */}
-        <div className="col-span-2 bg-gray-900 rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-purple-400 mb-6">
-            Tvůj pokrok
+        <div className="col-span-2 bg-gray-900 rounded-xl shadow-lg p-6 mt-6">
+          <h2 className="text-xl font-bold text-white mb-6">
+            Sleduj svůj vývoj
           </h2>
           <Chart
             options={chartOptions}
@@ -227,27 +150,45 @@ export default function MemberDetail({ username }) {
           />
         </div>
 
-        {/* Add Record */}
-        <div className="bg-gray-900 rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-purple-400 mb-6">
-            Přidat Nový Záznam
-          </h2>
+        <div className="bg-gray-800 rounded-xl shadow-lg p-6 mt-6">
+          <h2 className="text-xl font-bold text-white mb-6">Přidat:</h2>
           <div className="space-y-4">
-            {["weight", "height", "bmi", "body_fat_percentage"].map((field) => (
-              <input
-                key={field}
-                name={field}
-                type="number"
-                placeholder={`Zadejte ${field}`}
-                value={newRecord[field]}
-                onChange={handleInputChange}
-                className="w-full p-4 bg-gray-800 text-white rounded-lg focus:ring-2 focus:ring-purple-500"
-              />
-            ))}
+            <input
+              name="weight"
+              type="number"
+              placeholder="Zadejte váhu (kg)"
+              value={newRecord.weight}
+              onChange={handleInputChange}
+              className="w-full p-4 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-purple-500"
+            />
+            <input
+              name="height"
+              type="number"
+              placeholder="Zadejte výšku (cm)"
+              value={newRecord.height}
+              onChange={handleInputChange}
+              className="w-full p-4 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-purple-500"
+            />
+            <input
+              name="bmi"
+              type="number"
+              placeholder="Zadejte BMI"
+              value={newRecord.bmi}
+              onChange={handleInputChange}
+              className="w-full p-4 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-purple-500"
+            />
+            <input
+              name="body_fat_percentage"
+              type="number"
+              placeholder="Zadejte Tělesný tuk (%)"
+              value={newRecord.body_fat_percentage}
+              onChange={handleInputChange}
+              className="w-full p-4 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-purple-500"
+            />
           </div>
           <button
             onClick={handleAddRecord}
-            className="mt-6 w-full bg-gradient-to-r from-purple-500 to-purple-700 text-white py-3 px-6 rounded-lg shadow-lg hover:from-purple-600 hover:to-purple-800 transition"
+            className="mt-6 w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-3 px-6 rounded-lg shadow-lg hover:from-purple-600 hover:to-purple-800 transition"
           >
             Přidat Záznam
           </button>
