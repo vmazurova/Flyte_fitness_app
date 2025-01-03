@@ -11,12 +11,11 @@ import SignUp from "./auth/SignUp.jsx";
 import Login from "./auth/Login.jsx";
 import MealPlan from "./sections/MealPlan.jsx";
 import MemberDetail from "./pagesLogin/MemberDetail.jsx";
-import LogOut from "./pagesLogin/LogOut.jsx";
+
 import ForgotPassword from "./auth/ForgotPassword.jsx";
 import CoursesList from "./pagesLogin/CoursesList.jsx";
 import CoursesDetail from "./pagesLogin/CourseDetail.jsx";
-import Bookings from "./pagesLogin/Bookings.jsx";
-import BookingDetail from "./pagesLogin/BookingDetail.jsx";
+
 import MealPlanList from "./pagesLogin/MealPlanList.jsx";
 import Kalendar from "./pagesLogin/CourseCalendar.jsx";
 import MealPlanAdd from "./pagesLogin/MealPlanAdd.jsx";
@@ -68,12 +67,11 @@ const App = () => {
           <Route path="/auth/prihlaseni" component={Login} />
           <Route path="/zapomenute-heslo" component={ForgotPassword} />
           <ProtectedRoute path="/osobni-slozka" component={MemberDetail} />
-          <ProtectedRoute path="/odhlaseni" component={LogOut} />
+
           <ProtectedRoute path="/kurzy" component={CoursesList} />
           <ProtectedRoute path="/kalendar" component={Kalendar} />
           <ProtectedRoute path="/kurz/:id" component={CoursesDetail} />
-          <ProtectedRoute path="/bookings" component={Bookings} />
-          <ProtectedRoute path="/bookings/:id" component={BookingDetail} />
+
           <ProtectedRoute path="/jidelnicky" component={MealPlanList} />
           <ProtectedRoute path="/jidelnicek-pridani" component={MealPlanAdd} />
           <ProtectedRoute path="/kurz-pridani" component={CourseAdd} />

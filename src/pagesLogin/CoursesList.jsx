@@ -13,9 +13,8 @@ export default function CourseList() {
   } = useFetch("http://localhost:1337/api/courses?populate=*");
 
   const [userRole, setUserRole] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Přidání stavu pro Sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  // Funkce pro přepínání stavu Sidebaru
   const handleSidebarToggle = (isOpen) => {
     setIsSidebarOpen(isOpen);
   };

@@ -66,7 +66,6 @@ export default function TrainingPlanList() {
           </p>
         </motion.div>
 
-        {/* Button for Trainers */}
         {userRole === "Trainer" && (
           <div className="text-center mb-8">
             <Link to="/trenink-pridani">

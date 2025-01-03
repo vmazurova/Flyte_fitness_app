@@ -100,7 +100,7 @@ const CoursesAdd = () => {
       <div className="flex-1 flex flex-col items-center justify-start py-12 px-6 relative bg-gradient-to-r from-purple-500 via-indigo-500 to-black">
         <div className="absolute inset-0 bg-black bg-opacity-60"></div>
         <ToastContainer />
-        {/* Tlačítko zpět */}
+
         <div className="relative w-full max-w-3xl flex justify-between mb-8">
           <Link
             to="/kurzy"
@@ -109,7 +109,7 @@ const CoursesAdd = () => {
             ← Zpět na kurzy
           </Link>
         </div>
-        {/* Formulář */}
+
         <div className="relative w-full max-w-lg bg-[#1A1A2E] text-white rounded-xl shadow-2xl p-6">
           <h2 className="text-center text-3xl font-bold mb-6">
             Přidat nový kurz

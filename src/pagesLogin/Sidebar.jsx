@@ -17,6 +17,7 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [userRole, setUserRole] = useState(null);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Stav pro zobrazení dialogového okna
   const history = useHistory();
 
   const toggleSidebar = () => {
@@ -27,7 +28,7 @@ const Sidebar = () => {
     history.push("/nastaveni");
   };
 
-  const handleLogout = () => {
+  const handleLogoutConfirm = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("jwt");
     history.push("/auth/prihlaseni");
@@ -89,11 +90,9 @@ const Sidebar = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <div className="flex items-center justify-between h-16 px-4 bg-gray-900 border-b border-gray-800">
-          {isOpen && <h1 className="text-lg font-bold">Menu</h1>}
-        </div>
+        <div className="flex items-center justify-between h-16 px-4 bg-gray-900 border-b border-gray-800"></div>
 
-        <nav className="flex-1 mt-4 space-y-2 overflow-y-auto px-2">
+        <nav className="flex-1 mt-4 space-y-2 overflow-y-auto px-2 ">
           {routesData.map((route, index) => (
             <NavLink
               key={index}
@@ -103,7 +102,7 @@ const Sidebar = () => {
                   "flex items-center gap-4 px-4 py-3 text-sm font-medium rounded-lg transition-colors",
                   isActive
                     ? "bg-gray-700 text-white"
-                    : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                    : "text-white hover:bg-gray-800 hover:text-white"
                 )
               }
             >
@@ -113,57 +112,55 @@ const Sidebar = () => {
               {isOpen && <span>{route.name}</span>}
             </NavLink>
           ))}
-
+        </nav>
+        <div className="flex flex-col items-center gap-2 px-2 py-4 border-t border-gray-800">
           {userRole === "Trainer" && (
-            <div className="relative group">
+            <div className="w-full">
               <button
                 onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}
-                className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
+                className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-white rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
               >
                 <FaPlus className="text-xl" />
                 {isOpen && <span>Vytvořit</span>}
               </button>
-
               {isCreateMenuOpen && (
-                <div className="absolute left-0 w-full mt-2 bg-gray-800 text-gray-400 rounded-lg shadow-lg overflow-hidden z-50">
-                  <NavLink
-                    to="/kurz-pridani"
-                    className="block px-4 py-2 hover:bg-gray-700 hover:text-white"
+                <div className="mt-2 space-y-2">
+                  <button
+                    onClick={() => history.push("/vytvorit-kurz")}
+                    className="w-full px-4 py-3 text-sm font-medium text-white rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
                   >
                     Vytvořit kurz
-                  </NavLink>
-                  <NavLink
-                    to="/trenink-pridani"
-                    className="block px-4 py-2 hover:bg-gray-700 hover:text-white"
+                  </button>
+                  <button
+                    onClick={() => history.push("/vytvorit-trenink")}
+                    className="w-full px-4 py-3 text-sm font-medium text-whiterounded-lg hover:bg-gray-800 hover:text-white transition-colors"
                   >
                     Vytvořit trénink
-                  </NavLink>
-                  <NavLink
-                    to="/jidelnicek-pridani"
-                    className="block px-4 py-2 hover:bg-gray-700 hover:text-white"
+                  </button>
+                  <button
+                    onClick={() => history.push("/vytvorit-jidelnicek")}
+                    className="w-full px-4 py-3 text-sm font-medium text-white rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
                   >
                     Vytvořit jídelníček
-                  </NavLink>
+                  </button>
                 </div>
               )}
             </div>
           )}
-        </nav>
 
-        <div className="flex flex-col items-center gap-2 px-2 py-4 border-t border-gray-800">
           <button
             onClick={handleSettingsClick}
-            className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
+            className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-white ounded-lg hover:bg-gray-800 hover:text-white transition-colors"
           >
             <FaCog className="text-xl" />
             {isOpen && <span>Nastavení</span>}
           </button>
 
           <button
-            onClick={handleLogout}
-            className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
+            onClick={() => setShowLogoutModal(true)}
+            className="flex bg-gradient-to-r from-purple-500 to-indigo-500 items-center w-full gap-4 px-4 py-3 text-sm font-medium text-white rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
           >
-            <FaSignOutAlt className="text-xl" />
+            <FaSignOutAlt className="text-xl  " />
             {isOpen && <span>Odhlásit se</span>}
           </button>
         </div>
