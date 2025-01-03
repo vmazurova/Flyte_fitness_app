@@ -11,7 +11,6 @@ const TrainingPlanDetail = () => {
 
   const trainingPlan = data?.data?.[0];
 
-  // Převod cviků z řetězce do pole objektů
   const parseExercises = (exerciseString) => {
     return exerciseString.split(";").map((exercise) => {
       const parts = exercise.split("|").map((part) => part.trim());
@@ -62,10 +61,8 @@ const TrainingPlanDetail = () => {
   }
 
   return (
-    <div
-      className="bg-[radial-gradient(circle_at_top_left,_#2b2e3b,_#1f2029,_#141517)]
- from-gray-800 via-gray-900 to-black text-white flex flex-col items-center "
-    >
+    <div className="bg-[radial-gradient(circle_at_top_left,_#2b2e3b,_#1f2029,_#141517)] from-gray-800 via-gray-900 to-black text-white flex flex-col items-center">
+      {/* Header */}
       <header className="w-full py-4 bg-gray-900 shadow-sm">
         <div className="flex justify-between items-center px-6 max-w-7xl mx-auto py-4">
           <motion.h1
@@ -85,14 +82,16 @@ const TrainingPlanDetail = () => {
               to="/treninky"
               className="px-5 py-2 bg-gray-800 text-sm text-gray-300 rounded-md border border-gray-700 hover:bg-gray-700 hover:text-white transition"
             >
-              Zpět na seznam tréninkových plánů
+              Zpět na seznam
             </Link>
           </motion.div>
         </div>
       </header>
 
-      <div className=" mt-10 flex flex-col lg:flex-row items-center lg:items-start lg:space-x-6 max-w-7xl w-full">
-        <div className="lg:w-3/5 w-full rounded-xl overflow-hidden shadow-lg bg-gray-900 relative">
+      {/* Main Content */}
+      <div className="mt-10 flex flex-wrap lg:flex-nowrap items-center lg:items-start gap-6 max-w-7xl w-full px-4">
+        {/* Image Section */}
+        <div className="lg:w-3/5 w-full rounded-xl overflow-hidden shadow-lg bg-gray-900">
           <img
             src={
               trainingPlan.image?.url
@@ -102,13 +101,10 @@ const TrainingPlanDetail = () => {
             alt={trainingPlan.title}
             className="w-full h-64 lg:h-96 object-cover"
           />
-          <div className="absolute bottom-4 left-4 bg-gray-800 p-2 px-4 rounded-full flex items-center shadow-md">
-            <span className="text-xl font-bold text-white">
-              {trainingPlan.title}
-            </span>
-          </div>
+          <div className="absolute bottom-4 left-4 bg-gray-800 p-2 px-4 rounded-full flex items-center shadow-md"></div>
         </div>
 
+        {/* Details Section */}
         <div className="lg:w-2/5 w-full bg-gray-900 rounded-xl p-6 shadow-lg">
           <div className="flex items-center mb-4">
             <div
@@ -140,12 +136,13 @@ const TrainingPlanDetail = () => {
         </div>
       </div>
 
-      <div className="mt-8 w-full max-w-7xl">
+      {/* Exercises Section */}
+      <div className="mt-8 w-full max-w-7xl px-4">
         <div className="bg-gray-900 rounded-xl shadow-lg p-4 flex flex-col space-y-4">
           {exercises.map((exercise, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-between bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition"
+              className="flex flex-wrap lg:flex-nowrap items-center justify-between bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition"
             >
               <div className="flex items-center space-x-4 min-w-0">
                 <div className="w-12 h-12 bg-gray-700 flex items-center justify-center rounded-full text-2xl flex-shrink-0">

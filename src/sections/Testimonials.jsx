@@ -68,6 +68,13 @@ const Testimonials = () => {
           </ul>
         </div>
       </div>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
       <ul className="mt-40 flex justify-center max-lg:hidden space-x-8">
         <li>
           <img

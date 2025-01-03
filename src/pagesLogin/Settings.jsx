@@ -55,7 +55,7 @@ const Settings = () => {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem("jwt");
-      const response = await fetch("http://localhost:1337/api/auth/user", {
+      const response = await fetch("http://localhost:1337/api/user/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +71,7 @@ const Settings = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update user data.");
+        throw new Error("Chyba při aktualizaci dat uživatele.");
       }
 
       const updatedUser = await response.json();

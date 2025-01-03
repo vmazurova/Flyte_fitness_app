@@ -51,8 +51,8 @@ const Hero = () => {
                   duration: 3.0,
                 }}
                 style={{
-                  display: "inline-block", // Zajistí, že se okolní prvky nebudou posouvat
-                  transformOrigin: "center", // Nastaví střed jako výchozí bod zvětšení
+                  display: "inline-block",
+                  transformOrigin: "center",
                 }}
               >
                 <Button icon="/images/zap.svg">Vyzkoušet</Button>
@@ -60,10 +60,10 @@ const Hero = () => {
             </Link>
           </div>
 
-          <div className="absolute -top-32 left-[calc(50%-340px)] w-[1230px] pointer-events-none hero-img_res">
+          <div className="absolute top-0 left-[calc(50%-100px)] w-[850px] max-w-full pointer-events-none">
             <img
-              src="/images/hero.png"
-              className="size-200 max-lg:h-auto"
+              src="/images/hero2.png"
+              className="w-full h-auto object-contain"
               alt="hero"
             />
           </div>

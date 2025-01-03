@@ -45,7 +45,7 @@ const Header = () => {
     <header
       className={clsx(
         "fixed top-0 left-0 z-50 w-full transition-all duration-500 max-lg:py-3",
-        hasScrolled ? "py-4 bg-black-100 backdrop-blur-[8px]" : "py-8"
+        hasScrolled ? "py-4  backdrop-blur-[8px]" : "py-8"
       )}
     >
       <div
@@ -57,7 +57,7 @@ const Header = () => {
         <Link to="/" className="lg:hidden flex-1 cursor-pointer z-2">
           <motion.img
             src="/images/flyte_bile_pop.webp"
-            width={hasScrolled ? 85 : 115} // Dynamická změna velikosti loga
+            width={hasScrolled ? 85 : 115}
             height={hasScrolled ? 45 : 55}
             alt="logo"
             initial={{ y: -50, opacity: 0 }}
@@ -129,7 +129,7 @@ const Header = () => {
       </div>
 
       <motion.div
-        className="h-1 bg-white fixed top-[74px] left-0 z-40"
+        className="h-[2px] bg-white fixed top-[74px] left-0 z-40"
         style={{ width: `${scrollProgress}%` }}
         initial={{ width: 0 }}
         animate={{ width: `${scrollProgress}%` }}

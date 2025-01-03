@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Sidebar from "./Sidebar.jsx";
 import React, { useState, useEffect } from "react";
+import clsx from "clsx";
 
 export default function CourseList() {
   const {
@@ -11,9 +12,16 @@ export default function CourseList() {
     data = { data: [] },
   } = useFetch("http://localhost:1337/api/courses?populate=*");
 
-  const [userRole, setUserRole] = useState(null); // Stav pro roli uživatele
+  const [userRole, setUserRole] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Přidání stavu pro Sidebar
 
-  // Fetchování role uživatele
+  // Funkce pro přepínání stavu Sidebaru
+  const handleSidebarToggle = (isOpen) => {
+    setIsSidebarOpen(isOpen);
+  };
+
+  const className = `${isSidebarOpen ? "lg:ml-72" : "lg:ml-16"} flex-1 overflow-y-auto py-12 px-6 transition-all duration-300`;
+
   useEffect(() => {
     const fetchUserRole = async () => {
       const token = localStorage.getItem("jwt");
@@ -47,11 +55,12 @@ export default function CourseList() {
 
   return (
     <div className="h-screen w-screen bg-cover bg-fixed bg-center flex flex-col lg:flex-row">
-      <Sidebar />
+      <Sidebar
+        isSidebarOpen={isSidebarOpen}
+        onToggleSidebar={handleSidebarToggle}
+      />
 
-      {/* Main Content */}
-      <section className="flex-1 overflow-y-auto lg:ml-64 py-12 px-6">
-        {/* Title Section */}
+      <section className={className}>
         <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: -50 }}
@@ -66,7 +75,6 @@ export default function CourseList() {
           </p>
         </motion.div>
 
-        {/* Button for Trainers */}
         {userRole === "Trainer" && (
           <div className="text-center mb-8">
             <Link to="/kurz-pridani">
@@ -81,7 +89,6 @@ export default function CourseList() {
           </div>
         )}
 
-        {/* Course Grid */}
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {courses.length > 0 ? (
             courses.map((course, index) => {
@@ -120,7 +127,7 @@ export default function CourseList() {
                     <p className="text-gray-400 text-sm lg:text-base mb-2 lg:mb-4 line-clamp-3">
                       {course.description}
                     </p>
-                    <p className="text-gray-500 text-xs lg:text-sm mb-2">
+                    <p className="text-white text-xs lg:text-sm mb-2">
                       Datum: {formattedDate}
                     </p>
                     <div className="text-center">

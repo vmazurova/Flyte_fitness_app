@@ -8,15 +8,14 @@ import WorflowImg03 from "../images/workflow-03.png";
 
 export default function Features() {
   const [ref, inView] = useInView({
-    triggerOnce: true, // Animace se spustí pouze jednou
-    threshold: 0.1, // Spustí se, když je 10 % elementu viditelných
+    triggerOnce: true,
+    threshold: 0.1,
   });
 
   return (
-    <section ref={ref}>
+    <section ref={ref} name="features">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 mt-10">
         <div className="pb-12 md:pb-20">
-          {/* Section header */}
           <div className="mx-auto max-w-3xl pb-12 text-center md:pb-20">
             <div className="inline-flex items-center gap-3 pb-3 before:h-px before:w-8 before:bg-gradient-to-r from-transparent to-p1 after:h-px after:w-8 after:bg-gradient-to-l from-transparent to-p2/50">
               <span className="inline-flex bg-gradient-to-r from-p2 to-p1 bg-clip-text text-transparent">

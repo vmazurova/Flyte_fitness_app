@@ -17,22 +17,20 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [userRole, setUserRole] = useState(null);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
-  const history = useHistory(); // Použití useHistory místo useNavigate
+  const history = useHistory();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
   const handleSettingsClick = () => {
-    history.push("/nastaveni"); // Používá push pro navigaci
+    history.push("/nastaveni");
   };
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("jwt");
-
     history.push("/auth/prihlaseni");
-
     window.location.reload();
   };
 
@@ -91,12 +89,10 @@ const Sidebar = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        {/* Header */}
         <div className="flex items-center justify-between h-16 px-4 bg-gray-900 border-b border-gray-800">
-          {isOpen && <h1 className="text-lg font-bold"></h1>}
+          {isOpen && <h1 className="text-lg font-bold">Menu</h1>}
         </div>
 
-        {/* Navigation Links */}
         <nav className="flex-1 mt-4 space-y-2 overflow-y-auto px-2">
           {routesData.map((route, index) => (
             <NavLink
@@ -118,7 +114,6 @@ const Sidebar = () => {
             </NavLink>
           ))}
 
-          {/* Vytvořit menu pro Trainer */}
           {userRole === "Trainer" && (
             <div className="relative group">
               <button

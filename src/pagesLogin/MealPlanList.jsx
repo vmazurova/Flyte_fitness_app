@@ -100,9 +100,6 @@ export default function MealPlanList() {
 
         <main className="px-6 py-12">
           <section className="mb-12">
-            <h2 className="text-center text-3xl font-bold mb-6">
-              Doporučené jídelníčky
-            </h2>
             <div className="max-w-7xl mx-auto">
               <Slider {...settings}>
                 {mealPlans.map((mealPlan, index) => {

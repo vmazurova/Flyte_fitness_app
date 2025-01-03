@@ -536,7 +536,6 @@ const CourseDetail = () => {
                             ? `http://localhost:1337${course.image[0].formats.thumbnail.url}`
                             : `https://via.placeholder.com/100x100`
                         }
-                        alt={course.title}
                         className="w-full h-full object-cover"
                       />
                     </div>

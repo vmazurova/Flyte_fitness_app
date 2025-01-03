@@ -106,29 +106,60 @@ export default function MemberDetail({ username }) {
     const userPayload = JSON.parse(atob(token.split(".")[1]));
     const userId = userPayload.id;
 
-    const response = await fetch("http://localhost:1337/api/member-details", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        data: {
+    try {
+      // Kontrola, zda uživatel již má záznam
+      const checkResponse = await fetch(
+        `http://localhost:1337/api/member-details?filters[user][id][$eq]=${userId}&populate=*`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const existingData = await checkResponse.json();
+
+      if (existingData.data.length > 0) {
+        console.error("Záznam již existuje pro tohoto uživatele.");
+        alert("Záznam pro tohoto uživatele již existuje!");
+        return; // Zabrání opakovanému vložení
+      }
+
+      const response = await fetch("http://localhost:1337/api/member-details", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          data: {
+            weight: parseFloat(newRecord.weight),
+            height: parseFloat(newRecord.height),
+            bmi: parseFloat(newRecord.bmi),
+            body_fat_percentage: parseFloat(newRecord.body_fat_percentage),
+            last_update: new Date(),
+            user: userId,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Záznam byl úspěšně přidán:", result);
+      } else {
+        const error = await response.json();
+        console.error("Chyba při přidávání záznamu:", error);
+        console.log("Odesílání dat:", {
           weight: parseFloat(newRecord.weight),
           height: parseFloat(newRecord.height),
           bmi: parseFloat(newRecord.bmi),
           body_fat_percentage: parseFloat(newRecord.body_fat_percentage),
           last_update: new Date(),
-          user: userId, // Zajistěte, že přidáváte uživatele
-        },
-      }),
-    });
-
-    if (response.ok) {
-      const result = await response.json();
-      console.log("Úspěšně přidáno:", result);
-    } else {
-      console.error("Chyba při přidávání:", await response.json());
+          user: userId,
+        });
+      }
+    } catch (error) {
+      console.error("Chyba při zpracování požadavku:", error);
     }
   };
 

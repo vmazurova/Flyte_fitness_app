@@ -87,10 +87,10 @@ const MealPlan = () => {
               transition={{ delay: 0.7, duration: 1.0, ease: "easeOut" }}
               className="mb-10 max-md:hidden"
             >
-              <div className="download_preview-before download_preview-after rounded-40 relative w-[955px] border-2 border-s5 p-6">
-                <div className="relative rounded-3xl bg-s1 px-6 pb-6 pt-14">
+              <div className="rounded-40 relative w-[855px] border-2 border-s5 p-2">
+                <div className="relative rounded-3xl bg-s1 px-5 pb-5 pt-5">
                   <img
-                    src="/images/screen.jpg"
+                    src="/images/mealPlan2.png"
                     width={855}
                     height={655}
                     alt="screen"
