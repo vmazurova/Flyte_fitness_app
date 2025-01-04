@@ -29,12 +29,6 @@ const CoursesAdd = () => {
     setLoading(true);
 
     try {
-      // const token = localStorage.getItem("jwt");
-      // if (!token) {
-      //   toast.error("Prosím, přihlaste se.", { hideProgressBar: true });
-      //   return;
-      // }
-
       const coursePayload = {
         data: {
           title: formData.title,
@@ -81,11 +75,11 @@ const CoursesAdd = () => {
         max_capacity: "",
         images: [],
       });
-      toast.success("Kurz byl úspěšně přidán!", { hideProgressBar: true });
+      toast.success("kurz byl přidán!", { hideProgressBar: true });
     } catch (error) {
-      console.error("Error details:", error.response?.data || error.message);
+      console.error("chyba pri pridavani kurzu:", error);
       toast.error(
-        error.response?.data?.error?.message || "Chyba při přidávání kurzu.",
+        error.response?.data?.error?.message || "chyba při přidávání kurzu.",
         { hideProgressBar: true }
       );
     } finally {
@@ -95,7 +89,6 @@ const CoursesAdd = () => {
 
   return (
     <div className="h-screen flex flex-row bg-cover bg-center relative">
-      {/* Sidebar */}
       <Sidebar />
       <div className="flex-1 flex flex-col items-center justify-start py-12 px-6 relative bg-gradient-to-r from-purple-500 via-indigo-500 to-black">
         <div className="absolute inset-0 bg-black bg-opacity-60"></div>
@@ -111,9 +104,7 @@ const CoursesAdd = () => {
         </div>
 
         <div className="relative w-full max-w-lg bg-[#1A1A2E] text-white rounded-xl shadow-2xl p-6">
-          <h2 className="text-center text-3xl font-bold mb-6">
-            Přidat nový kurz
-          </h2>
+          <h2 className="text-center text-3xl font-bold mb-6">Přidat kurz</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">

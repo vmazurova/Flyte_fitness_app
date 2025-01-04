@@ -17,7 +17,7 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [userRole, setUserRole] = useState(null);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Stav pro zobrazení dialogového okna
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const history = useHistory();
 
   const toggleSidebar = () => {
@@ -46,7 +46,7 @@ const Sidebar = () => {
         const user = await response.json();
         setUserRole(user.role?.name || null);
       } catch (error) {
-        console.error("Chyba při načítání role uživatele:", error);
+        console.error("chyba v roli", error);
       }
     };
     fetchUserRole();
@@ -116,7 +116,7 @@ const Sidebar = () => {
           ))}
         </nav>
         <div className="flex flex-col items-center gap-2 px-2 py-4 border-t border-gray-800">
-          {userRole === "trener" && (
+          {userRole === "Trainer" && (
             <div className="w-full">
               <button
                 onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}

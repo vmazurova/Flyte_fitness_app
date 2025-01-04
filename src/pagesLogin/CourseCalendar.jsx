@@ -20,11 +20,7 @@ export default function CourseCalendar() {
       <p className="text-gray-400 text-center mt-20 text-lg">Načítání...</p>
     );
   if (error)
-    return (
-      <p className="text-red-400 text-center mt-20 text-lg">
-        Chyba: {error.message}
-      </p>
-    );
+    return <p className="text-red-400 text-center mt-20 text-lg">chyba</p>;
 
   const events = data?.data.map((course) => ({
     id: course.id,
@@ -40,12 +36,9 @@ export default function CourseCalendar() {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-gray-900 text-gray-100">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content */}
       <section className="flex-1 p-8 lg:ml-64">
-        {/* Header */}
         <div className="mb-8 text-center">
           <motion.h1
             className="text-4xl font-bold text-white"
@@ -55,12 +48,9 @@ export default function CourseCalendar() {
           >
             Kalendář kurzů
           </motion.h1>
-          <p className="text-gray-400 mt-2">
-            Prohlédněte si plánované kurzy na jednom místě.
-          </p>
+          <p className="text-gray-400 mt-2">Všehchny kurzy:</p>
         </div>
 
-        {/* Calendar */}
         <div className="bg-gray-800 shadow-lg rounded-lg p-6 border border-gray-700">
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

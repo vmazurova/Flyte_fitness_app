@@ -139,9 +139,7 @@ export default function MemberDetail({ username }) {
 
       <div className="container mx-auto py-10 px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="col-span-2 bg-gray-900 rounded-xl shadow-lg p-6 mt-6">
-          <h2 className="text-xl font-bold text-white mb-6">
-            Sleduj svůj vývoj
-          </h2>
+          <h2 className="text-xl font-bold text-white mb-6">Tvůj vývoj</h2>
           <Chart
             options={chartOptions}
             series={series}
@@ -190,7 +188,7 @@ export default function MemberDetail({ username }) {
             onClick={handleAddRecord}
             className="mt-6 w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-3 px-6 rounded-lg shadow-lg hover:from-purple-600 hover:to-purple-800 transition"
           >
-            Přidat Záznam
+            Přidat
           </button>
         </div>
       </div>

@@ -20,19 +20,19 @@ const Settings = () => {
       try {
         const token = localStorage.getItem("jwt");
         if (!token) {
-          console.error("Token chybí nebo není k dispozici.");
-          toast.error("Uživatel není přihlášen.");
+          console.error("chyba v tokenu");
+          toast.error("nejsi prihlasen");
           setLoading(false);
           return;
         }
 
-        console.log("JWT Token při načítání:", token);
+        console.log("tvuj token", token);
 
         const response = await axios.get("http://localhost:1337/api/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("Načtená data uživatele:", response.data);
+        console.log("data", response.data);
 
         setFormData({
           username: response.data.username || "",
@@ -42,11 +42,8 @@ const Settings = () => {
           password: "",
         });
       } catch (err) {
-        console.error(
-          "Chyba při načítání uživatelských dat:",
-          err.response?.data || err.message
-        );
-        toast.error("Nepodařilo se načíst data uživatele.");
+        console.error("chyba v nacitani", err.response?.data || err.message);
+        toast.error("nepodařilo se načíst data");
       } finally {
         setLoading(false);
       }
@@ -121,7 +118,6 @@ const Settings = () => {
 
   return (
     <div className="h-screen flex flex-row bg-cover bg-center relative">
-      {/* Sidebar */}
       <Sidebar />
       <div className="flex-1 flex flex-col items-center justify-start py-12 px-6 relative bg-gradient-to-r from-purple-500 via-indigo-500 to-black">
         <div className="absolute inset-0 bg-black bg-opacity-60"></div>

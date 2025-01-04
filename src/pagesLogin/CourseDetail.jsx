@@ -45,12 +45,12 @@ const CourseDetail = () => {
         const response = await fetch(`http://localhost:1337/api/users/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
-          }, // Tato závorka byla správně
+          },
         });
 
         if (response.ok) {
           const userData = await response.json();
-          setUserRole(userData.role?.name || null); // Zkontroluj, jestli role vrací "Trainer"
+          setUserRole(userData.role?.name || null);
         } else {
           console.error("Failed to fetch user role:", response.statusText);
         }
@@ -90,7 +90,7 @@ const CourseDetail = () => {
     }
   };
   const handleRemoveUser = async (bookingId) => {
-    setLoadingAction(true); // Nastavení načítacího stavu
+    setLoadingAction(true);
     try {
       const token = localStorage.getItem("jwt");
 
@@ -101,7 +101,6 @@ const CourseDetail = () => {
 
       console.log(`Snažím se odstranit uživatele s bookingId: ${bookingId}`);
 
-      // Odešleme DELETE požadavek na backend
       const response = await fetch(
         `http://localhost:1337/api/bookings/${bookingId}`,
         {
@@ -125,7 +124,7 @@ const CourseDetail = () => {
     } catch (error) {
       console.error("Chyba při pokusu o odstranění uživatele:", error);
     } finally {
-      setLoadingAction(false); // Ukončení načítacího stavu
+      setLoadingAction(false);
     }
   };
 
@@ -203,23 +202,21 @@ const CourseDetail = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("API Response:", result);
-        console.log("Raw response data:", result);
 
         if (result?.data?.length > 0) {
-          console.log("Rezervace existuje:", result.data[0]);
+          console.log("rezervace", result.data[0]);
           setIsBooked(true);
-          setBookingId(result.data[0].id); // Nastavení správného bookingId
+          setBookingId(result.data[0].id);
         } else {
-          console.log("Rezervace neexistuje.");
+          console.log("rezrvace neexistuje");
           setIsBooked(false);
           setBookingId(null);
         }
       } else {
-        console.error("Chyba při načítání rezervace:", response.statusText);
+        console.error("chyba v rezervaci", response.statusText);
       }
     } catch (error) {
-      console.error("Chyba při kontrole rezervace:", error);
+      console.error("chyba při kontrole rezervace:", error);
     } finally {
       setLoadingBookingStatus(false);
     }
@@ -230,7 +227,7 @@ const CourseDetail = () => {
     try {
       const token = localStorage.getItem("jwt");
       if (!token) {
-        console.error("No valid token found.");
+        console.error("spatny jwt token");
         return;
       }
 
@@ -259,25 +256,25 @@ const CourseDetail = () => {
 
         fetchEnrolledUsers();
       } else {
-        console.error("Chyba při přihlášení na kurz:", await response.json());
+        console.error("chyba při přihlášení na kurz:", await response.json());
       }
     } catch (error) {
-      console.error("Chyba při přihlášení na kurz:", error);
+      console.error("chyba při přihlášení na kurz:", error);
     } finally {
       setLoadingAction(false);
     }
   };
 
   const handleCancelBooking = async () => {
-    setLoadingAction(true); // Nastavení načítacího stavu
+    setLoadingAction(true);
     try {
       const token = localStorage.getItem("jwt");
       if (!bookingId) {
-        console.error("Chyba: Nebylo nalezeno platné bookingId.");
+        console.error("chyba: spatne booking id");
         return;
       }
 
-      console.log("Odstraňování rezervace s ID:", bookingId);
+      console.log("odstranovani rezervace", bookingId);
 
       const response = await fetch(
         `http://localhost:1337/api/bookings/${bookingId}`,
@@ -291,7 +288,7 @@ const CourseDetail = () => {
 
       if (response.ok) {
         console.log("Rezervace byla úspěšně odstraněna.");
-        // Aktualizace stavů
+
         console.log("Před aktualizací stavů:", {
           isBooked,
           bookingId,
@@ -320,7 +317,7 @@ const CourseDetail = () => {
     } catch (error) {
       console.error("Chyba při odhlášení z kurzu:", error);
     } finally {
-      setLoadingAction(false); // Ukončení načítacího stavu
+      setLoadingAction(false);
     }
   };
 
@@ -347,7 +344,7 @@ const CourseDetail = () => {
   if (error || !data?.data?.length) {
     return (
       <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-        <p className="text-red-500 text-xl">Chyba: Kurz nenalezen.</p>
+        <p className="text-red-500 text-xl">chyba</p>
       </div>
     );
   }
@@ -373,7 +370,7 @@ const CourseDetail = () => {
               to="/kurzy"
               className="px-5 py-2 bg-gray-800 text-sm text-gray-300 rounded-md border border-gray-700 hover:bg-gray-700 hover:text-white transition"
             >
-              Zpět na seznam kurzů
+              Zpět na seznam
             </Link>
           </motion.div>
         </div>
@@ -458,7 +455,7 @@ const CourseDetail = () => {
                     </ul>
                   ) : (
                     <p className="text-gray-400">
-                      Na tento kurz zatím nejsou žádní uživatelé přihlášeni.
+                      Žádní uživatele nejsou přihlašeni.
                     </p>
                   )}
                 </div>

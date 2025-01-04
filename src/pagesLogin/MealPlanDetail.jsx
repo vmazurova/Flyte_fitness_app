@@ -25,9 +25,7 @@ const MealPlanDetail = () => {
   if (error || !mealPlan) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-900">
-        <p className="text-red-500 text-xl font-light">
-          Chyba: Jídelníček nenalezen.
-        </p>
+        <p className="text-red-500 text-xl font-light">chyba</p>
       </div>
     );
   }
@@ -40,16 +38,16 @@ const MealPlanDetail = () => {
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
           <div>
             <h1 className="text-3xl lg:text-4xl font-extrabold text-white mb-4">
-              {mealPlan.title || "Neznámý jídelníček"}
+              {mealPlan.title}
             </h1>
             <p className="text-lg text-gray-300 italic">
-              {mealPlan.description || "Popis není k dispozici"}
+              {mealPlan.description}
             </p>
             <p className="text-gray-400 mt-4">
               <span className="font-semibold text-white">Týden od:</span>{" "}
               {mealPlan.week_start
                 ? new Date(mealPlan.week_start).toLocaleDateString("cs-CZ")
-                : "Datum neuvedeno"}
+                : "žadne datum"}
             </p>
           </div>
           <Link

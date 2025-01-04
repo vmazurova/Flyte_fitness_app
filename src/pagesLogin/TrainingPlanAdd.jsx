@@ -73,7 +73,7 @@ const TrainingPlanAdd = () => {
         JSON.stringify({
           title: formData.title,
           description: formData.description,
-          goals: formData.goals.join(";"), // Spojení cílů do stringu
+          goals: formData.goals.join(";"),
           difficulty: formData.difficulty,
           lenght: formData.lenght,
           exercises: formData.exercises
@@ -86,7 +86,6 @@ const TrainingPlanAdd = () => {
         })
       );
 
-      // Přidání obrázku do FormData
       if (formData.images.length > 0) {
         formData.images.forEach((image) => {
           formDataToSubmit.append("files.image", image);

@@ -53,16 +53,13 @@ const TrainingPlanDetail = () => {
   if (error || !trainingPlan) {
     return (
       <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-        <p className="text-red-500 text-xl">
-          Chyba: Tréninkový plán nenalezen.
-        </p>
+        <p className="text-red-500 text-xl">Chyba.</p>
       </div>
     );
   }
 
   return (
     <div className="bg-[radial-gradient(circle_at_top_left,_#2b2e3b,_#1f2029,_#141517)] from-gray-800 via-gray-900 to-black text-white flex flex-col items-center">
-      {/* Header */}
       <header className="w-full py-4 bg-gray-900 shadow-sm">
         <div className="flex justify-between items-center px-6 max-w-7xl mx-auto py-4">
           <motion.h1
@@ -71,7 +68,7 @@ const TrainingPlanDetail = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            Tvůj tréninkový plán
+            Trénink: {trainingPlan.title}
           </motion.h1>
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -88,9 +85,7 @@ const TrainingPlanDetail = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="mt-10 flex flex-wrap lg:flex-nowrap items-center lg:items-start gap-6 max-w-7xl w-full px-4">
-        {/* Image Section */}
         <div className="lg:w-3/5 w-full rounded-xl overflow-hidden shadow-lg bg-gray-900">
           <img
             src={
@@ -104,7 +99,6 @@ const TrainingPlanDetail = () => {
           <div className="absolute bottom-4 left-4 bg-gray-800 p-2 px-4 rounded-full flex items-center shadow-md"></div>
         </div>
 
-        {/* Details Section */}
         <div className="lg:w-2/5 w-full bg-gray-900 rounded-xl p-6 shadow-lg">
           <div className="flex items-center mb-4">
             <div
@@ -136,7 +130,6 @@ const TrainingPlanDetail = () => {
         </div>
       </div>
 
-      {/* Exercises Section */}
       <div className="mt-8 w-full max-w-7xl px-4">
         <div className="bg-gray-900 rounded-xl shadow-lg p-4 flex flex-col space-y-4">
           {exercises.map((exercise, idx) => (

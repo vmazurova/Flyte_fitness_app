@@ -39,13 +39,9 @@ export default function CourseList() {
   }, []);
 
   if (loading)
-    return <p className="text-white text-center mt-20 text-xl">Načítání...</p>;
+    return <p className="text-white text-center mt-20 text-xl">načítání...</p>;
   if (error)
-    return (
-      <p className="text-red-500 text-center mt-20 text-xl">
-        Chyba: {error.message}
-      </p>
-    );
+    return <p className="text-red-500 text-center mt-20 text-xl">chyba</p>;
 
   const courses = data?.data.filter((course) => {
     const courseDate = course.date ? new Date(course.date) : null;
@@ -70,7 +66,7 @@ export default function CourseList() {
             Otevřené kurzy
           </h1>
           <p className="text-sm lg:text-lg text-gray-300 mt-4">
-            Vyberte si z naší nabídky aktuálních kurzů a začněte ještě dnes.
+            Přihlaš se kurz z naší nabídky.
           </p>
         </motion.div>
 
@@ -146,7 +142,7 @@ export default function CourseList() {
             })
           ) : (
             <p className="text-center text-white text-xl">
-              Žádné kurzy nenalezeny.
+              Nejsou k dipozici žádné kurzy
             </p>
           )}
         </div>
