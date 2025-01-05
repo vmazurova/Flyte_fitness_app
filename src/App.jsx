@@ -11,7 +11,7 @@ import SignUp from "./auth/SignUp.jsx";
 import Login from "./auth/Login.jsx";
 import MealPlan from "./sections/MealPlan.jsx";
 import MemberDetail from "./pagesLogin/MemberDetail.jsx";
-
+import MainTrainer from "./pagesLogin/UserManagement.jsx";
 import ForgotPassword from "./auth/ForgotPassword.jsx";
 import CoursesList from "./pagesLogin/CoursesList.jsx";
 import CoursesDetail from "./pagesLogin/CourseDetail.jsx";
@@ -45,6 +45,7 @@ const App = () => {
     "/trenink-pridani",
     "/auth/Registrace",
     "/nastaveni",
+    "/zmena-role",
   ];
 
   const hideHeaderPatterns = [
@@ -67,11 +68,9 @@ const App = () => {
           <Route path="/auth/prihlaseni" component={Login} />
           <Route path="/zapomenute-heslo" component={ForgotPassword} />
           <ProtectedRoute path="/osobni-slozka" component={MemberDetail} />
-
           <ProtectedRoute path="/kurzy" component={CoursesList} />
           <ProtectedRoute path="/kalendar" component={Kalendar} />
           <ProtectedRoute path="/kurz/:id" component={CoursesDetail} />
-
           <ProtectedRoute path="/jidelnicky" component={MealPlanList} />
           <ProtectedRoute path="/jidelnicek-pridani" component={MealPlanAdd} />
           <ProtectedRoute path="/kurz-pridani" component={CourseAdd} />
@@ -80,6 +79,7 @@ const App = () => {
           <ProtectedRoute path="/trenink-pridani" component={TrainingPlanAdd} />
           <ProtectedRoute path="/jidelnicek/:id" component={MealPlanDetail} />
           <ProtectedRoute path="/nastaveni" component={Nastaveni} />
+          <ProtectedRoute path="/zmena-role" component={MainTrainer} />
           <Route path="/" exact>
             <Hero />
             <Features />

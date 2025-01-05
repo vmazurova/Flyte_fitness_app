@@ -182,6 +182,15 @@ const Sidebar = () => {
               )}
             </div>
           )}
+          {userRole === "MainTrainer" && (
+            <button
+              onClick={() => history.push("/zmena-role")}
+              className="flex items-center w-full gap-4 px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
+            >
+              <FaCog className="text-xl" />
+              {isOpen && <span>Změnit roli uživatele</span>}
+            </button>
+          )}
 
           <button
             onClick={handleSettingsClick}
@@ -205,7 +214,7 @@ const Sidebar = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-gray-900 text-white p-8 rounded-lg shadow-lg w-96">
             <h2 className="text-xl font-bold mb-6 text-center">
-              Opravdu se chcete odhlásit?
+              Opravdu odhlásit?
             </h2>
             <div className="flex justify-center gap-6">
               <button

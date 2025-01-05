@@ -67,6 +67,11 @@ const SignUp = () => {
         }
         toast.success("Registrace byla úspěšná!");
       } catch (error) {
+        console.error(
+          "Chyba při registraci:",
+          error.response?.data || error.message
+        );
+
         if (
           error.response?.data?.error?.message ===
           "Email or Username are already taken"
