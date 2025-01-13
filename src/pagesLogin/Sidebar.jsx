@@ -91,7 +91,7 @@ const Sidebar = () => {
         animate={{ opacity: 1 }}
       >
         <div className="flex items-center justify-between h-16 px-4 bg-gray-900 border-b border-gray-800">
-          {isOpen && <h1 className="text-lg font-bold">Menu</h1>}
+          {isOpen && <h1 className="text-lg font-bold"></h1>}
         </div>
 
         <nav className="flex-1 mt-4 space-y-2 overflow-y-auto px-2">
@@ -128,19 +128,19 @@ const Sidebar = () => {
               {isCreateMenuOpen && (
                 <div className="mt-2 space-y-2">
                   <button
-                    onClick={() => history.push("/vytvorit-kurz")}
+                    onClick={() => history.push("/kurz-pridani")}
                     className="w-full px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
                   >
                     Vytvořit kurz
                   </button>
                   <button
-                    onClick={() => history.push("/vytvorit-trenink")}
+                    onClick={() => history.push("/trenink-pridani")}
                     className="w-full px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
                   >
                     Vytvořit trénink
                   </button>
                   <button
-                    onClick={() => history.push("/vytvorit-jidelnicek")}
+                    onClick={() => history.push("/jidelnicek-pridani")}
                     className="w-full px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
                   >
                     Vytvořit jídelníček
@@ -157,19 +157,19 @@ const Sidebar = () => {
                       {isCreateMenuOpen && (
                         <div className="mt-2 space-y-2">
                           <button
-                            onClick={() => history.push("/vytvorit-kurz")}
+                            onClick={() => history.push("/kurz-pridani")}
                             className="w-full px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
                           >
                             Vytvořit kurz
                           </button>
                           <button
-                            onClick={() => history.push("/vytvorit-trenink")}
+                            onClick={() => history.push("/trenink-pridani")}
                             className="w-full px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
                           >
                             Vytvořit trénink
                           </button>
                           <button
-                            onClick={() => history.push("/vytvorit-jidelnicek")}
+                            onClick={() => history.push("/jidelnicek-pridani")}
                             className="w-full px-4 py-3 text-sm font-medium text-gray-400 rounded-lg hover:bg-gray-800 hover:text-white transition-colors"
                           >
                             Vytvořit jídelníček

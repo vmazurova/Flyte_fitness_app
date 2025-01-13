@@ -6,7 +6,6 @@ import Sidebar from "./Sidebar.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 const TrainingPlanAdd = () => {
-  const [isOpen, setIsOpen] = useState(true);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -14,14 +13,19 @@ const TrainingPlanAdd = () => {
     difficulty: "Začátečník",
     lenght: "Minut30",
     exercises: [],
-    image: [],
+    images: [],
   });
   const [loading, setLoading] = useState(false);
 
-  const toggleSidebar = () => setIsOpen((prev) => !prev);
-
   const handleFileChange = (e) => {
     setFormData((prev) => ({ ...prev, images: Array.from(e.target.files) }));
+  };
+
+  const addGoal = () => {
+    setFormData((prev) => ({
+      ...prev,
+      goals: [...prev.goals, ""],
+    }));
   };
 
   const addExercise = () => {
@@ -31,13 +35,6 @@ const TrainingPlanAdd = () => {
         ...prev.exercises,
         { name: "", details: "", icon: "", sets: "" },
       ],
-    }));
-  };
-
-  const addGoal = () => {
-    setFormData((prev) => ({
-      ...prev,
-      goals: [...prev.goals, ""],
     }));
   };
 
@@ -59,7 +56,7 @@ const TrainingPlanAdd = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -67,10 +64,30 @@ const TrainingPlanAdd = () => {
     setLoading(true);
 
     try {
-      const formDataToSubmit = new FormData();
-      formDataToSubmit.append(
-        "data",
-        JSON.stringify({
+      const jwt = localStorage.getItem("jwt");
+      if (!jwt) {
+        toast.error("nejsi prihlasen");
+        setLoading(false);
+        return;
+      }
+
+      const userRoleResponse = await axios.get(
+        "http://localhost:1337/api/users/me",
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+
+      if (userRoleResponse.data.role.name !== "Trainer") {
+        toast.error("nemas opravneni");
+        setLoading(false);
+        return;
+      }
+
+      const trainingPlanPayload = {
+        data: {
           title: formData.title,
           description: formData.description,
           goals: formData.goals.join(";"),
@@ -82,36 +99,57 @@ const TrainingPlanAdd = () => {
                 `${exercise.name}|${exercise.details}|${exercise.icon}|${exercise.sets}`
             )
             .join(";"),
-          created_training_at: new Date().toISOString(),
-        })
+        },
+      };
+
+      const trainingPlanResponse = await axios.post(
+        "http://localhost:1337/api/training-plans",
+        trainingPlanPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
 
+      const trainingPlanId = trainingPlanResponse.data.data.id;
+
+      // Nahrání obrázků
       if (formData.images.length > 0) {
-        formData.images.forEach((image) => {
-          formDataToSubmit.append("files.image", image);
+        const form = new FormData();
+        formData.images.forEach((file) => form.append("files", file));
+        form.append("ref", "api::training-plan.training-plan");
+        form.append("refId", trainingPlanId);
+        form.append("field", "image");
+
+        await axios.post("http://localhost:1337/api/upload", form, {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+            "Content-Type": "multipart/form-data",
+          },
         });
       }
 
-      console.log("Data k odeslání:", formDataToSubmit);
-
-      const response = await fetch("http://localhost:1337/api/training-plans", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-        },
-        body: formDataToSubmit,
+      // Reset formuláře
+      setFormData({
+        title: "",
+        description: "",
+        goals: [],
+        difficulty: "Začátečník",
+        lenght: "Minut30",
+        exercises: [],
+        images: [],
       });
 
-      if (response.ok) {
-        alert("Tréninkový plán byl úspěšně vytvořen!");
-      } else {
-        const errorData = await response.json();
-        console.error("Chyba při vytváření plánu:", errorData);
-        alert(`Chyba: ${errorData.error.message}`);
-      }
+      toast.success("trenink byl pridan", {
+        hideProgressBar: true,
+      });
     } catch (error) {
-      console.error("Chyba při odesílání dat:", error);
-      alert("Nastala chyba při odesílání dat.");
+      console.error("Chyba", error);
+      const errorMessage =
+        error.response?.data?.error?.message || "nastala chyba";
+      toast.error(errorMessage, { hideProgressBar: true });
     } finally {
       setLoading(false);
     }

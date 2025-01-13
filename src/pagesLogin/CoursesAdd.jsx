@@ -43,7 +43,6 @@ const CoursesAdd = () => {
         coursePayload,
         {
           headers: {
-            // Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         }
@@ -62,7 +61,7 @@ const CoursesAdd = () => {
 
         await axios.post("http://localhost:1337/api/upload", form, {
           headers: {
-            // Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
             "Content-Type": "multipart/form-data",
           },
         });

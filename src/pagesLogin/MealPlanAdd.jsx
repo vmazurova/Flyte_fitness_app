@@ -73,16 +73,19 @@ const MealPlanAdd = () => {
     try {
       const formDataToSubmit = new FormData();
 
+      // Základní atributy
       formDataToSubmit.append("title", formData.title);
       formDataToSubmit.append("week_start", formData.week_start);
 
+      // Obrázek
       if (formData.image) {
         formDataToSubmit.append("files.image", formData.image);
       }
 
+      // Přidání jídel pro jednotlivé dny
       Object.keys(daysMap).forEach((day) => {
         Object.keys(mealTypesMap).forEach((mealType) => {
-          const mealKey = `${day}_${mealType}`;
+          const mealKey = `${day}_${mealType}`; // např. "monday_breakfast"
           const mealsForType = formData.meals[day][mealType]
             .map(
               (meal) =>
@@ -93,8 +96,10 @@ const MealPlanAdd = () => {
         });
       });
 
+      // Debugging: Výpis odesílaných dat
       console.log("FormData entries:", Array.from(formDataToSubmit.entries()));
 
+      // Odeslání dat na server
       const response = await axios.post(
         "http://localhost:1337/api/meal-plans",
         formDataToSubmit,
@@ -106,6 +111,7 @@ const MealPlanAdd = () => {
         }
       );
 
+      // Kontrola odpovědi
       if (response.status === 200 || response.status === 201) {
         toast.success("Jídelníček byl úspěšně přidán!");
         console.log("Úspěšná odpověď:", response.data);
@@ -177,7 +183,7 @@ const MealPlanAdd = () => {
                   }
                 >
                   <option value="" disabled>
-                    Gramy
+                    Vyberte gramáž
                   </option>
                   {predefinedWeights.map((weight) => (
                     <option key={weight} value={weight}>

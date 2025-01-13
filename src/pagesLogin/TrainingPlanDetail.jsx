@@ -15,7 +15,7 @@ const TrainingPlanDetail = () => {
     return exerciseString.split(";").map((exercise) => {
       const parts = exercise.split("|").map((part) => part.trim());
       return {
-        name: parts[0] || "Neznámý cvik",
+        name: parts[0] || "no name",
         details: parts[1] || null,
         icon: parts[2] || "❓",
         sets: parts[3] || null,

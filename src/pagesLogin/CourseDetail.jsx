@@ -287,13 +287,7 @@ const CourseDetail = () => {
       );
 
       if (response.ok) {
-        console.log("Rezervace byla úspěšně odstraněna.");
-
-        console.log("Před aktualizací stavů:", {
-          isBooked,
-          bookingId,
-          enrolledUsers,
-        });
+        console.log("rezevarce byla odstranena");
 
         setIsBooked(false);
         setBookingId(null);
@@ -302,20 +296,14 @@ const CourseDetail = () => {
           prev.filter((user) => user.bookingId !== bookingId)
         );
 
-        console.log("Po aktualizaci stavů:", {
-          isBooked,
-          bookingId,
-          enrolledUsers,
-        });
-
         await checkBooking();
         await fetchEnrolledUsers();
       } else {
         const errorText = await response.text();
-        console.error("Chyba při odhlášení z kurzu:", errorText);
+        console.error("chyba", errorText);
       }
     } catch (error) {
-      console.error("Chyba při odhlášení z kurzu:", error);
+      console.error("chyba ", error);
     } finally {
       setLoadingAction(false);
     }

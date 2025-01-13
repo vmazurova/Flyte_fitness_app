@@ -70,37 +70,37 @@ const MealPlanDetail = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col gap-6">
           {[
-            "monday",
-            "tuesday",
-            "wednesday",
-            "thursday",
-            "friday",
-            "saturday",
-            "sunday",
-          ].map((day) => (
+            { day: "monday", label: "Pondělí" },
+            { day: "tuesday", label: "Úterý" },
+            { day: "wednesday", label: "Středa" },
+            { day: "thursday", label: "Čtvrtek" },
+            { day: "friday", label: "Pátek" },
+            { day: "saturday", label: "Sobota" },
+            { day: "sunday", label: "Neděle" },
+          ].map(({ day, label }) => (
             <section
               key={day}
               className="bg-gray-800 p-6 rounded-lg shadow-md flex flex-col"
             >
               <h2 className="text-2xl font-semibold capitalize text-white mb-4">
-                {day.charAt(0).toUpperCase() + day.slice(1)}
+                {label}
               </h2>
               <ul className="space-y-2">
                 {[
-                  "breakfast",
-                  "morning_snack",
-                  "lunch",
-                  "afternoon_snack",
-                  "dinner",
-                ].map((meal) => (
+                  { meal: "breakfast", label: "Snídaně" },
+                  { meal: "morning_snack", label: "Dopolední svačina" },
+                  { meal: "lunch", label: "Oběd" },
+                  { meal: "afternoon_snack", label: "Odpolední svačina" },
+                  { meal: "dinner", label: "Večeře" },
+                ].map(({ meal, label }) => (
                   <li
                     key={`${day}_${meal}`}
                     className="flex justify-between items-center"
                   >
                     <span className="capitalize font-medium text-gray-300">
-                      {meal.replace("_", " ")}:
+                      {label}:
                     </span>
                     <span className="text-gray-400 text-sm lg:text-base">
                       {mealPlan[`${day}_${meal}`] || "Není k dispozici"}

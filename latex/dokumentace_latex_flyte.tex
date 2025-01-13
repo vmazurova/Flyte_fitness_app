@@ -1,33 +1,35 @@
 % ŠABLONA PRO PSANÍ ZÁVĚREČNÉ STUDIJNÍ PRÁCE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Autor: Jakub Dokulil (kubadokulil99@gmail.com)
-% Tato šablona byla vytvořena tak, aby pomocí ní mohli v systému LaTeX soutěžící sázet své práce a zároveň odpovídala požadavkům na formátování vyplývajícím z wordové šablony umístěné na webu soc.cz.
-%
+% Autor: Viktorie Mazurová (vikymazurova@gmail.com)
+
 \documentclass[12pt, a4paper,
 %oneside,      %% -- odkomentujte, pokud chcete svou práci mít pouze jednostrannou, mezera pro hřbet pak automaticky bude pouze na levé straně
 twoside,        %% -- pro oboustranné práce, mezera pro hřbet následně střídá strany.
-openright
+openany
 ]{report}
 
 %% Nutné balíčky a nastavení
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\pagenumbering{arabic} %% Nastavení způsobu číslování stránek (alternativy roman | Roman)
+\setcounter{page}{1} %% Nastavení počitadla stránek
 %% Proměnné
 \newcommand\obor{INFORMAČNÍ TECHNOLOGIE} %% -- napiš číslo a název tvého oboru
 \newcommand\kodOboru{18-20-M/01} %% -- napiš číslo a název tvého oboru
 \newcommand\zamereni{se zaměřením na počítačové sítě a programování} %% -- napiš číslo a název tvého oboru
 \newcommand\skola{Střední škola průmyslová a umělecká, Opava} %% vyplň název školy
 \newcommand\trida{IT4} %% vyplň jméno svého konzultanta
-\newcommand\jmenoAutora{Viktor Hujer}  %% vyplň své jméno
-\newcommand\skolniRok{2023/24} %% vyplň rok
-\newcommand\datumOdevzdani{1. 1. 2024} %% vyplň rok
-\newcommand\nazevPrace{Tvorba odborné dokumentace s využitím typografického systému \LaTeX} %% vyplň název své práce
+\newcommand\jmenoAutora{Viktorie Mazurová}  %% vyplň své jméno
+\newcommand\skolniRok{2024/25} %% vyplň rok
+\newcommand\datumOdevzdani{14. 1. 2025} %% vyplň rok
+\newcommand\nazevPrace{FLYTE - fitness webová aplikace} %% vyplň název své práce
 
-\title{\nazevPrace} %% -- Název tvé práce
-\author{\jmenoAutora} %% -- tvé jméno
-\date{\datumOdevzdani} %% -- rok, kdy píšeš SOČku
+\title{\Flyte} %% -- Název tvé práce
+\author{\Viktorie Mazurová} %% -- tvé jméno
+\date{\14.1.2025} %% -- rok, kdy píšeš SOČku
 
-\usepackage[top=2.5cm, bottom=2.5cm, left=3.5cm, right=1.5cm]{geometry} %% nastaví okraje, left -- vnitřní okraj, right -- vnější okraj
+\usepackage[top=2.5cm, bottom=2.5cm, left=1.5cm, right=1.5cm]{geometry} %% nastaví okraje, left -- vnitřní okraj, right -- vnější okraj
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
 
 \usepackage[czech]{babel} %% balík babel pro sazbu v češtině
 \usepackage[utf8]{inputenc} %% balíky pro kódování textu
@@ -40,7 +42,7 @@ openright
 
 \usepackage{hyperref} %% balíček, který v PDF vytváří odkazy
 
-\linespread{1.25} %% řádkování
+\linespread{1.5} %% řádkování
 \setlength{\parskip}{0.5em} %% odsazení mezi odstavci
 
 
@@ -51,7 +53,7 @@ openright
 
 
 \usepackage{tocloft} % Balíček umožní přizpůsobit vzhled tabulky obsahu
-\setlength{\cftbeforechapskip}{0pt}  % Menší rozestup pro kapitoly
+
 \setlength{\cftbeforesecskip}{0pt}   % Menší rozestup pro sekce
 
 \setcounter{secnumdepth}{2}
@@ -212,17 +214,13 @@ openright
 }
 
 
-%% Bordel pro práci - můžeš smáznout :) 
-%%%%%%%%%%%%%%%%%%%
-
-\usepackage{lipsum} %% balíček který píše lipsum (nesmyslný text, který se používá pro kontrolu typografie)
 
 %% Začátek dokumentu
 %%%%%%%%%%%%%%%%%%%%
 \begin{document}
 	
 	\pagestyle{empty}
-	\pagenumbering{Roman}
+	\pagenumbering{arabic}
 	
 	\cleardoublepage
 
@@ -230,29 +228,32 @@ openright
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	{\fontfamily{phv}\selectfont
-		%% Logo školy
+		
+        {\bfseries %%% písmo na stránce je tučně
+			\begin{center}
+            \includegraphics[width=0.4\linewidth]{Logo_skoly_SSPU.jpg} %% Logo školy
+            \\
+			
+				\LARGE{ZÁVĚREČNÁ STUDIJNÍ PRÁCE}\\
+				\large{dokumentace}\\
+				
+				
+			\end{center}  
 		\begin{figure}[h]
 			\centering
-			\includegraphics[width=0.6\linewidth]{image/logo-skoly.png} 
+			\includegraphics[width=0.4\linewidth]{flyteicon.png} 
 		\end{figure}
+        \begin{center}
+        \LARGE {\nazevPrace}\\
+			\end{center}  
 		
 		
 		%% Hlavička práce a její název (viz proměnná \nazev prace)
 		%% \sffamily %%% bezpatkové písmo - sans serif
-		{\bfseries %%% písmo na stránce je tučně
-			\begin{center}
-				\vspace{0.025 \textheight}
-				\LARGE{ZÁVĚREČNÁ STUDIJNÍ PRÁCE}\\
-				\large{dokumentace}\\
-				\vspace{0.075 \textheight}
-				\LARGE {\nazevPrace}\\
-			\end{center}  
+		
 		}%%%
 		
-		\begin{figure}[h]
-			\centering
-			\includegraphics[width=0.8\linewidth]{image/programovani-02.jpg} 
-		\end{figure}
+		
 		
 		\vspace{0.02 \textheight}
 		\begin{table}[h!]
@@ -266,8 +267,9 @@ openright
 			
 		\end{table}		
 	}
-	
-\cleardoublepage %% Zalomení dvojstránky
+	 \vspace{18pt}
+        \clearpage 
+
 	
 %% Stránka obsahující poděkování a prohlášení
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,14 +278,16 @@ openright
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	\noindent{\large{\bfseries{Poděkování}\\}}
-	\noindent Prostor k poděkování (například vedoucímu práce).
+	\noindent Ráda bych poděkovala fitness Contours, ve kterém jsem pracovala, za nápad na funkčnost aplikace. \\ Obzvlášť děkuji své mamce Markétě Mazurové, která mi dala celou vizi na to Flyte zrealizovat.
+
+
 	
-	\vspace*{0.7\textheight} %% Vertikální mezeru je možné upravit
+	\vspace*{0.6\textheight} %% Vertikální mezeru je možné upravit
 
 %% Prohlášení - povinné
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\noindent{\large{\bfseries{Prohlášení}\\}}  %% uprav si koncovky podle toho na jaký rod se cítíš, vypadá to pak lépe :) 
-	\noindent{Prohlašuji, že jsem závěrečnou práci vypracoval samostatně a uvedl veškeré použité 
+	\noindent{Prohlašuji, že jsem závěrečnou práci vypracovala samostatně a uvedla veškeré použité 
 		informační zdroje.\\}
 	\noindent{Souhlasím, aby tato studijní práce byla použita k výukovým a prezentačním účelům na Střední průmyslové a umělecké škole v Opavě, Praskova 399/8.}
 	\vfill
@@ -293,7 +297,7 @@ openright
 		\hspace{9.5cm} 
 		\begin{tabular}{@{}p{6cm}@{}}
 			\dotfill \\
-			Podpis autora
+			Podpis autorky
 		\end{tabular}
 	\end{minipage}
 	
@@ -305,44 +309,46 @@ openright
 %% Abstrakt v češtině
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\noindent{\Large{\bfseries{Abstrakt}\\}}
-	\noindent Sem napíšeš svůj abstrakt.\\
-	Slouží jako pomoc čtenáři rychle se zorientovat v dané práci.\\
-	“Redukovaný text, který charakterizuje obsah dokumentu bez rozlišování autorství abstraktu, bez doplňkových informací, bez vlastní interpretace a hodnocení dokumentu (tj. nikoliv "v práci velmi dobře hodnotím podle mne zajímavý systém...", ale "práce hodnotí systém..."). Základními vlastnostmi anotace jsou výstižnost, přehlednost, jasnost, stručnost, přesnost, objektivnost a čtivost. Anotace je formulována v přirozeném jazyce – obvykle ve větách. Anotace může používat textových formulací z referovaného dokumentu, ale jako celek je formulován nově.“\\
-	Délka cca 100 – 250 slov
+	\noindent 
+Flyte je webová aplikace, která umožňuje uživatelům přihlásit se do systému fitness centra, registrovat se na kurzy, sledovat svůj tréninkový plán a procházet personalizované jídelníčky. Díky těmto funkcím aplikace usnadňuje nejen práci trenérů, ale také poskytuje klientům lepší přehled o jejich aktivitách a pokrocích.
+
+Aplikace je navržena tak, aby byla uživatelsky přívětivá. Dokumentace detailně popisuje jednotlivé kroky vývoje aplikace – od návrhu databázového modelu, přes implementaci funkcí pro registraci a správu kurzů, až po tvorbu nástrojů pro sledování tréninků a jídelníčků.
+
+Flyte je výsledkem mé snahy vytvořit systém, který by zlepšil každodenní provoz fitness centra a spokojenost jak jeho klientů, tak i zamětnanců.
 	
 	\vspace{18pt}
 	
-	\noindent{\large{\bfseries{Klíčová slova}}}
-	
-	\noindent Šablona, \LaTeX, závěrečná práce, dokumentace, \dots 
-	
-	\vspace{18pt}
 
 %% Abstrakt v angličtině
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 	\noindent{\Large{\bfseries{Abstract}}}
 	
-	\noindent Write your abstract here! \lipsum[1] %% přepiš!!
+	\noindent During my work at a fitness center, I realized that the process of managing courses, training sessions, and client information often lacked efficiency and a modern approach. This motivated me to create Flyte – a system designed to help fitness centers improve organization while offering users a simple way to manage their training and nutrition plans.
+
+Flyte is a web application that allows users to log into the system, register for courses, track their training schedules, and browse personalized meal plans. With these features, the application not only streamlines trainers' workflows but also provides clients with a better overview of their activities and progress.
+
+The application is designed to be user-friendly and responsive, ensuring it can be used on various devices. The documentation provides a detailed overview of the development process – from designing the database model and implementing features for course registration and management to creating tools for tracking training sessions and meal plans.
+
+Flyte is the result of my effort to develop a system that enhances the day-to-day operations of fitness centers and improves the satisfaction of both clients and staff.
 	
 	\vspace{18pt}
+
 	
-	\noindent{\large{\bfseries{Keywords}}}
-	
-	\noindent Template, \LaTeX, High school proffessional activity, \dots 
-	
-	\clearpage %% Zalomení stránky
 
 %% Stránka s generovaným obsahem
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
 	
 	\tableofcontents %% Vygeneruje tabulku s obsahem
 
-	\pagenumbering{arabic} %% Nastavení způsobu číslování stránek (alternativy roman | Roman)
-	\setcounter{page}{1} %% Nastavení počitadla stránek
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage} % Číslo stránky uprostřed zápatí
+\renewcommand{\headrulewidth}{0pt} % Zrušení čáry v záhlaví
 
 %% Stránka s úvodem - povinná část
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%		
-	\chapter*{Úvod}
+	\chapter*{Úvod\vspace{-1cm}}
+
 %Tento příkaz vytvoří novou kapitolu s názvem "Úvod" ve vašem dokumentu.
 %Hvězdička * u příkazu \chapter* znamená, že tato kapitola nebude mít číslo. Ve výsledném dokumentu se tedy objeví jako "Úvod" bez předcházejícího čísla kapitoly, které se obvykle zobrazuje u číslovaných kapitol.
 %Tento příkaz také znamená, že kapitola se automaticky neobjeví v obsahu, protože LaTeX standardně zahrnuje do obsahu pouze číslované kapitoly.
@@ -351,435 +357,233 @@ openright
 %První parametr toc označuje, že přidáváme záznam do Table of Contents (obsahu).
 %Druhý parametr chapter specifikuje úroveň záznamu. V tomto případě říkáme, že přidávaný záznam má být považován za kapitolu.
 %Třetí parametr Úvod je text, který se objeví v obsahu. V tomto případě bude v obsahu zobrazen název "Úvod".	
-Závěrečné studijní práce a jejich veřejné obhajoby jsou důležitou součástí vyvrcholení studia oboru informační technologie na \textit{Střední škole průmyslové a umělecké v Opavě}. Hlavním cílem je samostatně vypracovat komplexní, nejčastěji prakticky zaměřený projekt na vybrané téma z~oblasti ICT a napsat k tomuto projektu také příslušnou odbornou dokumentaci podle obecně platných pravidel. Nejúspěšnější studentské projekty bývají vybrány, aby školu reprezentovaly v soutěžních přehlídkách \emph{Středoškolské odborné činnosti} (dále SOČ), kde je pečlivá a přesná dokumentace rovněž vyžadována.
+Když jsem pracovala ve fitness centru, často jsem si říkala, že by to všechno mohlo být jednodušší. Přihlašování na kurzy, plánování tréninků nebo sledování jídelníčků bylo zbytečně složité a zabíralo hodně času. Klienti i trenéři se často ztráceli ve starých, nepřehledných systémech a to mě motivovalo vytvořit něco lepšího – webovou aplikaci, která by všechny tyhle problémy vyřešila. Proto jsem si tohle téma vybrala jako svoji maturitní práci.
 
-Tento dokument vznikl se záměrem co nejvíce studentům usnadnit formální úpravu dokumentace k jejich odborné práci a poskytnout jim i dobré vodítko při strukturování samotného obsahu. Vzhledem k tomu, že příprava na vysokoškolské studium často vyžaduje znalost {\LaTeX}u, představujeme šablonu vytvořenou v této technologii, jejímž autorem je z velké části Jakub Dokulil a která byla původně určená pro soutěžící SOČ.  
+Mým cílem bylo vytvořit aplikaci, kde se klienti můžou snadno přihlásit na kurzy přes jednoduchý kalendář, sledovat své tréninkové plány a mít přehled o svých jídelníčcích. Trenéři by si zase mohli jednoduše spravovat kurzy a vytvářet stravovací plány pro své klienty. Chtěla jsem, aby to bylo přehledné, rychlé a mohlo to fungovat na všech zařízeních.
 
-První kapitola této práce obsahuje základní informace o~{\LaTeX}u; stručně se zmiňuje o jeho vývoji, ale hlavně se soustředí na základní principy, které je nezbytné znát při sestavování rozsáhlejších  textových dokumentů. Součástí této kapitoly je i výběr některých programových prostředků, které mohou výrazněji urychlit a usnadnit psaní zdrojového kódu {\LaTeX}u. V kapitole nazvané "Jak psát odbornou dokumentaci" jsou zdůrazněna nejdůležitější pravidla, jež by měla být dodržena při psaní (nejen) odborného textu, a to jak zásady týkající se obsahu, tak i formální stránky - pravopisné, typografické apod. Závěrečná kapitola se soustředí na praktické ukázky správného použití různých typů obsahu v odborné práci. 
+Na vývoj jsem použila nástroje, které jsem dříve vůbec neznala, ale práce na této aplikaci mě donutila se je naučit. Frontend jsem postavila na React.js, což mi umožnilo vytvořit jednoduché a hezky vypadající uživatelské prostředí. Backend jsem řešila přes Strapi API, kde se ukládají všechna data. K tomu jsem použila Tailwind CSS, aby aplikace vypadala moderně a dala se snadno přizpůsobit.
 
-%Tipy k psaní úvodu
-%Je povinný, nadpis neměňte, rozsah - max. 1 strana. 
-%Tato část práce obsahuje: 
-%* náhled do řešené problematiky, zdůvodnění volby problematiky, 
-%* předem definované cíle práce, 
-%* motivaci pro další čtení textu včetně stručného uvedení obsahu následujících kapitol 
+V dokumentaci popisuji, jak jsem postupovala od návrhu aplikace, přes vývoj databáze, až po funkce jako přihlašování, rezervace kurzů a sledování jídelníčků. Na konci hodnotím výsledky a ukazuji, jak aplikace funguje.
 
+Tahle aplikace je podle mě dobrým příkladem, jak moderní technologie můžou zlepšit fungování fitness centra a zároveň klientům usnadnit cestu ke zdravému životnímu stylu. Jsem ráda, že jsem mohla něco takového vytvořit, a doufám, že to někomu usnadní práci.
+        \vspace{18pt}
+        \clearpage 
 
-\chapter{Typografický systém LaTeX}
+\chapter{Teoretická a metodická východiska}
 
-\section{Úvod}
+\section{Aplikace pro zdraví a fitness}
 \label{sec:uvod}
 
-V této kapitole se seznámíme s \LaTeX{}, což je vysoko kvalitní typografický systém, speciálně navržený pro produkci technické a vědecké dokumentace. \LaTeX{} je široce používán akademiky, vědci, inženýry a dalšími profesionály, kteří potřebují efektivně vytvářet vysoce kvalitní dokumenty, jako jsou články, reporty, knihy a dokonce i prezentace.
+V dnešní době jsou aplikace zaměřené na zdraví a fitness stále populárnější. Umožňují lidem sledovat svůj pokrok, plánovat tréninky a upravovat jídelníčky. Přestože podobných aplikací existuje spousta, často jim chybí přehlednost nebo možnost přizpůsobit je konkrétním potřebám uživatelů. Proto jsem se rozhodla vytvořit aplikaci, která by nabídla snadné přihlašování na kurzy, správu tréninků a sledování jídelníčků, a to vše v prostředí, které je jednoduché a příjemné na ovládání.
 
-\subsection{Co je \LaTeX{}}
-\LaTeX{} je založen na programu \TeX{}, který byl původně vytvořen Donaldem E. Knuthem v pozdních 70. letech. Na rozdíl od běžných textových procesorů, které jsou "What You See Is What You Get" (WYSIWYG), \LaTeX{} funguje na principu "What You See Is What You Mean" (WYSIWYM). To znamená, že se uživatelé soustředí na strukturu a obsah svého textu, zatímco vzhled dokumentu je řízen předdefinovanými šablonami.
+\section{Architektura aplikace}
+\label{sec:architektura_aplikace}
+Aplikace je navržena tak, aby frontend a backend byly oddělené. Tento přístup umožňuje lepší správu dat, jednodušší údržbu a možnost aplikaci dál rozšiřovat. Díky tomu můžu jednotlivé části vyvíjet a aktualizovat nezávisle na sobě, což nejen zjednodušuje práci, ale také urychluje přidávání nových funkcí. Tento způsob mi připadal nejvhodnější, protože zajišťuje, že aplikace bude flexibilní a připravená na budoucí rozvoj.
 
-\subsection{Výhody používání \LaTeX{}}
-Hlavní výhodou používání \LaTeX{} je jeho schopnost vytvářet profesionálně vypadající dokumenty s konzistentním formátováním. Dále nabízí:
+\section{Počáteční zkušenosti}
+\label{sec:pocatecni_zkusenosti}
+S vývojem aplikací jsem se už dříve setkala, například při práci na projektu v Django, kde jsem vytvářela jednoduchý uživatelský systém. Přesto byl tento projekt pro mě velkou výzvou, protože technologie jako React a Strapi jsem předtím nikdy nepoužila. Musela jsem se je naučit od základů a postupně zjistit, jak je správně využít pro potřeby mé aplikace. I když to bylo náročné, získané zkušenosti mi hodně pomohly a ukázaly mi nové možnosti, jak přistupovat k vývoji moderních webových aplikací.
 
-\begin{itemize}
-	\item Vynikající kvalitu sazby, zvláště pro matematické vzorce.
-	\item Automatizované generování obsahu, seznamů obrázků, tabulek a bibliografických odkazů.
-	\item Možnost snadno pracovat s komplexními dokumenty jako jsou disertace nebo knihy.
-	\item Rozsáhlé možnosti přizpůsobení a širokou škálu balíčků rozšiřujících jeho funkčnost.
-\end{itemize}
+\chapter{Využité technologie}
 
-V následujících sekcích se podrobněji podíváme na základní prvky \LaTeX{} a naučíme se, jak je používat k vytváření kvalitních dokumentů.
+Při řešení tohoto projektu byla použita kombinace technologií, které mi umožnily snadný vývoj a implementaci webové aplikace pro fitness centrum. Výběr každé technologie byl vždy velmi zvážen s ohledem na její funkcionalitu, dostupnost a schopnost splnit požadavky projektu. 
 
+\section{Lucidchart}
+Lucidchart je nástroj pro vizuální návrh diagramů a schémat. V rámci tohoto projektu byl použit pro návrh databázového modelu, což byla základní a jedna z nejhlavnějších částí při vývoji aplikace. Jeho snadné a efektivní uživatelské rozhraní umožnilo snadno vytvářet přehledný návrh databázových tabulek a jejich relací. 
 
-\section{Základní struktura dokumentu}
-\label{sec:zakladni_struktura}
+\section{SQLite}
+SQLite - lehká a samostatná relační databáze. V mém projektu slouží pro ukládání dat o uživatelích, kurzech, tréninkových plánech a jídelních doporučeních. SQLite nevyžaduje server, což zjednodušuje její nasazení. Vybrala jsem SQLite kvůli její jednoduchosti a podpoře Strapi API. Jiné databáze se mi zdály pro můj projekt moc zbytečně složité.
 
-V této kapitole se podrobněji podíváme na základní strukturu dokumentu v \LaTeX{}u. Po porozumění této struktuře budete schopni vytvářet vlastní dokumenty s přizpůsobeným formátováním a strukturou.
+\section{Strapi API}
 
-\subsection{Preambule dokumentu}
-Preambule je první částí každého \LaTeX{}ového dokumentu. Zde definujeme typ dokumentu, který chceme vytvořit, a nastavíme různé parametry, které ovlivňují celkový vzhled dokumentu. Preambule také často obsahuje příkazy pro načítání různých balíčků, které rozšiřují základní funkčnost \LaTeX{}u.
+Strapi je open-source headless CMS (Content Management System), které poskytuje flexibilní backend pro správu dat a API. V tomto projektu je Strapi využito jako backendový systém pro správu celé aplikace - kurzů, tréninkových plánů, jídleníčků a uživatelských dat. Strapi jsem zvolila díky jeho schopnosti rychle vytvářet a spravovat API, což mi usnadnilo komunikaci mezi frontendem a databází pomocí Rest API fetch dotazů.
 
-\begin{verbatim}
-	\documentclass[options]{class}
-	\usepackage[options]{package}
-\end{verbatim}
+ \vspace{18pt}
+        \clearpage 
 
-\subsection{Hlavní tělo dokumentu}
-Hlavní tělo dokumentu začíná příkazem \verb|\begin{document}| a končí \verb|\end{document}|. Veškerý obsah, který chcete mít ve svém dokumentu, by měl být umístěn mezi tyto dva příkazy. 
+\section{React}
+React.js je JavaScriptová knihovna určená pro tvorbu uživatelských rozhraní. V tomto projektu jsem React využila k vývoji frontendové části aplikace, hlavně díky jeho flexibilnímu přístupu, snadné práci s komponentami, velké dokumentaci a interaktivity. Přemýšlela jsem o využítí Next.js místo Reactu, ale protože jsem se především chtěla naučit React, zvolila jsem jej.
 
-\subsection{Sekce a podsekce}
-Pro organizaci obsahu se často používají sekce a podsekce. Tyto struktury pomáhají čtenáři lépe navigovat dokumentem a rozdělit text do logických bloků.
+\section{Tailwind CSS}
+Tailwind CSS je utility-first CSS framework, který umožňuje rychlé a flexibilní stylování uživatelského rozhraní. V mém projektu byl použit pro stylování aplikace, což umožnilo dosáhnout moderního a responzivního designu. Tailwind jsem vybrala kvůli jeho efektivitě při psaní stylů, schopnosti rychlého prototypování a snadnému přizpůsobení designu podle specifických potřeb projektu. 
 
-\begin{verbatim}
-	\section{Název sekce}
-	\subsection{Název podsekce}
-	\subsubsection{Název podpodsekce}
-\end{verbatim}
+\section{FullCalendar}
+FullCalendar je JavaScriptová knihovna určená k vytváření interaktivních kalendářů. V mé aplikaci je využita k zobrazení a správě přihlašování na fitness kurzy, umožňující uživatelům snadno zobrazit dostupné termíny a rezervovat si místo. FullCalendar jsem zvolila pro jeho bohatou funkcionalitu, vysokou přizpůsobitelnost a snadnou integraci do React aplikace.
 
-\subsection{Odstavce a rozestupy}
-V \LaTeX{}u je nový odstavec vytvořen jednoduše vložením jedné nebo více prázdných řádek. Rozestupy mezi odstavci, stejně jako zarovnání textu, můžeme upravit podle potřeby.
+\section{ApexCharts}
+ApexCharts je knihovna pro tvorbu interaktivních grafů a vizualizaci dat. V mém projektu slouží k zobrazení zdravotních metrik, jako je BMI a procento tělesného tuku, v přehledné grafické podobě. ApexCharts jsem vybrala díky jeho schopnosti vytvářet moderní, responzivní a snadno konfigurovatelné grafy, které umožňují uživatelům lépe porozumět a interpretovat jejich data. 
+        
+\chapter{Způsoby řešení na straně backendu}
+\section{Návrh databáze}
+Prvním krokem bylo vytvoření databázového modelu, který bude základem celé aplikace. Pomocí Lucidchartu jsem si navrhla všechny tabulky, jejich atributy a vztahy mezi nimi. Návrh zahrnoval klíčové entity, jako jsou: uživatelé, což jsou klienti a trenéři, přičemž každý z nich má přiřazenou specifickou roli a oprávnění. Dále jsou zde kurzy, které obsahují informace jako název, čas konání a Tréninky slouží k uchování historie a plánů cvičení, zatímco jídelníčky představují personalizované stravovací plány pro jednotlivé klienty. Detail uživatele umožňuje sledování pokroků v oblasti zdraví a fitness. Kromě toho databáze zahrnuje také platby, které mají zaznamenávat provedené transakce, ale toto zatím není v aplikaci zprovozněno.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{database-schema.png} 
+    \caption{Databázové schéma}
+    
+\end{figure}
+\vspace{18pt}
+\clearpage
+\section{Implementace backendu pomocí Strapi}
 
-\section{Práce s textem}
-\label{sec:prace_s_textem}
+Strapi jsem zvolila jako backendový systém především kvůli jeho uživatelsky přívětivému rozhraní. Tato flexibilita a jednoduchost jsou ideální pro projekty, kde je potřeba rychle vytvořit administrativní rozhraní a mít plnou kontrolu nad databází. Po nastavení základního prostředí a instalaci Strapi jsem začala vytvářet kolekce, což jsou základní bloky pro ukládání dat v aplikaci. Například v aplikaci pro správu tréninků jsem vytvořila kolekci pro uživatele, kolekci pro tréninky a také samozřejmě kurzy a jídelníčky.
 
-Tato část se zaměřuje na základní techniky práce s textem v \LaTeX{}u, včetně formátování textu, vytváření seznamů a využití křížových odkazů a poznámek pod čarou.
+Když byly kolekce vytvořeny, začala jsem přidávat jednotlivá pole pro každou kolekci, aby byla data co nejvíce strukturovaná a odpovídala požadavkům aplikace. Pole jsem vybírala různých typů – textová, číselná, datová, vztahová (pro propojení s jinými kolekcemi) a další. Tento proces je důležitý, protože zajišťuje, že aplikace bude schopná správně zpracovávat a zobrazovat data. Pole jsou nastavena tak, aby uživatelé mohli snadno přidávat nové informace nebo upravovat existující, a zároveň aby byla zajištěna validita dat.
 
-\subsection{Formátování textu}
-Formátování textu je klíčovým prvkem pro zvýraznění důležitých informací a zlepšení čitelnosti dokumentu.
+Další významnou součástí Strapi je správa uživatelských rolí a práv. Role umožňují různým uživatelům přístup pouze k těm částem aplikace, které mají povoleny. Pro můj projekt jsem definovala role pro trenéry, klienty a jednoho hlavního trenéra - správce daného fitka A každé roli jsem přiřadila specifická oprávnění. Například trenéři mají přístup k vytváření a úpravám tréninkových plánů. Takto jsem mohla přesně určit, co jednotliví uživatelé mohou a nemohou vidět, což zvyšuje bezpečnost a soukromí dat v aplikaci.
 
-\subsubsection{Zvýraznění textu}
-V \LaTeX{}u existuje několik způsobů, jak zvýraznit text. Můžeme použít tučné písmo, kurzívu nebo podtržení.
 
-\begin{verbatim}
-	\textbf{tučné písmo}, \textit{kurzíva}, \underline{podtržený text}
-\end{verbatim}
 
-\subsubsection{Seznamy a výčty}
-Seznamy jsou užitečné pro strukturování informací a jejich uspořádání do čitelné formy. \LaTeX{} podporuje nečíslované, číslované a popisné seznamy.
+    \includegraphics[width=0.9\linewidth]{Snímek obrazovky 2025-01-05 v 19.47.39.png}
 
-\begin{verbatim}
-	\begin{itemize}
-		\item Nečíslovaný seznam
-	\end{itemize}
-	
-	\begin{enumerate}
-		\item Číslovaný seznam
-	\end{enumerate}
-	
-	\begin{description}
-		\item[Popisek] Popisný seznam
-	\end{description}
-\end{verbatim}
+    
+\chapter{Způsoby řešení na straně frontednu}
+\section {Vývoj frontendu pomocí React.js}
+S funkčním backendem jsem začala pracovat na frontendu. Jako první jsem vytvořila úvodní stránku. Bylo to záměrné rozhodnutí, protože jsem s Reactem předtím neměla žádné zkušenosti, a chtěla jsem si nejdříve osvojit jeho základy. Úvodní stránku jsem rozdělila do několika sekcí, což mi pomohlo pochopit, jak se pracuje s komponentami a jak jednotlivé části aplikace propojit. Postupně jsem přidávala navigaci, texty a obrázky, abych si vyzkoušela, jak vše stylovat a strukturovat.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Snímek obrazovky 2025-01-05 v 19.49.20.png}
+    \caption{Hlavní stránka}
+    
+\end{figure}
 
-\subsection{Křížové odkazy a poznámky pod čarou}
-Křížové odkazy a poznámky pod čarou jsou důležité pro odkazování na jiné části dokumentu a poskytování dodatečných informací.
+       \clearpage
+\section {Propojení databáze s frontendem}
+Dalším krokem bylo vytvoření funkcí pro registraci a přihlášení uživatelů. Propojila jsem aplikaci s backendem pomocí fetch požadavků a zajistila, aby se data uživatelů ukládala a ověřovala v databázi. Implementovala jsem také validace vstupních dat, aby aplikace zvládla zpracovat pouze správné informace a také aby bylo zajištěno, že heslo uživatelů splňuje požadavky. Toto jsem zpracovala pomocí RegEx požadavků. Po přihlášení se uživatelům zobrazují funkce přizpůsobené jejich roli – klientům jejich tréninky a kurzy, trenérům možnosti přidání kurzu, odstranění kurzu, přidání trenéninku atp.
 
-\subsubsection{Křížové odkazy}
-Pomocí křížových odkazů můžeme odkazovat na jiné sekce, obrázky nebo tabulky v dokumentu.
+\section{Zobrazení kurzů pomocí metody GET}
+Po vytvoření základní struktury aplikace jsem se zaměřila na vytvoření stránky pro zobrazení všech kurzů, které ještě neproběhly. Tento krok byl klíčový, protože uživatelé, konkrétně trenéři a klienti, potřebují mít přehled o dostupných kurzech, které si mohou rezervovat. Stránka je dynamická a automaticky zobrazuje pouze kurzy, které ještě nejsou datově uzavřeny, tedy které nejsou po aktuálním systémovém datu. Kurzy, které již probíhají nebo jsou po datu konání, jsou skryté pro všechny uživatele.
 
-\begin{verbatim}
-	\label{sec:nazev_sekce}
-	Odkaz na sekci \ref{sec:nazev_sekce}.
-\end{verbatim}
+Pro zajištění interaktivity mezi aplikací a databází jsem použila REST API, což je rozhraní pro komunikaci mezi klientskou aplikací a serverem. Pomocí REST API jsem mohla načítat data o jednotlivých kurzech z databáze a následně je dynamicky zobrazovat na stránce. 
 
-\subsubsection{Poznámky pod čarou}
-Poznámky pod čarou poskytují dodatečné informace bez přerušení toku hlavního textu.
+Každá karta kurzu navíc obsahuje odkaz, který vede na detailní stránku kurzu. Tato stránka poskytuje podrobnější informace, jako jsou přesný čas, datum a počet volných míst. 
 
-\begin{verbatim}
-	Text s poznámkou pod čarou.\footnote{Text poznámky pod čarou.}
-\end{verbatim}
+Pro roli trenéra jsem přidala speciální funkce na stránce detailu kurzu. Trenér má přístup k tabulce s přihlášenými uživateli, kde se zobrazují jména všech osob, které jsou na daný kurz přihlášeny.
+Pokud je potřeba, trenér má možnost odstranit uživatele z kurzu, například pokud se někdo neúčastní nebo se na kurz přihlásil omylem.
 
+Dále jsem do detailní stránky kurzu zahrnula možnost odstranění kurzu. Tuto možnost mají pouze trenéři, protože administrují kurzy a mohou se rozhodnout zrušit konkrétní kurz, pokud například nastanou nepředvídané okolnosti, jako změna místa nebo času, nebo pokud není dostatek účastníků.
 
+\clearpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Snímek obrazovky 2025-01-05 v 19.45.36.png}
+    \caption{Zobrazení všech kurzů}
+\end{figure}
 
-\section{Matematické vzorce a symboly}
-\label{sec:matematicke_vzorce_a_symboly}
 
-Tato část poskytuje přehled o vkládání matematických vzorců a symbolů do dokumentů v \LaTeX{}u, což je nezbytné pro tvorbu akademických a vědeckých textů.
 
-\subsection{Základní matematické prostředí}
-\LaTeX{} nabízí několik prostředí pro práci s matematikou, včetně "math" pro základní matematické výrazy a "displaymath" pro samostatné rovnice.
 
-\begin{verbatim}
-	$z = x + y$ % Inline matematika
-	\begin{displaymath}
-		z = x + y
-	\end{displaymath}
-\end{verbatim}
+\subsection{Vytvoření kurzů pomocí metody POST}
+Pro trenéry jsem implementovala funkci přidávání nových kurzů, která jim umožňuje jednoduše zadat potřebné údaje o kurzu. Vytvořila jsem formulář, který kontroluje, že všechny povinné údaje, jako je název, datum, čas a místo, jsou správně vyplněné. Pokud některý z těchto údajů chybí nebo je nesprávně vyplněn, formulář trenérovi zobrazí chybu a neumožní odeslání formuláře, dokud nebudou všechny údaje opraveny.
 
-\subsection{Rovnice a symboly}
-Matematické rovnice a symboly jsou základem mnoha vědeckých dokumentů, a \LaTeX{} poskytuje širokou škálu nástrojů pro jejich efektivní použití.
+Po úspěšném odeslání formuláře jsou data o novém kurzu uložena do databáze a kurz se okamžitě zobrazuje v seznamu dostupných kurzů. Tento proces je automatizovaný a trenéři mají okamžitou zpětnou vazbu, že kurz byl úspěšně přidán pomocí ToastContainer.
 
-\subsubsection{Vložení jednoduché rovnice}
-Pro vložení jednoduché rovnice můžeme použít prostředí "equation" nebo "align" pro více rovnic s zarovnáním.
+\subsection{Vytvoření kalendáře pro zobrazení kurzů}
+jedním z posledních kroků, co se týkalo kurzů bylo vytvoření kalendáře, který přehledně zobrazuje všechny dostupné kurzy podle data. Původně jsem zvažovala vytvoření vlastního kalendáře, ale po zhodnocení jsem se rozhodla využít knihovnu FullCalendar, která nabízí hotové řešení, které je snadno přizpůsobitelné. Kalendář jsem propojila s backendem ve Strapi pomocí API, které poskytuje data o kurzech.
 
-\begin{verbatim}
-	\begin{equation}
-		E = mc^2
-	\end{equation}
-\end{verbatim}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Snímek obrazovky 2025-01-05 v 19.46.26.png}
+    \caption{Kalendář kurzů}
+\end{figure}
 
-\subsubsection{Pokročilé matematické výrazy}
-Pro složitější matematické výrazy, jako jsou integrály, sumy nebo frakce, \LaTeX{} nabízí rozsáhlé možnosti.
+\section{Tréninkové plány}
+Práce na tréninkových plánech byla dalším důležitým krokem při vývoji aplikace. Nejdříve jsem vytvořila stránku, kde se zobrazuje seznam všech tréninkových plánů. Chtěla jsem, aby design vypadal jinak než u kurzů, proto jsem ho zvolila více minimalistický. U každého plánu jsem zobrazila jen základní informace, jako je název, obtížnost, čas a malý popis s možností kliknout na detail.
 
-\begin{verbatim}
-	\begin{equation}
-		\int_0^\infty e^{-x} \, dx
-	\end{equation}
-\end{verbatim}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Snímek obrazovky 2025-01-05 v 19.47.15.png}
+    \caption{Zobrazení detailu tréninkových plánů}
+\end{figure}
 
 
-\section{Práce s obrázky a tabulkami}
-\label{sec:prace_s_obrazky_a_tabulkami}
-
-Tato kapitola je zaměřena na vkládání a formátování obrázků a tabulek v \LaTeX{}u, což jsou klíčové dovednosti pro vytváření vizuálně atraktivních a informativních dokumentů.
-
-\subsection{Vkládání obrázků}
-Vkládání obrázků do dokumentů \LaTeX{}u umožňuje autorům přidávat vizuální prvky, které podporují a doplňují textový obsah.
-
-\subsubsection{Formáty obrázků}
-\LaTeX{} podporuje různé formáty obrázků, včetně populárních formátů jako JPEG, PNG a PDF. Výběr správného formátu je důležitý pro kvalitu a velikost souboru.
-
-\begin{verbatim}
-	\includegraphics[width=0.5\textwidth]{obrazek.jpg}
-\end{verbatim}
-
-\subsubsection{Pozicování obrázků}
-Správné pozicování obrázků je klíčové pro zachování čitelnosti a estetiky dokumentu. \LaTeX{} nabízí několik možností, jak ovlivnit umístění obrázků v textu.
-
-\begin{verbatim}
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.5\textwidth]{obrazek.jpg}
-		\caption{Popisek obrázku}
-		\label{fig:obrazek}
-	\end{figure}
-\end{verbatim}
-
-\subsection{Vytváření tabulek}
-Tabulky jsou nezbytné pro organizované a efektivní prezentování dat. \LaTeX{} umožňuje vytváření jak jednoduchých, tak složitých tabulek.
-
-\subsubsection{Základní tabulky}
-Pro vytváření základních tabulek lze využít prostředí "tabular". Jednoduchá tabulka může být vytvořena bez složitých formátovacích nástrojů.
-
-\begin{verbatim}
-	\begin{tabular}{|c|c|c|}
-		\hline
-		A & B & C \\
-		\hline
-		1 & 2 & 3 \\
-		\hline
-	\end{tabular}
-\end{verbatim}
-
-\subsubsection{Pokročilé tabulky}
-Pro složitější tabulky, jako jsou tabulky s více řádky nebo sloupci, lze použít pokročilé formátovací možnosti, jako jsou sloučené buňky a speciální zarovnání.
-
-\begin{verbatim}
-	\begin{table}[h]
-		\centering
-		\begin{tabular}{|c|c|c|}
-			\hline
-			\multirow{2}{*}{A} & B1 & C1 \\
-			\cline{2-3}
-			& B2 & C2 \\
-			\hline
-		\end{tabular}
-		\caption{Pokročilá tabulka}
-		\label{tab:pokrocila_tabulka}
-	\end{table}
-\end{verbatim}
-
-
-
-\section{Bibliografie a citace}
-\label{sec:bibliografie_a_citace}
-
-Tato kapitola poskytuje podrobný návod na vytváření bibliografie a správné citování zdrojů v \LaTeX{}u, což jsou nezbytné dovednosti pro akademické psaní a publikování.
-
-\subsection{Vytváření bibliografie}
-\LaTeX{} umožňuje efektivní správu bibliografických záznamů a jejich automatické formátování. Tento proces zahrnuje několik kroků od definování zdrojů po jejich začlenění do dokumentu.
-
-\begin{verbatim}
-	\begin{thebibliography}{99}
-		\bibitem{nazev}
-		Autor, \emph{Název knihy}, Nakladatelství, Rok.
-	\end{thebibliography}
-\end{verbatim}
-
-\subsection{Citování zdrojů}
-Správné citování zdrojů je klíčové pro akademickou integritu a umožňuje čtenářům dohledat zmiňované informace. V \LaTeX{}u je možné citovat zdroje jednoduše pomocí příkazu \verb|\cite|.
-
-\begin{verbatim}
-	Jak bylo zmíněno v \cite{nazev}, ...
-\end{verbatim}
-
-
-
-	
-
-	\chapter{Tipy k psaní}
-	\pagestyle{fancy}
-	Jak už jsem psal výše \LaTeX je dosti komplexní systém, který umožňuje psát velmi rozsáhlé text. Jeho autor Donald Knuth ho stvořil, aby mohl vydat jeho učebnici \emph{The Art of Computer Programming} a dodnes se je využíván pro sazbu skript, učebnic, článků či závěrečných prací. V této kapitole najdeš ukázky různých funkcí a balíčků \LaTeX u od těch nejzákladnějších až po složitější. Neznamená to nutně, že všechny musíš použít, ale když potřebuješ pomoct, tak je dobré mít oporu. 
-	
-	Pokud s \LaTeX em úplně začínáš tak ti můžu doporučit přiručku \emph{Ne příliš stručný úvod do systému \LaTeX2e}~\cite{LaTeXprirucka}. Případně spoustu užitečných informací nalezneš na Wikibooks~\cite{wikibooksLaTeX}. Pokud narazíš na nějaký problém googli. Na internetu je spoustu fór, kde pravděpodobně už někdo podobný problém řešil. Asi nejvíce otho najdeš na stránce \emph{TeX - LaTeX Stackexchange} \cite{stackExchange}.
-	
-	
-	\section[Základy]{Základy: Text, obrázky, tabulky a citace} %%[Text, který bude v obsahu]{Text, který se vytiskne na stránce} Zkus měnit jednotlivé závorky a uvidíš :) 
-	Psaní v \LaTeX{u} není žádná věda, stačí psát normálně do zdrojového souboru. Pokud bys chtěl psát obrážky či číslovaný seznam, pak můžeš použít prostředí \texttt{itemize} či \texttt{enumerate}. Často je důležité používat nezlomitelnou mezeru. Tu uděláš pomocí \verb|~|~(tildy). Pokud budeš chtít psát uvozovky použij příkaz \texttt{uv}, pomocí něj se ti vytvoří uvozovky podle příslušného jazyka. V česku tedy ve formátu 99 66. Použití příkazu najdeš níže v textu.
-	
-	Občas je zapotřebí \LaTeX{u} pomoct při rozdělování slov. To se udělá snadno vložením symbolů \verb|\-| mezi jednotlivé slabiky.
-	
-	\subsection{Tabulky}
-	
-	U tabulek platí to stejné co u obrázků. Zarovnávají se na střed a nechávají se \uv{plavat} v textu. Tabulka narozdíl od textu, má popisek nahoře. U tabulky \ref{tab:ukazka} je použit balíček \texttt{booktabs}, pomocí kterého je celá tabulka naformátovaná.
-	
-	Seznam jak obrázků tak tabulek je pak vytvořen pomocí příkazů \texttt{listoftables} a~\texttt{list\-of\-fig\-ures} na konci práce před literaturou.
-	
-	\begin{table}[h]
-		\caption{Tato tabulka slouží jako ukázka toho, jak mohou tabulky vypadat.} %% popisek se u tebaluky píše nad ní
-		\label{tab:ukazka} %% označení pro pozdější odkazování se 
-		\centering
-		\begin{tabular}{lll}
-			\toprule %% příkazy z balíčku booktabs
-			záhlaví& této & tabulky\\
-			\midrule
-			obsah&tabulky& už\\
-			není & oddělený &čarami\\
-			\bottomrule
-		\end{tabular}
-	\end{table}
-	
-	
-	\subsection{Obrázky}
-	
-	U obrázků je dobré používat vektorové formáty, pokud to jde. \LaTeX se nejvíc kamarádí s formátem PDF. Do známého PDFka lze z jiných vektorových formátů (ať už SVG či ESP) obrázky přenést snadno pomocí grafických programů, jako je třeba Inkscape. \LaTeX si rozhodně poradí i s tradičními formáty PNG a JPG, avšak tyto obrázky mohou zabírat více prostoru a při tisku se může projevit nižší rozlišení obrázků. Pokud chceš používat tyto obrázky, rozhodně měj na paměti, aby měli rozlišení alespoň 250 indálně 330 ppi.
-	
-	Obrázky se vkládají do prostředí \texttt{figure}, při úpravě šířky je možné krom tradičních jednotek jako cm nebo mm použít také jako jednotku šířku stránky \texttt{textwidth} to se hodí zejména když chceš mít více podobrázků. 
-	
-	U každého obrázku je důležité aby měl popisek, \texttt{caption}. Do popisku napiš, co na obrázku je, případně nějaký další popis, tak aby čtenář následně neměl sebemenší pochybnost. U obrázků co nejsou tvoje nezapomeň an citaci. Jinak by to totiž znamenalo, že jsi obrázek dělal ty sám, což není etické přivlastňovat si cizí díla. Popisek obrázku je věta, proto musí vždy končit tečkou.
-	
-	\begin{figure}[h!]
-		\centering %% příkaz, který ti obrázek zarovná na střed
-		\includegraphics[width=0.6\textwidth]{image/logo-skoly.png} %% vložení samotného obrátku
-		\caption{Logo SŠPU Opava \cite{sspuLogo}.} %% popisek obrázku, nezapomeň na citace!
-		\label{fig:logoSSPU} %% označení až budeš chtít na obrázek odkazovat
-	\end{figure}
-	
-	Když chceš odkazovat na obrázek, stačí pak už jen napsat příkaz \texttt{ref} a do závorek napsat označení obrázku. Třeba logo SOČky, můžeš vidět na obrázku \ref{fig:logoSSPU} \cite{socSSPU}.
-	
-	
-	\begin{figure}[h!] \centering
-		\begin{subfigure}[h]{0.63\textwidth} %%prostředí pro podobrázek {šířka podobrázku}
-			\includegraphics[width=\textwidth]{image/vysledek_10} 
-			\caption{} %% aby se ti vysázelo označení obrázku.
-		\end{subfigure}
-		\begin{subfigure}[h]{0.63\textwidth}
-			\includegraphics[width=\textwidth]{image/vysledek_20}
-			\caption{}
-		\end{subfigure}
-		\caption[Graf závislosti rotace DH PSF $\Delta\varphi$ na defokusaci objektivu $\Delta z$.]{Graf závislosti rotace DH PSF $\Delta\varphi$ na defokusaci objektivu $\Delta z$, (a) při použití objektivu Plan Fluor 10, (b) při použití objektivu Plan Fluor 20. Měřená data (žluté body) jsou lineárně proloženy (přerušovaná přímka). }
-		\label{fig:rotace_grafy}
-	\end{figure}
-	
-		Pokud bys měl více podobrázků přichází do hry balíček \texttt{subcaption}. Pomocí něj lze vysázet i podobrázky. U podobrázků se popisek píše pouze jeden, dolů. Je v tomto připadě vhodné použít navíc hranaté závorky, do nichž se napíše kratší popisek, který se následně ukáže v seznamu obrázků.
-	
-	Všimni si, že obrázky jsou naschvál široké. Je to proto, aby byly dobře čitelné. Také si všimni popisku grafů. Ačkoli nejspíš netušíš co je to DH PSF či defokusace objektivu mělo by ti být jasné, že je důležité přesně graf popsat. To znamená co je na vodorovné ose, co je na svislé ose. V jakých jednotkách veličiny jsou. Které body co znamenají, která křivka má jaký význam. Napsat samotné \uv{$\Delta \varphi$} je málo, vždy raději připoměň, co daná značka znamená.
-	
-
-	
-	\subsection{Literatura}
-	
-	V \LaTeX{}u lze dělat seznam literatury dvěma způsoby. V této šabloně jsem použil ten, kdy se seznam literatury píše přímo do práce. Pro jeho vygenerování doporučuji použít některý z generátarů, jako jsou například Citace PRO \cite{citacePRO}. Pomocí citací lze vygenerovat přímo dokument, který se pak už jen překopíruje do textu a člověk nemusí nic zvýrazňovat. Dále lze využít Bibtex, který rozhodně do budoucna hodlám zaimplementovat do šablony, avšak jeho použití nemusí být tak přátelské k začátečníkům.
-	
-	Pokud bys chtěl odkazovat na vícero zdrojů stačí je napsat vedle sebe oddělené čárkou \cite{LaTeXprirucka, citacePRO, Born2019}. Případně můžu odkaz na konkrétní stránku dát do hranatých závorek, viz \cite[str.~1]{Born2019}
-	
-	\subsection{Programový kód}
-	Pro vložení programového kódu do dokumentu LaTeX s možností zvýraznění syntaxe můžete použít balíček \texttt{listings}. Tento balíček nabízí široké možnosti pro formátování kódu, včetně zvýraznění syntaxe pro různé programovací jazyky.
-	
-	Nejprve je třeba do preambule LaTeX dokumentu přidat \texttt{\\usepackage{listings}} a nastavit příslušné parametry. Příklad nastavení pro jazyk Python by mohl vypadat takto:
-	
-
-\begin{lstlisting}[style=Python, caption={Ukázka Python kódu}]
-	# Python code here
-	def hello_world():
-		print("Hello, world!")
-\end{lstlisting}
-
-
-\begin{lstlisting}[style=JavaScript, title={Kód}, caption={Ukázka JS kódu}]
-	// JavaScript code here
-	function helloWorld() {
-		console.log("Hello, world!");
-	}
-\end{lstlisting}	
-	
-\begin{lstlisting}[style=ES6, caption={ES6 (ECMAScript-2015) Listing}]
-	/* eslint-env es6 */
-	/* eslint-disable no-unused-vars */
-	
-	import Axios from 'axios'
-	import { BASE_URL } from './utils/api'
-	import { getAPIToken } from './utils/helpers'
-	
-	export default class User {
-		constructor () {
-			this.id = null
-			this.username = null
-			this.email = ''
-			this.isActive = false
-			this.lastLogin = ''  // ISO 8601 formatted timestamp.
-			this.lastPWChange = ''  // ISO 8601 formatted timestamp.
-		}
-	}
-	
-	const getUserProfile = async (id) => {
-		let user = new User()
-		await Axios.get(
-		`${BASE_URL}/users/${id}`,
-		{
-			headers: {
-				'Authorization': `Token ${getAPIToken()}`,
-			}
-		}
-		).then{response => {
-				// ...
-			}).catch(error => {
-				// ...
-			})
-		}
-\end{lstlisting}	
-	
-	\section[Pokročilejší tipy]{Pokročilejší tipy, které se mohou hodit}
-	
-	\subsection{Rovnice}
-	
-	Sazba matematiky je věda sama o sobě. Ačkoli Word prošel obrovskou změnou a je v~tomto mnohem lepší, tak \LaTeX je pro to přímo (ještě jsem neviděl matematika, co by používal Word). Spolu s balíčky \texttt{amsmath} a \texttt{amsfonts} snad neexistuje nic, co by se používalo a \LaTeX by to nezvládl. Ať už jde o základní věci jako řecká písmenka -- $\alpha, \beta, \gamma, \dots$ -- integrály -- $\int_{l_i}^{l_f} \tau \dif l $ -- až třeba po speciální písmena -- $\mathscr{F}: \mathbb{R}^n \to \mathbb{R}^m$. Pro případ, že bys potřeboval nějaké speciální integrály, je tu balíček \texttt{esint}, pomocí něj můžeš napsat třeba
-	$$ \oiint_{S(V)} \vec{E} \cdot \dif \vec{S} = \iiint_{V} \left(\vec{\nabla} \cdot \vec{E}\right) \dif V .$$
-	
-	Jak můžeš vidět tak rovnice lze psát jednak do textu a nebo pokud se jedná o nějakou důležitou nebo rozsáhlejší rovnici tak na samostatný řádek. Pokud je rovnice opravdu důležitá, tak je vhodné ji také číslovat. Pak se na ni můžeš dále odkazovat v textu.
-	\begin{equation}
-		\vec{F} = m \vec{a}
-		\label{eq:newton2}
-	\end{equation}
-	\dots Například podle druhého Newtonova zákona, rovnice (\ref{eq:newton2}) \dots Zároveň je vždy nutné vysvětlit co která veličina znamená. V tomto případě bych napsal, že v druhém Newtonově zákoně vektor síly $\vec F$ odpovídá součinu hmotnosti tělesa $m$ a jeho zrychlení $\vec a$. 
-	
-	Věřím, že se sazbou matematiky ti pomůže tvůj školitel, případně mi můžeš napsat (mail je v úvodu). Jednotlivé funkcionality spolu se seznamem znaků nalezneš jednak v Ne příliš stručném úvodu~\cite{LaTeXprirucka} nebo na Wikibooks v sekcích \emph{Mathematics} a \emph{Advanced mathematics}~\cite{wikibooksLaTeX}.
-	
-	
-	
-	
-	\chapter{Když dokončuji práci}
-	
-	Každou práci je dobré zkontrolovat, aby v ní nebyly pravopisné chyby, nebyla těžkopádně napsaná -- byla čtivá -- a neobsahovala žádný typografický nedostatek. Proto, když práci sepíšeš, nech ji chvilku odležet, třeba týden. Pak si ji po sobě znovu přečti. Hned uvidíš, kolik věcí bys napsal jinak případně kde tě bije do očí jaká chyba. Dej práci přečíst také svému školiteli a případně češtináři. Zajistíš tak, že bude obsahovat méně chyb.
-	
-	Pak můžeš práci vytisknout a hurá do soutěže.
-	
-	\chapter*{Závěr}
-	
-	Věřím, že jsem ti spolu se šablonou poskytl několik tipů, jak napsat práci. Ať už jde o úplné začátky s \LaTeX{}em. Či ukázku toho, co vše s ním zvládneš. Pokud bys měl k šabloně libovolné dotazy, rouhodně se na mě obrať. \LaTeX tvé práci dodá určitou krásu, tak doufám, že ti dodá sebevědomí a uspěješ při souteži. A i kdyby ne vzpomeň si, kolik ses toho musel naučit a hned uvidíš o jaký kus ses posunul.
-	
-	%% literatura
-	\begin{thebibliography}{99}
-		\bibitem{sablonaSOC} DOKULIL Jakub. \textit{Šablona pro psaní SOČ v programu \LaTeX} [Online]. Brno, 2020 [cit. 2020-08-24]. Dostupné z: \url{https://github.com/Kubiczek36/SOC_sablona}
-		\bibitem{LaTeXprirucka}OETIKER, Tobias, Hubert PARTL, Irene HYNA, Elisabeth SCHEGL, Michal KOČER a Pavel SÝKORA. \textit{Ne příliš stručný úvod do systému LaTeX2e} [online]. 1998 [cit. 2020-08-24]. Dostupné z: \url{https://www.jaroska.cz/elearning/informatika/typografie/lshort2e-cz.pdf}
-		\bibitem{wikibooksLaTeX}\textit{Wikibooks: LaTeX} [online]. San Francisco (CA): Wikimedia Foundation, 2001- [cit. 2020-08-24]. Dostupné z: \url{https://en.wikibooks.org/wiki/LaTeX}
-		\bibitem{stackExchange} \textit{TeX - LaTeX Stack Exchange} [online]. Stack Exchange, 2020 [cit. 2020-09-01]. Dostupné z: \url{https://tex.stackexchange.com}
-		\bibitem{sspuLogo} \textit{Střední škola průmyslová a umělecká Opava} [online]. [cit. 2023-11-11]. Dostupné z: \url{https://www.sspu-opava.cz}
-		\bibitem{citacePRO}\textit{Citace PRO} [online]. Citace.com, 2020 [cit. 2020-08-31]. Dostupné z: \url{https://www.citacepro.com}
-		\bibitem{Born2019} BORN, Max a Emil WOLF. \textit{Principles of optics: electromagnetic theory of propagation, interference and diffraction of light}. 7th (expanded) edition. Reprinted wirth corrections 2002. 15th printing 2019. Cambridge: Cambridge University Press, 2019. ISBN 978-0-521-64222-4.
-	\end{thebibliography}
-	
-	%% obrázky 
-	\listoffigures
-	
-	%% tabulky
-	\listoftables
-	
-	\appendix %% začínají přílohy
-	
-	\titleformat{\chapter}[block]{\scshape\bfseries\LARGE}{Příloha \thechapter}{10pt}{\vspace{0pt}}[\vspace{-22pt}] %% nastavení nadpisu u příloh
-	
-	
-	\chapter{%Příloha A 
-		Spot diagramy a další }
+\subsection{Detail tréninku pomocí metody GET}
+Detailní stránka tréninkového plánu ukazuje uživateli všechny cviky včetně jejich popisu a opakování. Tyto informace jsou rozděleny přímo na frontendu, takže uživatel vidí vše přehledně uspořádané. Aby ale byla databáze jednodušší a nebylo nutné vytvářet složité struktury, rozhodla jsem se ukládat jednotlivé cviky v plánech jako jeden string. V tomto stringu jsou jednotlivé části plánu oddělené středníkem ; a různé atributy, jako název cviku nebo počet opakování, oddělené rourou |. Na frontendu jsem potom tento string rozdělila a zobrazila uživatelům přehledný seznam tréninků.
+\\
+
+\subsection{Vytvoření tréninkového plánu pomocí metody POST}
+Pro trenéry jsem přidala možnost vytvářet nové tréninkové plány. Formulář umožňuje zadávat cviky včetně jejich atributů a ukládá je do databáze jako string se stejnou strukturou. Kód pro zpracování těchto dat jsem našla na internetu, protože takové zpracování stringů bylo pro mě dost složité. Díky tomu jsem ale mohla rychle implementovat funkci, která funguje efektivně a jednoduše.
+
+\section{Jídelníčky}
+Práce na jídelníčcích byla velmi podobná tomu, co jsem vytvořila u tréninkových plánů, ale s jiným zobrazením a přístupem k datům. Tentokrát jsem se rozhodla ukládat data v oddělených polích, což mělo usnadnit jejich zpracování na backendu i frontendu. Struktura databáze byla díky tomu přehlednější a lépe přizpůsobená pro práci s jednotlivými položkami jídelníčků. Nicméně tento přístup se ukázal jako časově náročnější, než jsem očekávala.
+\clearpage
+Zpětně bych zvolila stejný způsob ukládání dat jako u tréninkových plánů, tedy ve formě jednoho stringu, který by se následně rozděloval na frontendu. Tento přístup by byl jednodušší na implementaci a ušetřil by mi spoustu času při vývoji.
+
+\subsection{Zobrazení všech jídelníčků pomocí metody GET}
+Na frontendu jsem opět začala vytvořením seznamu jídelníčků, kde se zobrazují základní informace, jako je název a datum vytvoření. I tady jsem zvolila jiný design a to pomocí slideru. Každý jídelníček má také svou detailní stránku, kde uživatelé vidí jednotlivá jídla.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Snímek obrazovky 2025-01-05 v 19.45.51.png}
+    \caption{Zobrazení jídelníčků}
+\end{figure}
+
+\clearpage
+\subsection{Vytvoření jídelníčku pomocí metody POST}
+Pro trenéry jsem vytvořila funkci na přidávání nových jídelníčků. Na rozdíl od tréninkových plánů, kde jsem používala stringy, se u jídelníčků data ukládají rovnou do oddělených polí. Formulář umožňuje zadávat jednotlivá jídla, jejich popis a doporučení pro klienty. Po odeslání formuláře se data ukládají do databáze pomocí metody POST.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Snímek obrazovky 2025-01-05 v 19.55.29.png}
+    \caption{Přidání nového jídelníčku}
+\end{figure}
+
+\clearpage
+\section{Vykreslení grafů}
+Na závěr jsem se pustila do práce na zobrazení detailů uživatele, kde jsem chtěla zobrazit základní údaje, jako jsou výška, váha, BMI a tělesný tuk. Rozhodla jsem se tyto informace vizualizovat pomocí grafů, protože jsem si chtěla vyzkoušet práci s Apex Charts.
+
+Data jsou v databázi ukládána přímo k jednotlivým uživatelům, což zajišťuje, že každý má své hodnoty. Na frontendu jsem pak pomocí Apex Charts vykreslovila náhled, kde se zobrazovaly tyto parametry v čase. 
+
+Toto jsem bohužel zvládla jen základně, protože už jsem měla málo času a práce s grafy nebyla úplně jednoduchá. Myslím si ale, že tato část by mohla být v budoucnu dále rozvinuta, aby aplikace nabídla uživatelům ještě lepší přehled.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{Snímek obrazovky 2025-01-05 v 19.46.02.png}
+    \caption{Přidání nového jídelníčku}
+\end{figure}
+
+
+\chapter{VÝSLEDKY ŘEŠENÍ, VÝSTUPY, UŽIVATELSKÝ MANUÁL}
+
+\section{Funkce aplikace}
+Při příchodu na úvodní stránku aplikace Flyte si uživatel může vybrat mezi registrací a přihlášením. Po přihlášení získá přístup ke všem funkcím, které se liší podle jeho role – klienta nebo trenéra.
+
+Stránka kurzů zobrazuje přehled dostupných lekcí s detaily, jako je název, čas. Uživatel se může na kurz přihlásit, zatímco trenér má možnost přidávat nové lekce. Kalendář zobrazuje všechny kurzy přehledně podle data a umožňuje uživatelům kliknout na detail nebo se přihlásit.
+
+Tréninkové plány vytvářejí trenéři, podle kterých se mohou uživatelé orientovat během cvičení.
+
+Na stránce jídelníčků klient vidí své stravovací plány rozdělené podle částí dne, jako je snídaně nebo večeře. Trenéři mohou přidávat nové jídelníčky.
+
+Osobní složka poskytuje možnost pozorovat svůj progres pomocí údajů, jako jako jsou: váha, výška, tělesný tuk a BMI, přičemž každý má přístup pouze ke svým datům. 
+
+V aplikaci Flyte byl kladen důraz na atraktivní rozhraní, aby byla aplikace snadno použitelná jak pro klienty, tak pro trenéry. Flyte nabízí komplexní základ pro správu fitness center s potenciálem dalšího rozšíření a vylepšení.
+ \vspace{18pt}
+\clearpage
+\section{Splněné cíle možný potenciál do budoucna}
+
+Cílem bylo vytvořit aplikaci Flyte, která by zjednodušila správu fitness aktivit a umožnila klientům i trenérům efektivně pracovat s kurzy, tréninkovými plány a jídelníčky a monitorovat své pokroky. Většinu těchto cílů se mi podařilo splnit, a aplikace v současnosti funguje podle očekávání. Některé části však stále nejsou dokončené a aplikace by mohla být do budoucna ještě přehlednější a intuitivnější pro uživatele.
+
+Do budoucna bych se ráda zaměřila na rozšíření aplikace o další funkce. Mezi potenciální vylepšení patří přidání možnosti nastavení uživatelského účtu, implementace přihlašování pomocí OAuth, a vylepšení grafických přehledů o aktivitách, například detailnějšími grafy pro sledování pokroku a také zprovoznění plateb.
+
+Na závěr jsem se teké pustila do nastavení aplikace, které by uživatelům umožnilo například změnit své jméno. Tato část zatím funguje pouze na frontendu, protože se mi ji nepodařilo plně propojit s backendem. Původně mělo toto nastavení zahrnovat možnost změny křestního jména, příjmení, e-mailu a také hesla. Tyto funkce aplikace nabízí, ale bohužel zatím nejsou plně funkční. Do budoucna se zaměřím na jejich dokončení a propojení s databází, což umožní uživatelům plně spravovat své údaje.
+
+\renewcommand{\bibname}{SEZNAM POUŽITÝCH INFORMAČNÍCH ZDROJŮ}
+\begin{thebibliography}{99}
+ \bibitem{reactDocs} \textit{React Documentation} [online] Odkaz: \url{https://reactjs.org/docs/}
+\bibitem{strapiDocs} \textit{Strapi Documentation} [online] Odkaz: \url{https://docs.strapi.io/}
+\bibitem{tailwindDocs} \textit{Tailwind CSS Documentation} [online] Odkaz: \url{https://tailwindcss.com/docs/}
+\bibitem{fullcalendarDocs} \textit{FullCalendar Documentation} [online] Odkaz: \url{https://fullcalendar.io/docs/}
+\bibitem{apexChartsDocs} \textit{Apex Charts Documentation} [online] Odkaz: \url{https://apexcharts.com/docs/}
+\bibitem{netNinja} The Net Ninja. \textit{React Tutorials} [online] Odkaz: \url{https://www.youtube.com/watch?v=4Ntd414raYc&list=PL4cUxeGkcC9h6OY8_8Oq6JerWqsKdAPxn}
+\bibitem{stackOverflow} \textit{Stack Overflow} [online] Odkaz: \url{https://stackoverflow.com}
+\bibitem{githubIssues} \textit{GitHub Issues} [online] Odkaz: \url{https://github.com}
+\bibitem{frontend} \textit{Vývoj frontendu} [online] Odkaz: \url{https://www.youtube.com/watch?v=ukiGFmZ32YA}
+\bibitem{chatGpt} \textit{ChatGPT} [online] Odkaz: \url{https://chatgpt.com/}
+
+\end{thebibliography}
+
 	
 	
 \end{document}
