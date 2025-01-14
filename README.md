@@ -63,32 +63,32 @@ Aby byl projekt robustní a snadno spravovatelný, byly vybrány následující 
   - [x] Vytvořit Landing Page s možností rezervace zkušební lekce.
   - [x] Implementovat registraci a přihlášení uživatelů přes Strapi.
   - [x] Vytvořit základní strukturu Osobní karty s údaji o členovi.
-  - Implementovat rezervační systém s kalendářem pro kurzy.
+  - [x] Implementovat rezervační systém s kalendářem pro kurzy.
   - Připojit Stripe/PayPal pro platby a přidávání kreditu.
 
-- [ ] **Tréninkové a jídelní plány**
+- [x] **Tréninkové a jídelní plány**
   - Implementovat funkci pro vytváření a přiřazování tréninkových plánů trenéry.
   - Implementovat funkci pro vytváření a přiřazování jídelníčků trenéry.
 
 - [ ] **AI Chatbot (volitelné)**
   - Integrovat OpenAI API pro vytvoření AI chatbota pro doporučování jídelníčků a tréninků.
 
-- [ ] **Testování a ladění**
+- [x] **Testování a ladění**
   - Testovat všechny funkce aplikace a opravovat chyby.
   - Zajistit, že aplikace je plně responzivní a funguje dobře na mobilních zařízeních.
 
-- [ ] **Nasazení**
+- [x] **Nasazení**
   - Nasadit aplikaci na platformu (např. Vercel, Netlify).
   - Ověřit, že platební systém a autentifikace fungují v produkčním prostředí.
 
-- [ ] **Dokumentace**
+- [x] **Dokumentace**
   - Vytvořit podrobnou dokumentaci ke všem částem aplikace.
   - Seznam použité technologie a postupy pro uživatelské role (admin, trenér, člen).
 
 ##  Reference: 
   - Tutorialy:
         - https://www.youtube.com/watch?v=4Ntd414raYc&list=PL4cUxeGkcC9h6OY8_8Oq6JerWqsKdAPxn
-
+        - https://www.youtube.com/watch?v=ukiGFmZ32YA&t=766s
   - Strapi - https://docs.strapi.io/dev-docs/intro
   - React - https://react.dev/reference/react
   - Tailwind - https://tailwindui.com/documentation
