@@ -59,7 +59,7 @@ Aby byl projekt robustní a snadno spravovatelný, byly vybrány následující 
   - [x] Nastavit Strapi API pro backend a správu obsahu.
   - [x] Implementovat autentifikaci uživatelů přes Strapi.
 
-- [ ] **Vývoj základních funkcí**
+- [x] **Vývoj základních funkcí**
   - [x] Vytvořit Landing Page s možností rezervace zkušební lekce.
   - [x] Implementovat registraci a přihlášení uživatelů přes Strapi.
   - [x] Vytvořit základní strukturu Osobní karty s údaji o členovi.
@@ -67,23 +67,23 @@ Aby byl projekt robustní a snadno spravovatelný, byly vybrány následující 
   - Připojit Stripe/PayPal pro platby a přidávání kreditu.
 
 - [x] **Tréninkové a jídelní plány**
-  - Implementovat funkci pro vytváření a přiřazování tréninkových plánů trenéry.
-  - Implementovat funkci pro vytváření a přiřazování jídelníčků trenéry.
+  - [x] Implementovat funkci pro vytváření a přiřazování tréninkových plánů trenéry.
+  - [x] Implementovat funkci pro vytváření a přiřazování jídelníčků trenéry.
 
 - [ ] **AI Chatbot (volitelné)**
   - Integrovat OpenAI API pro vytvoření AI chatbota pro doporučování jídelníčků a tréninků.
 
 - [x] **Testování a ladění**
-  - Testovat všechny funkce aplikace a opravovat chyby.
-  - Zajistit, že aplikace je plně responzivní a funguje dobře na mobilních zařízeních.
+  - [x] Testovat všechny funkce aplikace a opravovat chyby.
+  - [x] Zajistit, že aplikace je plně responzivní a funguje dobře na mobilních zařízeních.
 
 - [x] **Nasazení**
-  - Nasadit aplikaci na platformu (např. Vercel, Netlify).
+  - [x] Nasadit aplikaci na platformu (např. Vercel, Netlify).
   - Ověřit, že platební systém a autentifikace fungují v produkčním prostředí.
 
 - [x] **Dokumentace**
-  - Vytvořit podrobnou dokumentaci ke všem částem aplikace.
-  - Seznam použité technologie a postupy pro uživatelské role (admin, trenér, člen).
+  - [x] Vytvořit podrobnou dokumentaci ke všem částem aplikace.
+  - [x] Seznam použité technologie a postupy pro uživatelské role (admin, trenér, člen).
 
 ##  Reference: 
   - Tutorialy:
