@@ -35,7 +35,6 @@ const Footer = () => {
         </div>
 
         <div className="flex flex-col items-center md:items-start gap-3">
-          <strong className="text-sm">Kontakt: </strong>
           <p className="text-sm">
             E-mail:{" "}
             <a
@@ -45,10 +44,8 @@ const Footer = () => {
               kontakt@flyteapp.cz
             </a>
           </p>
-          <p className="text-sm">Telefon: +420 123 456 789</p>
         </div>
 
-        {/* Social Media Links */}
         <div className="flex gap-4">
           <a
             href="https://www.facebook.com"
@@ -65,14 +62,6 @@ const Footer = () => {
             className="text-gray-400 hover:text-white transition duration-300"
           >
             <i className="fab fa-instagram"></i>
-          </a>
-          <a
-            href="https://www.linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-white transition duration-300"
-          >
-            <i className="fab fa-linkedin-in"></i>
           </a>
         </div>
       </div>
