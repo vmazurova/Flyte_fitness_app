@@ -1,7 +1,7 @@
 # Webová aplikace Flyte
 
 ![lyte__3_-removebg-preview](https://github.com/user-attachments/assets/87eb6fb5-6510-4b09-b192-260e14ce8932)
-
+- [Video prezentace](https://www.youtube.com/watch?v=kYj456mgT_Y)
 - [Backend](https://github.com/vmazurova/flyte_maturitni_projekt/tree/master/backend)
 - [Frontend](https://github.com/vmazurova/frontend-mat)
 
